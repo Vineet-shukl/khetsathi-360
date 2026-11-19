@@ -10,7 +10,7 @@ Once deployed, your live domain (e.g., `https://khetsathi-360.onrender.com`) wil
 
 | Surface | Path | Purpose |
 | :--- | :--- | :--- |
-| **💼 Investor Pitch Showcase** | `/investor` | Dark-themed executive pitch dashboard with live ROI simulation, coverage analytics, and traction metrics. |
+| **🏢 Operations & Partner Portal** | `/portal` (or `/login`) | Clean enterprise login gateway leading to the full agronomic intelligence console, live ROI simulator, and coverage maps. |
 | **🌾 Farmer Advisory PWA** | `/` or `/ui` | High-contrast, bilingual (Hindi/English) voice-enabled agronomy PWA with GPS geolocation. |
 | **📊 FPO / Soil Health Scanner** | `/static/fpo_dashboard.html` | Extension agent portal with 12-parameter Soil Health Card OCR classification and village analytics. |
 | **⚡ Interactive API Docs** | `/docs` | OpenAPI / Swagger interactive documentation with live test payloads. |
