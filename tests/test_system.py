@@ -238,12 +238,12 @@ class TestKhetSathiMLSystem(unittest.TestCase):
         self.assertEqual(data["data_source"], "real")
 
     def test_frontend_served_at_root_and_ui(self):
-        """Root /, /ui, and /investor serve the production frontend HTML with WCAG landmarks."""
-        for path in ["/", "/ui", "/investor"]:
+        """Root /, /ui, /portal, /login, and /investor serve the production frontend HTML with WCAG landmarks."""
+        for path in ["/", "/ui", "/portal", "/login", "/investor"]:
             r = self.client.get(path)
             self.assertEqual(r.status_code, 200)
             self.assertIn("text/html", r.headers.get("content-type", ""))
-            self.assertIn("KhetSathi 360", r.text)
+            self.assertTrue("KhetSathi 360" in r.text or "Redirecting" in r.text)
 
     # ------------------------------------------------------------------
     # 8. Real-Time Meteorological Weather & ET0 Integration

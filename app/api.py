@@ -335,12 +335,16 @@ def serve_ui():
     return FileResponse(index_file, media_type="text/html")
 
 
+@app.get("/portal", response_class=HTMLResponse)
+@app.get("/login", response_class=HTMLResponse)
 @app.get("/investor", response_class=HTMLResponse)
-def serve_investor():
-    inv_file = FRONTEND_DIR / "investor.html"
-    if not inv_file.exists():
-        raise HTTPException(status_code=404, detail="Investor dashboard not found")
-    return FileResponse(inv_file, media_type="text/html")
+def serve_portal():
+    portal_file = FRONTEND_DIR / "portal.html"
+    if not portal_file.exists():
+        portal_file = FRONTEND_DIR / "investor.html"
+    if not portal_file.exists():
+        raise HTTPException(status_code=404, detail="Portal page not found")
+    return FileResponse(portal_file, media_type="text/html")
 
 
 if FRONTEND_DIR.exists():
