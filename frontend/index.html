@@ -1,31 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0e2d1f" />
-  <meta name="description" content="KhetSathi 360 — Uncertainty-Aware Deterministic ICAR/FAO-56 + Residual ML Agronomy Engine with Real-Time Meteorological Weather &amp; GPS Location Integration." />
-  <title>KhetSathi 360 — Pan-India Hybrid Agronomy Platform</title>
+  <meta name="description" content="KhetSathi 360 — राष्ट्रीय डिजिटल कृषि निर्णय प्रणाली। सटीक मौसम, मिट्टी जांच और ICAR पैकेज ऑफ प्रैक्टिसेज आधारित पारदर्शी कृषि सलाह इंजन।" />
+  <title>KhetSathi 360 — राष्ट्रीय डिजिटल कृषि निर्णय प्रणाली</title>
   <link rel="manifest" href="/static/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f4f7f4; color: #0f1f17; }
+    body { font-family: 'Noto Sans Devanagari', 'Inter', system-ui, -apple-system, sans-serif; background-color: #f4f7f4; color: #0f1f17; }
     .card { background: #ffffff; border: 1px solid #d4dfd6; border-radius: 1rem; box-shadow: 0 2px 10px rgba(14, 45, 31, 0.05); }
     .badge { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 700; padding: 0.28rem 0.65rem; border-radius: 9999px; }
-    /* Enhanced Focus Accessibility (WCAG 2.2 AA) */
-    :focus-visible { outline: 2px solid #047857; outline-offset: 2px; }
-    .dark-focus:focus-visible { outline: 2px solid #f59e0b; outline-offset: 2px; }
+    :focus-visible { outline: 3px solid #047857; outline-offset: 2px; }
+    .dark-focus:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
     input[type=range] { min-height: 28px; }
+    
+    /* Radar / OCR Scanline Animation */
+    @keyframes scanline {
+      0% { transform: translateY(-100%); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(1000%); opacity: 0; }
+    }
+    .scan-beam {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #10b981, #f59e0b, transparent);
+      box-shadow: 0 0 15px #10b981;
+      animation: scanline 2s infinite ease-in-out;
+    }
+
+    /* Print Slip Stylesheet (@media print) */
+    @media print {
+      body { background: white !important; color: black !important; margin: 0; padding: 0; }
+      header, nav, #main-content, footer, .no-print { display: none !important; }
+      #printable-slip {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 20px !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
   <!-- Skip Link for Keyboard & Screen Reader Users (WCAG SC 2.4.1) -->
   <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-emerald-950 focus:text-white focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none focus:ring-4 focus:ring-amber-400">
-    Skip to main content / मुख्य सामग्री पर जाएं
+    मुख्य सामग्री पर जाएं / Skip to main content
   </a>
 
   <!-- Top Header Banner -->
@@ -37,632 +66,683 @@
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">KhetSathi 360</h1>
-            <span class="inline-flex text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
-              PRODUCTION HYBRID MVP
+            <span class="text-base sm:text-lg font-bold tracking-tight text-white">KhetSathi 360</span>
+            <span class="inline-flex text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              राष्ट्रीय डिजिटल कृषि प्रणाली
             </span>
           </div>
-          <p id="hdr-subtitle" class="text-xs text-emerald-100 font-medium">Real-Time Weather + Uncertainty-Aware Deterministic &amp; ML Residual Agronomy</p>
+          <p id="hdr-subtitle" class="text-xs text-emerald-100 font-medium">सटीक मौसम व मिट्टी आधारित हाइब्रिड कृषि सलाह इंजन | ICAR / FAO-56</p>
         </div>
       </div>
 
-      <!-- Navigation & Mode Controls -->
-      <nav aria-label="Application View Mode and Prototypes" class="flex flex-wrap items-center gap-2 sm:gap-3">
+      <!-- Navigation & Module Tabs -->
+      <nav aria-label="मुख्य मॉड्यूल व पोर्टल नेविगेशन" class="flex flex-wrap items-center gap-2 sm:gap-3">
         <!-- Backend Status Badge -->
         <div id="backend-status-badge" role="status" aria-live="polite" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-900/80 text-emerald-200 border border-emerald-500/40">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
-          <span id="backend-status-text">Backend: Checking...</span>
+          <span id="backend-status-text">Backend: Connecting...</span>
         </div>
 
-        <!-- Mode Switcher: Farmer Friendly vs Technical -->
-        <div role="radiogroup" aria-label="User Experience Mode" class="inline-flex rounded-xl bg-[#081b12] p-1 border border-amber-400/40 shadow-inner">
-          <button id="mode-simple-btn" role="radio" aria-checked="false" type="button" class="dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold text-amber-200 hover:text-white transition">
-            किसान मोड (Simple)
+        <!-- Main Product Tabs Switcher -->
+        <div role="tablist" aria-label="प्रमुख कृषि मॉड्यूल" class="inline-flex rounded-xl bg-[#081b12] p-1 border border-[#1b4834]">
+          <button id="tab-module-1" role="tab" aria-selected="true" aria-controls="panel-module-1" type="button" class="dark-focus min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-emerald-700 text-white transition shadow flex items-center gap-1.5">
+            <span>🌾</span> <span>किसान सलाहकार</span>
           </button>
-          <button id="mode-tech-btn" role="radio" aria-checked="true" type="button" class="dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition">
-            Technical Mode
-          </button>
-        </div>
-
-        <!-- Technical Tabs Switcher -->
-        <div id="tech-tabs-wrap" role="tablist" aria-label="Technical Agronomy Prototypes" class="inline-flex rounded-xl bg-[#081b12] p-1 border border-[#1b4834]">
-          <button id="tab-btn-1" role="tab" aria-selected="true" aria-controls="panel-1" type="button" class="dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-700 text-white transition shadow">
-            1. Farmer Advisory (PWA)
-          </button>
-          <button id="tab-btn-2" role="tab" aria-selected="false" aria-controls="panel-2" type="button" class="dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white transition">
-            2. SHC Scanner &amp; FPO Console
+          <button id="tab-module-2" role="tab" aria-selected="false" aria-controls="panel-module-2" type="button" class="dark-focus min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-200 hover:text-white transition flex items-center gap-1.5">
+            <span>🧪</span> <span>मिट्टी परीक्षण व FPO केंद्र</span>
           </button>
         </div>
 
-        <!-- Bilingual Toggle -->
-        <button id="lang-toggle" type="button" aria-label="Switch Language (Current: English)" class="dark-focus min-h-[36px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 border border-white/20 text-white transition flex items-center gap-1">
-          <span aria-hidden="true">🌐</span> <span id="lang-toggle-text">EN / हिन्दी</span>
+        <!-- Bilingual Language Toggle -->
+        <button id="lang-toggle" type="button" aria-label="Switch Language (Current: Hindi)" class="dark-focus min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 border border-white/20 text-white transition flex items-center gap-1">
+          <span aria-hidden="true">🌐</span> <span id="lang-toggle-text">हिन्दी / EN</span>
         </button>
 
-        <!-- Partner & Operations Portal Link -->
-        <a href="/portal" class="dark-focus min-h-[36px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 transition flex items-center gap-1.5 shadow-sm">
-          <span aria-hidden="true">🔐</span> <span>Partner Portal / लॉगिन</span>
+        <!-- National Operations & Analytics Portal -->
+        <a href="/portal" aria-label="राष्ट्रीय कृषि एनालिटिक्स पोर्टल (National Operations Portal)" class="dark-focus min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition flex items-center gap-1.5 shadow-sm font-semibold">
+          <span aria-hidden="true">🏛️</span> <span>राष्ट्रीय एनालिटिक्स पोर्टल</span>
         </a>
       </nav>
     </div>
   </header>
 
-  <!-- Main Landmark (WCAG SC 1.3.1) -->
+  <!-- Main Landmark -->
   <main id="main-content" role="main" tabindex="-1" class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 focus:outline-none">
 
     <!-- ========================================================================= -->
-    <!-- VIEW MODE A: SIMPLE FARMER MODE (VOICE-ENABLED, ACTION-ORIENTED)          -->
+    <!-- MODULE 1: किसान सलाहकार (KISAN MITRA FIELD ADVISORY)                      -->
+    <!-- 3-STEP ULTRA-INTUITIVE WORKFLOW: Input/Upload -> Proceed -> What To Do    -->
     <!-- ========================================================================= -->
-    <section id="panel-simple" aria-labelledby="sf-hero-title" class="hidden max-w-4xl mx-auto space-y-5">
-      <!-- Voice & Plan Hero Bar -->
-      <div class="card p-5 sm:p-6 bg-gradient-to-r from-emerald-950 to-[#123926] text-white border-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg">
+    <section id="panel-module-1" role="tabpanel" aria-labelledby="tab-module-1" tabindex="0" class="space-y-6">
+
+      <!-- Hero Header & Value Proposition -->
+      <div class="card p-5 sm:p-6 bg-gradient-to-r from-emerald-950 via-[#0e2d1f] to-[#123926] text-white border-0 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div>
-          <h2 id="sf-hero-title" class="text-xl sm:text-2xl font-extrabold text-white">आपकी खेती की सीधी और आसान सलाह</h2>
-          <p id="sf-hero-sub" class="text-sm text-emerald-100 mt-1 leading-relaxed">
-            सिर्फ अपना इलाका, फसल और खेत का माप चुनें — तुरंत जानें कितनी खाद, पानी और क्या सावधानी चाहिए।
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-2 border border-emerald-400/30">
+            <span>🌱</span> <span>किसान मित्र — 3 सरल चरणों में सटीक खेती समाधान</span>
+          </div>
+          <h2 id="farmer-hero-title" class="text-xl sm:text-2xl font-extrabold text-white">
+            आपकी खेती की सीधी, सटीक और आसान सलाह
+          </h2>
+          <p id="farmer-hero-sub" class="text-xs sm:text-sm text-emerald-100 mt-1 max-w-2xl leading-relaxed">
+            अपना खेत या मिट्टी जांच कार्ड अपलोड करें, मौसम के अनुसार सटीक खाद (DAP, यूरिया, पोटाश) की बोरियां जानें और पानी की सही योजना पाएं।
           </p>
         </div>
-        <div class="flex flex-wrap items-center gap-2 shrink-0">
-          <button id="sf-gps-btn" type="button" aria-label="Detect GPS field location" class="min-h-[44px] px-4 py-2.5 rounded-xl text-sm font-bold bg-emerald-800 hover:bg-emerald-700 text-white border border-emerald-500/50 transition shadow-md flex items-center justify-center gap-1.5">
-            <span aria-hidden="true">📍</span> <span id="sf-gps-lbl">मेरा खेत खोजें (GPS)</span>
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+          <button id="btn-detect-gps" type="button" aria-label="Detect GPS field location" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-800 hover:bg-emerald-700 text-white border border-emerald-500/50 transition shadow flex items-center justify-center gap-1.5">
+            <span aria-hidden="true">📍</span> <span id="lbl-detect-gps">मेरा खेत पहचानें (1-Click GPS)</span>
           </button>
-          <button id="sf-speak-btn" type="button" aria-label="Listen to step-by-step advisory plan in Hindi" class="min-h-[44px] px-4 py-2.5 rounded-xl text-sm font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-md flex items-center justify-center gap-1.5">
-            <span aria-hidden="true">🔊</span> <span id="sf-speak-lbl">सलाह सुनें</span>
+          <button id="btn-listen-speech" type="button" aria-label="Listen to step-by-step advisory plan in audio" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow flex items-center justify-center gap-1.5">
+            <span aria-hidden="true">🔊</span> <span id="lbl-listen-speech">सलाह बोलकर सुनें</span>
           </button>
         </div>
       </div>
 
-      <!-- Real-Time Weather Banner for Farmer -->
-      <div id="sf-weather-banner" role="status" aria-live="polite" class="card p-4 bg-emerald-900/90 text-white border border-emerald-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
-        <div class="flex items-center gap-3">
-          <span class="text-3xl select-none" aria-hidden="true">🌤️</span>
-          <div>
-            <p id="sf-weather-loc" class="text-sm font-extrabold text-amber-300">स्थान: ग़ाज़ीपुर, उत्तर प्रदेश (25.59°N, 83.58°E)</p>
-            <p id="sf-weather-details" class="text-xs text-emerald-100 mt-0.5 font-medium">तापमान: 22°C | आज धूप और पानी खर्च (ET0): 2.8 मिमी/दिन | 48 घंटे में बारिश: 0%</p>
-          </div>
-        </div>
-        <div id="sf-weather-guardrail" class="badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0">
-          खाद डालना सुरक्षित है
-        </div>
-      </div>
-
-      <!-- Simple 3-Step Controls -->
-      <div class="card p-5 sm:p-6 space-y-4">
-        <h3 id="sf-step1-title" class="text-base font-bold text-emerald-950 border-b border-slate-100 pb-2">
-          कदम 1: अपने खेत की जानकारी चुनें
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div>
-            <label for="sf-zone" id="sf-lbl-zone" class="block text-sm font-bold text-slate-800 mb-1.5">
-              आपका इलाका (राज्य)
-            </label>
-            <select id="sf-zone" class="w-full min-h-[44px] rounded-xl border-2 border-slate-300 px-3 py-2 text-base bg-white text-slate-900 focus:outline-none focus:border-emerald-700">
-              <option value="zone4">पूर्वी उत्तर प्रदेश / बिहार (Zone 4)</option>
-              <option value="zone6">पंजाब / हरियाणा (Zone 6)</option>
-              <option value="zone8">मध्य प्रदेश / बुंदेलखंड (Zone 8)</option>
-              <option value="zone9">महाराष्ट्र (विदर्भ / मराठवाड़ा) (Zone 9)</option>
-              <option value="zone10">कर्नाटक / आंध्र / तमिलनाडु (Zone 10)</option>
-              <option value="zone13">गुजरात (Zone 13)</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="sf-crop" id="sf-lbl-crop" class="block text-sm font-bold text-slate-800 mb-1.5">
-              कौन सी फसल बोनी है?
-            </label>
-            <select id="sf-crop" class="w-full min-h-[44px] rounded-xl border-2 border-slate-300 px-3 py-2 text-base bg-white text-slate-900 focus:outline-none focus:border-emerald-700">
-              <option value="wheat">गेहूँ (Wheat)</option>
-              <option value="rice">धान (Rice / Paddy)</option>
-              <option value="maize">मक्का (Maize)</option>
-              <option value="mustard">सरसों (Mustard)</option>
-              <option value="gram">चना (Gram / Chickpea)</option>
-              <option value="sugarcane">गन्ना (Sugarcane)</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="sf-area" id="sf-lbl-area" class="block text-sm font-bold text-slate-800 mb-1.5">
-              खेत कितना बड़ा है? (हेक्टेयर)
-            </label>
-            <input id="sf-area" type="number" min="0.2" max="20" step="0.1" value="1.0" aria-describedby="sf-area-hint" class="w-full min-h-[44px] rounded-xl border-2 border-slate-300 px-3 py-2 text-base bg-white text-slate-900 focus:outline-none focus:border-emerald-700" />
-            <p id="sf-area-hint" class="text-xs font-medium text-slate-600 mt-1">1 हेक्टेयर ≈ लगभग 2.5 एकड़ (4 बीघा)</p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-100">
-          <label class="min-h-[44px] flex items-center gap-3 p-3 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
-            <input id="sf-no-shc" type="checkbox" class="w-5 h-5 accent-amber-600 rounded cursor-pointer" />
-            <span id="sf-lbl-noshc" class="text-sm font-semibold text-slate-900">
-              मेरे पास मिट्टी जाँच कार्ड नहीं है (इलाके के हिसाब से अंदाज़ा दें)
-            </span>
-          </label>
-          <label class="min-h-[44px] flex items-center gap-3 p-3 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
-            <input id="sf-rain-toggle" type="checkbox" class="w-5 h-5 accent-amber-600 rounded cursor-pointer" />
-            <span id="sf-lbl-rain" class="text-sm font-semibold text-slate-900">
-              अगले 2 दिन में तेज़ बारिश की संभावना है (>60%)
-            </span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Large Accessible Bag Count Display -->
-      <div role="region" aria-label="Fertilizer Bag Recommendations" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="card p-5 border-l-8 border-l-emerald-600 bg-emerald-50/40">
-          <p id="sf-card-dap-title" class="text-sm font-bold text-slate-700">बुवाई पर डीएपी (DAP)</p>
-          <p id="sf-dap-bags" class="text-3xl font-extrabold text-emerald-950 mt-1" aria-live="polite">2.6 बोरी</p>
-          <p id="sf-dap-sub" class="text-xs font-semibold text-slate-600 mt-1">50 किलो वाली मानक बोरी</p>
-        </div>
-        <div class="card p-5 border-l-8 border-l-amber-500 bg-amber-50/40">
-          <p id="sf-card-urea-title" class="text-sm font-bold text-slate-700">यूरिया (Urea) — किश्तों में</p>
-          <p id="sf-urea-bags" class="text-3xl font-extrabold text-amber-950 mt-1" aria-live="polite">4.7 बोरी</p>
-          <p id="sf-urea-sub" class="text-xs font-semibold text-slate-600 mt-1">45 किलो वाली मानक बोरी</p>
-        </div>
-        <div class="card p-5 border-l-8 border-l-sky-600 bg-sky-50/40">
-          <p id="sf-card-mop-title" class="text-sm font-bold text-slate-700">पोटाश (MOP)</p>
-          <p id="sf-mop-bags" class="text-3xl font-extrabold text-sky-950 mt-1" aria-live="polite">1.3 बोरी</p>
-          <p id="sf-mop-sub" class="text-xs font-semibold text-slate-600 mt-1">50 किलो वाली मानक बोरी</p>
-        </div>
-      </div>
-
-      <!-- Step-by-Step Action Cards -->
-      <div class="card p-5 sm:p-6 space-y-4">
-        <h3 id="sf-action-title" class="text-base font-bold text-emerald-950 border-b border-slate-100 pb-2">
-          कदम 2: अब खेत में क्या करना है? (आसान निर्देश)
-        </h3>
-        <div id="sf-action-list" class="space-y-3" aria-live="polite"></div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- VIEW MODE B - TAB 1: FARMER ADVISORY ENGINE (PWA / TECHNICAL)             -->
-    <!-- ========================================================================= -->
-    <section id="panel-1" role="tabpanel" aria-labelledby="tab-btn-1" tabindex="0" class="space-y-6">
-      <!-- Uncertainty & Neutrality Banner -->
-      <div id="confidence-banner" role="status" aria-live="polite" class="rounded-2xl p-4 border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-emerald-50 border-emerald-300">
-        <div class="flex items-start gap-3">
-          <span id="conf-dot" class="w-3.5 h-3.5 rounded-full bg-emerald-700 mt-1 shrink-0" aria-hidden="true"></span>
-          <div>
-            <p id="conf-title" class="text-sm font-extrabold text-emerald-950">SHC-Verified Mode — High Confidence (±5%)</p>
-            <p id="conf-desc" class="text-xs font-medium text-emerald-900 mt-0.5">
-              Grounded in plot Soil Health Card values, ICAR zonal package of practices, and Open-Meteo ET0 water balance. Zero marketplace bias.
-            </p>
-          </div>
-        </div>
-        <div id="weather-guardrail-pill" role="status" aria-live="polite" class="badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0">
-          Rain Guardrail: Clear to Top-Dress
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Left Input Column -->
-        <div class="lg:col-span-4 space-y-5">
-          <!-- Real Location, GPS Coordinates & Live Forecast Card -->
-          <div class="card p-5 space-y-4 border-2 border-emerald-700/30">
-            <div class="flex items-center justify-between">
-              <h2 id="lbl-district-lookup" class="text-xs font-extrabold uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
-                <span aria-hidden="true">📍</span> Real Location &amp; Live NWP Forecast
-              </h2>
-              <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-950">
-                695 Districts + Open-Meteo
-              </span>
-            </div>
-
-            <!-- GPS Action Button -->
+      <!-- STEP 1: इनपुट व पर्ची अपलोड (STEP 1: INPUT & LAND DETAILS) -->
+      <div class="card p-5 sm:p-6 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-emerald-800 text-white font-extrabold text-sm flex items-center justify-center">1</span>
             <div>
-              <button id="btn-detect-gps" type="button" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-800 hover:bg-emerald-900 text-white transition shadow-sm flex items-center justify-center gap-2">
-                <span aria-hidden="true">🎯</span> <span>Detect My Field via GPS</span>
-              </button>
-              <p id="geo-status-indicator" role="status" aria-live="polite" class="text-[11px] font-medium text-slate-600 mt-1"></p>
+              <h3 id="lbl-step1-head" class="text-base font-extrabold text-emerald-950">
+                कदम 1: खेत की जानकारी दें या मिट्टी कार्ड अपलोड करें
+              </h3>
+              <p class="text-xs text-slate-600">सीधे खेत की माप लिखें या अपनी मिट्टी जांच पर्ची (फोटो/PDF) अपलोड करें</p>
             </div>
+          </div>
 
-            <!-- Manual Lat & Lon Inputs -->
-            <div class="grid grid-cols-2 gap-3 pt-1">
-              <div>
-                <label for="coord-lat" class="block text-xs font-bold text-slate-800 mb-1">Latitude (°N)</label>
-                <input id="coord-lat" type="number" min="6.0" max="38.0" step="0.0001" value="25.5928" class="w-full min-h-[40px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 font-mono bg-white focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-              <div>
-                <label for="coord-lon" class="block text-xs font-bold text-slate-800 mb-1">Longitude (°E)</label>
-                <input id="coord-lon" type="number" min="68.0" max="98.0" step="0.0001" value="83.5770" class="w-full min-h-[40px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 font-mono bg-white focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-            </div>
-
-            <button id="btn-fetch-coords" type="button" class="w-full min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-sm flex items-center justify-center gap-1.5">
-              <span aria-hidden="true">⚡</span> <span>Fetch Accurate Forecast &amp; Soil Baseline</span>
+          <!-- Input Choice Segmented Control -->
+          <div role="radiogroup" aria-label="इनपुट का तरीका" class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+            <button id="btn-choice-direct" role="radio" aria-checked="true" type="button" class="min-h-[38px] px-3.5 py-1 rounded-lg text-xs font-bold bg-emerald-700 text-white shadow transition">
+              📝 सीधी खेत जानकारी (Direct Entry)
             </button>
+            <button id="btn-choice-ocr" role="radio" aria-checked="false" type="button" class="min-h-[38px] px-3.5 py-1 rounded-lg text-xs font-bold text-slate-700 hover:text-emerald-900 transition">
+              📸 मिट्टी कार्ड अपलोड / स्कैन (Card OCR)
+            </button>
+          </div>
+        </div>
 
-            <!-- District Search Option -->
-            <div class="pt-2 border-t border-slate-200">
-              <label for="district-search-input" class="block text-xs font-bold text-slate-800 mb-1">
-                Or Search by District Name
+        <!-- SECTION A: DIRECT FIELD ENTRY -->
+        <div id="section-direct-entry" class="space-y-4">
+          <!-- District Search & GPS Status Feedback -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+            <div class="sm:col-span-8 relative">
+              <label for="district-search-input" id="lbl-dist-search" class="block text-xs font-bold text-slate-800 mb-1">
+                जिले का नाम खोजें (695 जिलों का डेटाबेस)
               </label>
               <div class="relative">
-                <input id="district-search-input" type="text" placeholder="Type district name (e.g. Ghazipur, Ludhiana)..." autocomplete="off" class="w-full min-h-[40px] rounded-xl border border-slate-300 px-3.5 py-2 text-xs text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-                <div id="district-suggestions" class="hidden absolute top-full left-0 right-0 z-20 mt-1 bg-white border border-slate-300 rounded-xl shadow-xl max-h-48 overflow-y-auto text-xs"></div>
+                <input id="district-search-input" type="text" placeholder="उदाहरण: Ghazipur, Ludhiana, Akola, Indore..." class="w-full min-h-[44px] rounded-xl border-2 border-slate-300 px-3.5 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:border-emerald-700" />
+                <span class="absolute right-3 top-3 text-slate-400 pointer-events-none">🔍</span>
               </div>
+              <div id="district-suggestions" class="hidden absolute z-20 left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto"></div>
             </div>
 
-            <!-- Live Weather & NWP Microclimate Card -->
-            <div id="live-weather-card" role="region" aria-label="Real-Time Microclimate Observation" class="p-3.5 rounded-xl bg-slate-900 text-white space-y-2 text-xs">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
-                <span id="weather-card-loc" class="font-extrabold text-amber-300">Ghazipur, UP (25.59°N, 83.58°E)</span>
-                <span id="weather-card-cond" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-600">Clear sky</span>
+            <div class="sm:col-span-4">
+              <div id="geo-status-indicator" role="status" aria-live="polite" class="min-h-[44px] p-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center text-center border border-slate-200">
+                📍 डिफ़ॉल्ट: ग़ाज़ीपुर, उप्र (25.59°N, 83.58°E)
               </div>
-              <div class="grid grid-cols-2 gap-2 text-[11px]">
-                <div><span class="text-slate-400">Temp:</span> <strong id="weather-temp" class="text-white">21.6°C</strong></div>
-                <div><span class="text-slate-400">Humidity:</span> <strong id="weather-rh" class="text-white">61%</strong></div>
-                <div><span class="text-slate-400">Live ET0:</span> <strong id="weather-et0" class="text-emerald-300">2.78 mm/d</strong></div>
-                <div><span class="text-slate-400">48h Rain:</span> <strong id="weather-rain" class="text-amber-300">0% (0.0mm)</strong></div>
-              </div>
-              <p id="weather-sync-status" class="text-[10px] text-emerald-400 font-semibold pt-1 border-t border-slate-800">
-                ⚡ Synced: Model using live 2.78 mm/d ET0 &amp; 0% rain probability.
-              </p>
             </div>
           </div>
 
-          <!-- Plot & Zone Inputs -->
-          <div class="card p-5 space-y-4">
-            <div class="flex items-center justify-between">
-              <h2 id="lbl-plot-inputs" class="text-xs font-bold uppercase tracking-wider text-emerald-950">
-                Plot &amp; Environmental Inputs
-              </h2>
-              <span class="text-[11px] font-semibold text-slate-600">15 Agro-Climatic Zones</span>
-            </div>
+          <!-- Hidden Coordinate Elements for Internal Synchronization -->
+          <input id="coord-lat" type="hidden" value="25.5928" />
+          <input id="coord-lon" type="hidden" value="83.5770" />
+          <input id="zone-select" type="hidden" value="zone4" />
 
-            <div>
-              <label for="zone-select" class="block text-xs font-bold text-slate-800 mb-1">
-                Agro-Climatic Zone (India)
-              </label>
-              <select id="zone-select" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700">
-                <option value="zone4">Zone 4: Middle Gangetic Plains (E. UP, Bihar)</option>
-                <option value="zone6">Zone 6: Trans-Gangetic Plains (Punjab, Haryana)</option>
-                <option value="zone8">Zone 8: Central Plateau &amp; Hills (MP, Bundelkhand)</option>
-                <option value="zone9">Zone 9: Western Plateau &amp; Hills (Vidarbha, MH)</option>
-                <option value="zone10">Zone 10: Southern Plateau &amp; Hills (KA, AP, TN)</option>
-                <option value="zone13">Zone 13: Gujarat Plains &amp; Hills (Gujarat)</option>
+          <!-- Interactive Crop Selector -->
+          <div>
+            <label id="lbl-crop-cards" class="block text-xs font-bold text-slate-800 mb-2">
+              फसल चुनें (Select Crop)
+            </label>
+            <div role="radiogroup" aria-labelledby="lbl-crop-cards" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+              <button type="button" data-crop="wheat" class="crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-emerald-950 font-bold text-xs flex flex-col items-center gap-1 shadow-sm transition">
+                <span class="text-xl">🌾</span>
+                <span>गेहूं (Wheat)</span>
+              </button>
+              <button type="button" data-crop="rice" class="crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-xl">🌾</span>
+                <span>धान (Rice)</span>
+              </button>
+              <button type="button" data-crop="maize" class="crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-xl">🌽</span>
+                <span>मक्का (Maize)</span>
+              </button>
+              <button type="button" data-crop="mustard" class="crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-xl">🌻</span>
+                <span>सरसों (Mustard)</span>
+              </button>
+              <button type="button" data-crop="gram" class="crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-xl">🌱</span>
+                <span>चना (Gram)</span>
+              </button>
+              <button type="button" data-crop="sugarcane" class="crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 font-bold text-xs flex flex-col items-center gap-1 transition">
+                <span class="text-xl">🎋</span>
+                <span>गन्ना (Sugarcane)</span>
+              </button>
+            </div>
+            <input id="crop-select" type="hidden" value="wheat" />
+          </div>
+
+          <!-- Land Unit Converter (Bigha ⇄ Acre ⇄ Hectare) -->
+          <fieldset class="border-2 border-emerald-100 rounded-2xl p-4 bg-emerald-50/30 space-y-3">
+            <legend class="text-xs font-bold text-emerald-900 px-2 uppercase tracking-wider">
+              खेत का क्षेत्रफल (Land Area &amp; Unit Converter)
+            </legend>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+              <div class="sm:col-span-5">
+                <label for="plot-area-val" class="block text-xs font-bold text-slate-800 mb-1">खेत का नाप (संख्या लिखें)</label>
+                <input id="plot-area-val" type="number" min="0.1" max="100" step="0.1" value="4.0" class="w-full min-h-[44px] rounded-xl border-2 border-slate-300 px-3 py-2 text-base font-bold text-slate-900 bg-white focus:outline-none focus:border-emerald-700" />
+              </div>
+
+              <div class="sm:col-span-4">
+                <label for="plot-area-unit" class="block text-xs font-bold text-slate-800 mb-1">इकाई (Unit)</label>
+                <select id="plot-area-unit" class="w-full min-h-[44px] rounded-xl border-2 border-slate-300 px-3 py-2 text-xs sm:text-sm font-bold bg-white text-slate-900 focus:outline-none focus:border-emerald-700">
+                  <option value="bigha_pucca" selected>बीघा (पक्का बीघा ≈ 0.25 हे.)</option>
+                  <option value="bigha_kuccha">बीघा (कच्चा बीघा ≈ 0.16 हे.)</option>
+                  <option value="acre">एकड़ (Acre ≈ 0.40 हे.)</option>
+                  <option value="ha">हेक्टेयर (Hectare = 1.0 हे.)</option>
+                </select>
+              </div>
+
+              <div class="sm:col-span-3">
+                <div id="converted-ha-pill" role="status" aria-live="polite" class="min-h-[44px] flex items-center justify-center p-2 rounded-xl bg-emerald-100 text-emerald-950 font-extrabold text-xs border border-emerald-300 text-center">
+                  = 1.00 हेक्टेयर (2.47 एकड़)
+                </div>
+              </div>
+            </div>
+            <!-- Hidden canonical area input for backend (in hectares) -->
+            <input id="area-input" type="hidden" value="1.0" />
+          </fieldset>
+
+          <!-- Irrigation & Fallback Toggle -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            <div class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white">
+              <label for="irrigation-select" class="text-xs font-bold text-slate-800 shrink-0">सिंचाई साधन:</label>
+              <select id="irrigation-select" class="w-full min-h-[38px] rounded-lg border border-slate-300 px-2.5 py-1 text-xs font-semibold text-slate-900 bg-slate-50 focus:outline-none focus:border-emerald-700">
+                <option value="irrigated">नहर / ट्यूबवेल सिंचाई (Irrigated)</option>
+                <option value="rainfed">वर्षा आधारित / बारानी (Rainfed)</option>
               </select>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label for="crop-select" class="block text-xs font-bold text-slate-800 mb-1">Crop</label>
-                <select id="crop-select" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700">
-                  <option value="wheat">Wheat (गेहूँ)</option>
-                  <option value="rice">Rice / Paddy (धान)</option>
-                  <option value="maize">Maize (मक्का)</option>
-                  <option value="mustard">Mustard (सरसों)</option>
-                  <option value="gram">Gram / Chickpea (चना)</option>
-                  <option value="sugarcane">Sugarcane (गन्ना)</option>
-                </select>
-              </div>
-              <div>
-                <label for="area-input" class="block text-xs font-bold text-slate-800 mb-1">Plot Area (ha)</label>
-                <input id="area-input" type="number" min="0.2" max="20" step="0.1" value="1.0" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label for="irrigation-select" class="block text-xs font-bold text-slate-800 mb-1">Irrigation Source</label>
-                <select id="irrigation-select" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700">
-                  <option value="tubewell">Tubewell / Borewell</option>
-                  <option value="canal">Canal Gravity</option>
-                  <option value="rainfed">Rainfed (High Risk)</option>
-                </select>
-              </div>
-              <div>
-                <label for="et0-input" class="block text-xs font-bold text-slate-800 mb-1">Reference ET0 (mm/d)</label>
-                <input id="et0-input" type="number" min="1.0" max="9.0" step="0.1" value="2.8" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-            </div>
-
-            <!-- Uncertainty Sliders with WCAG 2.2 slider ARIA -->
-            <div class="pt-2 border-t border-slate-200 space-y-3">
-              <div>
-                <div class="flex justify-between text-xs font-bold text-slate-800 mb-1">
-                  <label for="delay-slider" id="lbl-delay">Sowing Delay (Residual Shift)</label>
-                  <span id="delay-val" class="text-emerald-800">0 days</span>
-                </div>
-                <input id="delay-slider" type="range" min="0" max="21" value="0" role="slider" aria-labelledby="lbl-delay" aria-valuemin="0" aria-valuemax="21" aria-valuenow="0" aria-valuetext="0 days delay" class="w-full accent-emerald-700 cursor-pointer" />
-              </div>
-              <div>
-                <div class="flex justify-between text-xs font-bold text-slate-800 mb-1">
-                  <label for="rain-prob-slider" id="lbl-rain-prob">48h Rain Probability (Guardrail)</label>
-                  <span id="rain-prob-val" class="text-amber-800">0%</span>
-                </div>
-                <input id="rain-prob-slider" type="range" min="0" max="95" value="0" role="slider" aria-labelledby="lbl-rain-prob" aria-valuemin="0" aria-valuemax="95" aria-valuenow="0" aria-valuetext="0 percent rain probability" class="w-full accent-amber-600 cursor-pointer" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Soil Card Test Parameters -->
-          <div class="card p-5 space-y-4">
-            <div class="flex items-center justify-between">
-              <h2 id="lbl-soil-params" class="text-xs font-bold uppercase tracking-wider text-emerald-950">
-                Soil Health Card (SHC) Values
-              </h2>
-              <label class="min-h-[36px] inline-flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer">
-                <input id="no-shc-toggle" type="checkbox" class="w-4 h-4 rounded accent-amber-600 cursor-pointer" />
-                <span>No Soil Card</span>
-              </label>
-            </div>
-
-            <div id="shc-inputs-grid" class="grid grid-cols-2 gap-3 transition-opacity">
-              <div>
-                <label for="soil-n" class="block text-xs font-bold text-slate-700 mb-1">Available N (kg/ha)</label>
-                <input id="soil-n" type="number" min="50" max="800" value="210" class="w-full min-h-[38px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-              <div>
-                <label for="soil-p" class="block text-xs font-bold text-slate-700 mb-1">Available P (kg/ha)</label>
-                <input id="soil-p" type="number" min="2" max="80" value="14" class="w-full min-h-[38px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-              <div>
-                <label for="soil-k" class="block text-xs font-bold text-slate-700 mb-1">Available K (kg/ha)</label>
-                <input id="soil-k" type="number" min="30" max="600" value="165" class="w-full min-h-[38px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-              <div>
-                <label for="soil-oc" class="block text-xs font-bold text-slate-700 mb-1">Organic Carbon (%)</label>
-                <input id="soil-oc" type="number" min="0.1" max="1.5" step="0.05" value="0.42" class="w-full min-h-[38px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-              <div>
-                <label for="soil-ph" class="block text-xs font-bold text-slate-700 mb-1">Soil pH</label>
-                <input id="soil-ph" type="number" min="4.0" max="9.5" step="0.1" value="7.3" class="w-full min-h-[38px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-              <div>
-                <label for="soil-zn" class="block text-xs font-bold text-slate-700 mb-1">Zinc Zn (ppm)</label>
-                <input id="soil-zn" type="number" min="0.1" max="3.0" step="0.1" value="0.45" class="w-full min-h-[38px] rounded-xl border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-            </div>
+            <label class="min-h-[44px] flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition">
+              <input id="no-shc-toggle" type="checkbox" class="w-5 h-5 accent-emerald-700 rounded cursor-pointer" />
+              <span id="lbl-noshc-text" class="text-xs font-semibold text-slate-900">
+                मेरे पास मिट्टी जांच कार्ड नहीं है (इलाके के ब्लॉक औसत से सलाह लें)
+              </span>
+            </label>
           </div>
         </div>
 
-        <!-- Right Output Column -->
-        <div class="lg:col-span-8 space-y-5">
-          <!-- KPI Summary Cards -->
-          <div role="region" aria-label="Fertilizer and Evapotranspiration Metric Cards" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="card p-4 border-t-4 border-t-emerald-700">
-              <p class="text-[11px] font-bold uppercase text-slate-600">DAP (18-46-0)</p>
-              <p id="out-dap-bags" class="text-2xl font-extrabold text-emerald-950 mt-1" aria-live="polite">2.6 bags</p>
-              <p id="out-dap-kg" class="text-xs font-medium text-slate-700 mt-0.5">130.4 kg (50 kg/bag)</p>
-            </div>
-            <div class="card p-4 border-t-4 border-t-amber-500">
-              <p class="text-[11px] font-bold uppercase text-slate-600">Urea (46% N)</p>
-              <p id="out-urea-bags" class="text-2xl font-extrabold text-amber-950 mt-1" aria-live="polite">4.7 bags</p>
-              <p id="out-urea-kg" class="text-xs font-medium text-slate-700 mt-0.5">209.8 kg (45 kg/bag)</p>
-            </div>
-            <div class="card p-4 border-t-4 border-t-sky-600">
-              <p class="text-[11px] font-bold uppercase text-slate-600">MOP (60% K₂O)</p>
-              <p id="out-mop-bags" class="text-2xl font-extrabold text-sky-950 mt-1" aria-live="polite">1.3 bags</p>
-              <p id="out-mop-kg" class="text-xs font-medium text-slate-700 mt-0.5">66.7 kg (50 kg/bag)</p>
-            </div>
-            <div class="card p-4 bg-[#0e2d1f] text-white border-[#1d4d37]">
-              <p class="text-[11px] font-bold uppercase text-emerald-300">Peak Crop ETc</p>
-              <p id="out-etc" class="text-2xl font-extrabold text-amber-300 mt-1" aria-live="polite">3.22 mm/d</p>
-              <p id="out-etc-sub" class="text-xs font-medium text-emerald-100 mt-0.5">Kc mid = 1.15 × Live ET0</p>
-            </div>
-          </div>
-
-          <!-- Explainable Farmer Advisory Summary -->
-          <div class="card p-5 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
-              <h3 id="adv-heading" class="text-base font-bold text-emerald-950">Explainable Farmer Advisory</h3>
-              <div class="flex items-center gap-2">
-                <span id="model-serving-pill" class="badge bg-emerald-100 text-emerald-950 border border-emerald-400">
-                  ⚡ Hybrid ML Residual v2.0
-                </span>
-                <span id="out-variety-badge" class="badge bg-amber-100 text-amber-950 border border-amber-300">
-                  Variety: HD-2967
-                </span>
-              </div>
-            </div>
-            <p id="adv-summary-text" class="text-sm font-medium text-slate-800 leading-relaxed" aria-live="polite"></p>
-            <div id="amendment-alert" role="alert" aria-live="polite" class="hidden rounded-xl p-3 bg-amber-50 border border-amber-300 text-xs font-semibold text-amber-950"></div>
-          </div>
-
-          <!-- Dual Charts with Screen Reader Accessible Data Tables -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <!-- Elemental vs Product Chart -->
-            <div class="card p-4">
-              <h3 id="lbl-npk-chart" class="text-sm font-bold text-slate-900 mb-1">
-                Elemental vs. Product Conversion (kg)
-              </h3>
-              <p class="text-xs text-slate-600 mb-2">Includes DAP 18% N credit before Urea top-dressing calculation</p>
-              <div class="relative h-56">
-                <canvas id="npkChart" role="img" aria-labelledby="lbl-npk-chart" aria-label="Bar chart comparing elemental NPK requirements to commercial DAP, Urea, and MOP product quantities"></canvas>
-              </div>
-              <details class="mt-2 text-xs">
-                <summary class="cursor-pointer font-bold text-emerald-800 hover:text-emerald-950 focus:underline">
-                  📊 View Accessible Data Table (Elemental vs Product)
-                </summary>
-                <div class="overflow-x-auto mt-2">
-                  <table class="w-full text-left text-xs border border-slate-200">
-                    <caption class="sr-only">Plot Elemental and Product Fertilizer Table</caption>
-                    <thead class="bg-slate-50 text-slate-700">
-                      <tr>
-                        <th scope="col" class="p-1.5 border">Parameter</th>
-                        <th scope="col" class="p-1.5 border">Elemental Target (kg)</th>
-                        <th scope="col" class="p-1.5 border">Commercial Product</th>
-                        <th scope="col" class="p-1.5 border">Product Amount (kg)</th>
-                      </tr>
-                    </thead>
-                    <tbody id="npk-table-body" class="divide-y divide-slate-200"></tbody>
-                  </table>
-                </div>
-              </details>
-            </div>
-
-            <!-- FAO-56 Water Need Chart -->
-            <div class="card p-4">
-              <h3 id="lbl-kc-chart" class="text-sm font-bold text-slate-900 mb-1">
-                FAO-56 Crop Coefficient (Kc) &amp; Water Need
-              </h3>
-              <p class="text-xs text-slate-600 mb-2">Stage-wise crop water demand across Initial, Mid &amp; Late</p>
-              <div class="relative h-56">
-                <canvas id="kcChart" role="img" aria-labelledby="lbl-kc-chart" aria-label="Line chart showing FAO-56 crop water demand in millimeters per day across seven crop growth stages"></canvas>
-              </div>
-              <details class="mt-2 text-xs">
-                <summary class="cursor-pointer font-bold text-emerald-800 hover:text-emerald-950 focus:underline">
-                  📊 View Accessible Data Table (Stage-Wise Water Need)
-                </summary>
-                <div class="overflow-x-auto mt-2">
-                  <table class="w-full text-left text-xs border border-slate-200">
-                    <caption class="sr-only">Crop Water Need Across Stages Table</caption>
-                    <thead class="bg-slate-50 text-slate-700">
-                      <tr>
-                        <th scope="col" class="p-1.5 border">Crop Growth Stage</th>
-                        <th scope="col" class="p-1.5 border">Water Demand ETc (mm/day)</th>
-                      </tr>
-                    </thead>
-                    <tbody id="kc-table-body" class="divide-y divide-slate-200"></tbody>
-                  </table>
-                </div>
-              </details>
-            </div>
-          </div>
-
-          <!-- Deterministic Math & Uncertainty Audit Trail -->
-          <div class="card p-5">
-            <h3 id="lbl-audit-trail" class="text-sm font-bold text-slate-900 mb-2">
-              Deterministic Arithmetic &amp; Uncertainty Audit Trail
-            </h3>
-            <pre id="audit-trail" aria-labelledby="lbl-audit-trail" class="text-xs bg-slate-950 text-emerald-300 font-mono rounded-xl p-4 overflow-x-auto leading-relaxed border border-slate-800"></pre>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- VIEW MODE B - TAB 2: SHC SCANNER & FPO CONSOLE                            -->
-    <!-- ========================================================================= -->
-    <section id="panel-2" role="tabpanel" aria-labelledby="tab-btn-2" tabindex="0" class="hidden space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- 12-Parameter SHC Parser & Classifier -->
-        <div class="lg:col-span-6 card p-5 space-y-4">
-          <div class="border-b border-slate-100 pb-2">
-            <h2 class="text-base font-bold text-emerald-950">Soil Health Card (SHC) 12-Parameter Parser</h2>
-            <p class="text-xs font-medium text-slate-600 mt-0.5">
-              Simulates state SHC OCR extraction &amp; classifies against ICAR/DAC&amp;FW official thresholds
-            </p>
-          </div>
-
-          <div role="group" aria-label="Pre-loaded Soil Health Card Presets" class="flex flex-wrap gap-2">
-            <button type="button" data-preset="up" class="shc-preset-btn min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-950 hover:bg-emerald-200 border border-emerald-300 transition">
-              UP Ghazipur Card (Alluvial)
-            </button>
-            <button type="button" data-preset="mh" class="shc-preset-btn min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-950 hover:bg-amber-200 border border-amber-300 transition">
-              MH Vidarbha Card (Black Soil)
-            </button>
-            <button type="button" data-preset="pb" class="shc-preset-btn min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-sky-100 text-sky-950 hover:bg-sky-200 border border-sky-300 transition">
-              PB Ludhiana Card (Intensive)
-            </button>
-          </div>
-
-          <div id="shc-table-container" class="overflow-x-auto">
-            <table class="w-full text-xs border-collapse">
-              <caption class="sr-only">12-Parameter Soil Health Card Results and Status Table</caption>
-              <thead>
-                <tr class="border-b-2 border-slate-200 text-left font-bold text-slate-700 bg-slate-50">
-                  <th scope="col" class="py-2.5 px-2">Parameter</th>
-                  <th scope="col" class="py-2.5 px-2">Value</th>
-                  <th scope="col" class="py-2.5 px-2">Indian Standard Threshold</th>
-                  <th scope="col" class="py-2.5 px-2">Status</th>
-                </tr>
-              </thead>
-              <tbody id="shc-tbody" class="divide-y divide-slate-100"></tbody>
-            </table>
-          </div>
-
-          <div class="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-slate-100">
-            <p id="shc-amendment-note" class="text-xs font-bold text-slate-800" aria-live="polite"></p>
-            <button id="send-to-engine-btn" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold bg-emerald-800 hover:bg-emerald-900 text-white shrink-0 transition shadow-sm">
-              Send to Advisory Engine →
-            </button>
-          </div>
-        </div>
-
-        <!-- Pan-India Mandi Price Bands & Mid-Season Assimilation -->
-        <div class="lg:col-span-6 space-y-5">
-          <!-- Price Bands Chart -->
-          <div class="card p-5">
-            <h2 id="lbl-fpo-chart" class="text-base font-bold text-emerald-950 mb-1">
-              Pan-India Mandi Price Bands (Modal ₹/quintal)
-            </h2>
-            <p class="text-xs font-medium text-slate-600 mb-3">
-              Illustrative 7-day modal price confidence interval (Min / Expected / Max) across 6 representative zones
-            </p>
-            <div class="relative h-60">
-              <canvas id="fpoChart" role="img" aria-labelledby="lbl-fpo-chart" aria-label="Bar chart showing mandi price bands across six agro-climatic zones with minimum, expected, and maximum rupee prices per quintal"></canvas>
-            </div>
-            <details class="mt-2 text-xs">
-              <summary class="cursor-pointer font-bold text-emerald-800 hover:text-emerald-950 focus:underline">
-                📊 View Accessible Mandi Price Table
-              </summary>
-              <div class="overflow-x-auto mt-2">
-                <table class="w-full text-left text-xs border border-slate-200">
-                  <caption class="sr-only">Mandi Price Bands by Zone Table</caption>
-                  <thead class="bg-slate-50 text-slate-700 font-bold">
-                    <tr>
-                      <th scope="col" class="p-1.5 border">Zone</th>
-                      <th scope="col" class="p-1.5 border">Min Price (₹/q)</th>
-                      <th scope="col" class="p-1.5 border">Expected Modal (₹/q)</th>
-                      <th scope="col" class="p-1.5 border">Max Price (₹/q)</th>
-                    </tr>
-                  </thead>
-                  <tbody id="fpo-table-body" class="divide-y divide-slate-200"></tbody>
-                </table>
-              </div>
-            </details>
-          </div>
-
-          <!-- Mid-Season Data Assimilation -->
-          <div class="card p-5 space-y-3">
-            <div class="border-b border-slate-100 pb-2">
-              <h3 class="text-sm font-bold text-emerald-950">Mid-Season Data Assimilation (Closed-Loop Agronomy)</h3>
-              <p class="text-xs font-medium text-slate-600 mt-0.5">
-                When actual field conditions diverge from baseline assumptions, log an in-season event to recalibrate:
+        <!-- SECTION B: SOIL HEALTH CARD OCR / SCAN UPLOAD -->
+        <div id="section-ocr-upload" class="hidden space-y-4">
+          <div id="shc-dropzone" class="relative border-2 border-dashed border-emerald-400 hover:border-emerald-600 rounded-2xl p-6 bg-emerald-50/40 text-center transition cursor-pointer overflow-hidden">
+            <div id="ocr-scan-beam" class="hidden scan-beam"></div>
+            <div class="space-y-2">
+              <div class="text-3xl">📄 📸</div>
+              <p class="text-sm font-bold text-emerald-950">
+                मिट्टी जांच कार्ड (Soil Health Card) की फोटो या PDF यहाँ खींचें या चुनें
               </p>
+              <p class="text-xs text-slate-600">
+                कैमरा से सीधी फोटो लें या मोबाइल गैलरी से अपलोड करें (JPG, PNG, PDF)
+              </p>
+              <input id="shc-file-input" type="file" accept="image/*,application/pdf" capture="environment" class="hidden" />
+              <button id="btn-browse-file" type="button" class="min-h-[40px] px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 hover:bg-emerald-700 text-white shadow transition inline-flex items-center gap-1.5 mt-2">
+                <span>📁</span> <span>फ़ाइल चुनें / फोटो खींचें</span>
+              </button>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
-              <div class="sm:col-span-5">
-                <label for="assim-event" class="sr-only">Field Divergence Event</label>
-                <select id="assim-event" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700">
-                  <option value="heavy_rain">Unseasonal Rain (&gt;25mm)</option>
-                  <option value="yellowing">Crop Leaf Yellowing (N/Zn stress)</option>
-                  <option value="dry_spell">10-Day Dry Spell / Canal Cut</option>
-                </select>
-              </div>
-              <div class="sm:col-span-4">
-                <label for="assim-note" class="sr-only">Village or plot note</label>
-                <input id="assim-note" type="text" placeholder="Village / Plot Note (Optional)" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-700" />
-              </div>
-              <div class="sm:col-span-3">
-                <button id="assim-btn" type="button" class="w-full min-h-[44px] px-3 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 transition shadow-sm">
-                  Recalibrate Plan
-                </button>
-              </div>
+          </div>
+
+          <!-- OCR Progress Bar & Scanner Status -->
+          <div id="ocr-progress-box" class="hidden card p-4 bg-slate-900 text-white border-slate-700 space-y-2">
+            <div class="flex items-center justify-between text-xs font-bold text-emerald-400">
+              <span id="ocr-status-text">दस्तावेज़ स्कैन हो रहा है...</span>
+              <span id="ocr-percent-text">35%</span>
             </div>
-            <div id="assim-result" role="status" aria-live="polite" class="rounded-xl p-3 bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800">
-              Select an observation and click <strong>Recalibrate Plan</strong> to simulate closed-loop mid-season update.
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div id="ocr-progress-bar" class="bg-gradient-to-r from-emerald-500 to-amber-400 h-2 rounded-full transition-all duration-300" style="width: 35%"></div>
+            </div>
+          </div>
+
+          <!-- 1-Click Regional Sample Cards -->
+          <div class="pt-2">
+            <p class="text-xs font-bold text-slate-700 mb-2">
+              या एक क्लिक में वास्तविक क्षेत्रीय कार्ड का नमूना लोड करें:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <button type="button" data-preset="up" class="shc-preset-btn min-h-[42px] px-3 py-2 rounded-xl border border-slate-300 bg-white hover:border-emerald-600 hover:bg-emerald-50/50 text-left text-xs font-semibold text-slate-900 transition flex items-center justify-between">
+                <div>
+                  <span class="font-bold text-emerald-950">गाज़ीपुर, उप्र</span>
+                  <span class="block text-[11px] text-slate-600">जलोढ़ मैदान (N:210, P:14, K:165)</span>
+                </div>
+                <span class="text-emerald-700 text-base">➔</span>
+              </button>
+              <button type="button" data-preset="mh" class="shc-preset-btn min-h-[42px] px-3 py-2 rounded-xl border border-slate-300 bg-white hover:border-emerald-600 hover:bg-emerald-50/50 text-left text-xs font-semibold text-slate-900 transition flex items-center justify-between">
+                <div>
+                  <span class="font-bold text-emerald-950">विदर्भ, महाराष्ट्र</span>
+                  <span class="block text-[11px] text-slate-600">काली कपास मिट्टी (N:175, P:9, K:295)</span>
+                </div>
+                <span class="text-emerald-700 text-base">➔</span>
+              </button>
+              <button type="button" data-preset="pb" class="shc-preset-btn min-h-[42px] px-3 py-2 rounded-xl border border-slate-300 bg-white hover:border-emerald-600 hover:bg-emerald-50/50 text-left text-xs font-semibold text-slate-900 transition flex items-center justify-between">
+                <div>
+                  <span class="font-bold text-emerald-950">लुधियाना, पंजाब</span>
+                  <span class="block text-[11px] text-slate-600">सघन उपजाऊ (N:310, P:28, K:190)</span>
+                </div>
+                <span class="text-emerald-700 text-base">➔</span>
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- STEP 2: मौसम सुरक्षा व सलाह गणना (STEP 2: PROCEED & WEATHER GUARDRAIL) -->
+      <div class="card p-5 sm:p-6 space-y-4">
+        <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+          <span class="w-7 h-7 rounded-full bg-emerald-800 text-white font-extrabold text-sm flex items-center justify-center">2</span>
+          <div>
+            <h3 id="lbl-step2-head" class="text-base font-extrabold text-emerald-950">
+              कदम 2: मौसम सुरक्षा जांच व गणना
+            </h3>
+            <p class="text-xs text-slate-600">ओपन-मीटियो लाइव मौसम पूर्वानुमान और बारिश जोखिम सुरक्षा</p>
+          </div>
+        </div>
+
+        <!-- Live Microclimate Weather Banner -->
+        <div id="weather-banner" role="status" aria-live="polite" class="rounded-2xl p-4 bg-gradient-to-r from-emerald-950 via-[#0e2d1f] to-slate-900 text-white border border-emerald-800 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🌦️</span>
+              <p id="weather-loc-label" class="text-sm font-extrabold text-amber-300">
+                स्थान: ग़ाज़ीपुर, उत्तर प्रदेश (25.59°N, 83.58°E)
+              </p>
+              <span id="model-serving-pill" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ⚡ Hybrid ML Residual
+              </span>
+            </div>
+            <p id="weather-stat-line" class="text-xs text-emerald-100 font-medium">
+              मौसम: साफ आसमान | तापमान: 24°C | हवा में नमी: 52% | आज धूप व पानी खर्च (ET0): 2.80 मिमी/दिन
+            </p>
+          </div>
+
+          <!-- Rain Guardrail Pill -->
+          <div id="weather-guardrail-pill" role="alert" class="badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0 text-xs py-1.5 px-3">
+            ✅ खाद डालना सुरक्षित है (बारिश की संभावना 0%)
+          </div>
+        </div>
+
+        <!-- Hidden Weather Inputs for Model Sync -->
+        <input id="et0-input" type="hidden" value="2.8" />
+        <input id="rain-prob-slider" type="hidden" value="10" />
+        <input id="delay-slider" type="hidden" value="0" />
+
+        <!-- High-Contrast Tactile CTA Button -->
+        <div class="pt-2">
+          <button id="btn-proceed-calculate" type="button" class="w-full min-h-[50px] rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-sm sm:text-base transition shadow-lg flex items-center justify-center gap-2 active:scale-[0.99] focus:ring-4 focus:ring-amber-300">
+            <span>⚡</span>
+            <span id="lbl-proceed-calc">सटीक खाद व पानी की सलाह तैयार करें (Calculate Advisory Plan) →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: खेत में क्या करें (STEP 3: WHAT TO DO - PLAIN ADVISORY) -->
+      <div id="step-3-container" class="card p-5 sm:p-6 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-emerald-800 text-white font-extrabold text-sm flex items-center justify-center">3</span>
+            <div>
+              <h3 id="lbl-step3-head" class="text-base font-extrabold text-emerald-950">
+                कदम 3: खेत में क्या करें (सरल व स्पष्ट कार्य योजना)
+              </h3>
+              <p class="text-xs text-slate-600">मानक बोरियों की संख्या, खाद डालने का सही समय और पानी प्रबंधन</p>
+            </div>
+          </div>
+
+          <!-- Mode / Uncertainty Badge -->
+          <div id="confidence-badge" class="badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0">
+            <span id="conf-dot" class="w-2 h-2 rounded-full bg-emerald-600"></span>
+            <span id="conf-title">मिट्टी जांच सत्यापित मोड (±5% सटीकता)</span>
+          </div>
+        </div>
+
+        <!-- Big Visual Commercial Fertilizer Bag Cards -->
+        <div role="region" aria-label="Fertilizer Bag Recommendations" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- DAP Card -->
+          <div class="card p-5 border-l-8 border-l-emerald-600 bg-emerald-50/50 shadow-sm space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-900">बुवाई पर डीएपी (DAP 18-46-0)</span>
+              <span class="text-lg">🟢</span>
+            </div>
+            <div id="out-dap-bags" class="text-3xl font-extrabold text-emerald-950" aria-live="polite">2.5 बोरी</div>
+            <p id="out-dap-sub" class="text-xs font-semibold text-slate-700">50 किलो वाली मानक बोरी (कुल 125 kg)</p>
+            <p class="text-[11px] text-emerald-800 font-medium pt-1">प्रयोग: बुवाई के समय बीज के नीचे गहराई में दें।</p>
+          </div>
+
+          <!-- Urea Card -->
+          <div class="card p-5 border-l-8 border-l-amber-500 bg-amber-50/50 shadow-sm space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-950">यूरिया (Urea 46% N) — किश्तों में</span>
+              <span class="text-lg">🟡</span>
+            </div>
+            <div id="out-urea-bags" class="text-3xl font-extrabold text-amber-950" aria-live="polite">4.5 बोरी</div>
+            <p id="out-urea-sub" class="text-xs font-semibold text-slate-700">45 किलो वाली मानक बोरी (कुल 202.5 kg)</p>
+            <p class="text-[11px] text-amber-900 font-medium pt-1">* डीएपी की नाइट्रोजन घटाने के बाद 2–3 किश्तों में दें।</p>
+          </div>
+
+          <!-- MOP Potash Card -->
+          <div class="card p-5 border-l-8 border-l-sky-600 bg-sky-50/50 shadow-sm space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-sky-950">पोटाश (MOP 60% K₂O)</span>
+              <span class="text-lg">🔵</span>
+            </div>
+            <div id="out-mop-bags" class="text-3xl font-extrabold text-sky-950" aria-live="polite">1.5 बोरी</div>
+            <p id="out-mop-sub" class="text-xs font-semibold text-slate-700">50 किलो वाली मानक बोरी (कुल 75 kg)</p>
+            <p class="text-[11px] text-sky-900 font-medium pt-1">प्रयोग: बुवाई के समय डीएपी के साथ मिलाकर दें।</p>
+          </div>
+        </div>
+
+        <!-- Chronological Step-by-Step Action Cards -->
+        <div class="space-y-3">
+          <h4 id="lbl-action-cards-head" class="text-sm font-extrabold text-emerald-950">
+            खेत में क्रमानुसार क्या करना है (Chronological Action Plan)
+          </h4>
+          <div id="action-cards-list" class="space-y-3" aria-live="polite"></div>
+        </div>
+
+        <!-- Soil Amendment Alert (Gypsum, Lime, Zinc) -->
+        <div id="amendment-alert" role="alert" class="hidden p-4 rounded-xl border-2 border-amber-300 bg-amber-50 text-amber-950 text-xs font-bold"></div>
+
+        <!-- Action Controls: Audio Speech, WhatsApp Share, Print Slip -->
+        <div class="pt-2 flex flex-wrap items-center gap-3 border-t border-slate-100">
+          <button id="btn-share-whatsapp" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#25D366] hover:bg-[#20ba59] text-white transition shadow flex items-center gap-2">
+            <span>📲</span> <span>WhatsApp पर पर्ची भेजें</span>
+          </button>
+
+          <button id="btn-print-slip" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-800 hover:bg-slate-700 text-white transition shadow flex items-center gap-2">
+            <span>🖨️</span> <span>सलाह पर्ची प्रिंट करें (Print / PDF)</span>
+          </button>
+
+          <button id="btn-listen-speech-2" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow flex items-center gap-2">
+            <span>🔊</span> <span>पूरी सलाह दोबारा सुनें</span>
+          </button>
+        </div>
+
+        <!-- Collapsible Technical Agronomy Accordion for Extension Officers -->
+        <details class="card border border-slate-200 bg-slate-50/80 rounded-2xl overflow-hidden text-xs">
+          <summary class="p-4 font-bold text-slate-800 cursor-pointer hover:bg-slate-100 transition select-none flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <span>🔬</span> <span>वैज्ञानिक गणना, NPK ग्राफ़ व विस्तृत रासायनिक विवरण (Extension &amp; Technical Details)</span>
+            </span>
+            <span class="text-slate-500 text-xs font-normal">क्लिक करके खोलें ▼</span>
+          </summary>
+          
+          <div class="p-5 space-y-6 border-t border-slate-200 bg-white">
+            <!-- Soil Nutrient Sliders for Fine-Tuning -->
+            <div>
+              <p class="font-bold text-slate-900 mb-2">मृदा तत्व परीक्षण मान (Soil Test Parameters):</p>
+              <div id="shc-inputs-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                  <label for="soil-n" class="block text-[11px] font-bold text-slate-700">Available N (kg/ha)</label>
+                  <input id="soil-n" type="number" min="50" max="800" step="1" value="210" class="w-full mt-1 p-1.5 border rounded text-xs font-bold text-slate-900 bg-white" />
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                  <label for="soil-p" class="block text-[11px] font-bold text-slate-700">Available P (kg/ha)</label>
+                  <input id="soil-p" type="number" min="2" max="100" step="0.5" value="14" class="w-full mt-1 p-1.5 border rounded text-xs font-bold text-slate-900 bg-white" />
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                  <label for="soil-k" class="block text-[11px] font-bold text-slate-700">Available K (kg/ha)</label>
+                  <input id="soil-k" type="number" min="40" max="600" step="1" value="165" class="w-full mt-1 p-1.5 border rounded text-xs font-bold text-slate-900 bg-white" />
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                  <label for="soil-oc" class="block text-[11px] font-bold text-slate-700">Organic Carbon (%)</label>
+                  <input id="soil-oc" type="number" min="0.1" max="2.0" step="0.01" value="0.42" class="w-full mt-1 p-1.5 border rounded text-xs font-bold text-slate-900 bg-white" />
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                  <label for="soil-ph" class="block text-[11px] font-bold text-slate-700">Soil pH</label>
+                  <input id="soil-ph" type="number" min="4.0" max="10.0" step="0.1" value="7.3" class="w-full mt-1 p-1.5 border rounded text-xs font-bold text-slate-900 bg-white" />
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50">
+                  <label for="soil-zn" class="block text-[11px] font-bold text-slate-700">Zinc Zn (ppm)</label>
+                  <input id="soil-zn" type="number" min="0.1" max="5.0" step="0.05" value="0.45" class="w-full mt-1 p-1.5 border rounded text-xs font-bold text-slate-900 bg-white" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
+                <p class="font-bold text-slate-900 mb-2">तत्वीय आवश्यकता बनाम व्यावसायिक खाद (NPK vs Commercial Bags):</p>
+                <div class="h-56">
+                  <canvas id="npkChart"></canvas>
+                </div>
+              </div>
+              <div class="p-4 border border-slate-200 rounded-xl bg-slate-50">
+                <p class="font-bold text-slate-900 mb-2">फसल जल मांग वक्र (FAO-56 Crop Water ETc Curve):</p>
+                <div class="h-56">
+                  <canvas id="kcChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mathematical Audit Trail Box -->
+            <div>
+              <p class="font-bold text-slate-900 mb-1">गाणितिक गणना ऑडिट ट्रेल (Formula Audit Trail):</p>
+              <pre id="audit-trail" class="p-4 rounded-xl bg-slate-900 text-emerald-300 font-mono text-[11px] overflow-x-auto whitespace-pre leading-relaxed border border-slate-800"></pre>
+            </div>
+          </div>
+        </details>
+      </div>
+
     </section>
+
+    <!-- ========================================================================= -->
+    <!-- MODULE 2: मिट्टी परीक्षण व FPO केंद्र (SOIL HEALTH LAB & FPO HUB)          -->
+    <!-- 12-Parameter Lab Classifier + Pan-India Mandi Prices + In-Season Recal     -->
+    <!-- ========================================================================= -->
+    <section id="panel-module-2" role="tabpanel" aria-labelledby="tab-module-2" tabindex="0" class="hidden space-y-6">
+
+      <!-- Header Banner -->
+      <div class="card p-5 sm:p-6 bg-gradient-to-r from-slate-900 to-emerald-950 text-white border-0 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-2 border border-emerald-400/30">
+            <span>🧪</span> <span>मृदा स्वास्थ्य प्रयोगशाला एवं FPO क्लस्टर कंसोल</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white">
+            12-पैरामीटर मृदा कार्ड विश्लेषक व मंडी मूल्य पूर्वानुमान
+          </h2>
+          <p class="text-xs sm:text-sm text-emerald-100 mt-1 max-w-2xl leading-relaxed">
+            DAC&amp;FW एवं ICAR मानकों के अनुसार प्रयोगशाला ग्रेड मृदा परीक्षण रिपोर्ट, सीएसीपी न्यूनतम समर्थन मूल्य (MSP) और गतिशील मंडी भाव।
+          </p>
+        </div>
+        <button id="send-to-engine-btn" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow flex items-center gap-1.5 shrink-0">
+          <span>➔</span> <span>किसान सलाहकार में लोड करें</span>
+        </button>
+      </div>
+
+      <!-- 12-Parameter Soil Health Evaluation Table -->
+      <div class="card p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="text-base font-extrabold text-emerald-950">
+              मृदा स्वास्थ्य कार्ड 12-मानक विश्लेषण (ICAR Soil Health Standards)
+            </h3>
+            <p class="text-xs text-slate-600">भारत सरकार के कृषि मंत्रालय द्वारा निर्धारित मानक सीमाएं</p>
+          </div>
+          <span id="shc-amendment-note" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
+            Balanced parameters
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-700 bg-slate-50">
+                <th class="py-2.5 px-3 font-bold">तत्व (Parameter)</th>
+                <th class="py-2.5 px-3 font-bold">मात्रा (Value)</th>
+                <th class="py-2.5 px-3 font-bold">इकाई (Unit)</th>
+                <th class="py-2.5 px-3 font-bold">सरकारी मानक सीमाएं (Threshold Range)</th>
+                <th class="py-2.5 px-3 font-bold">स्थिति (Status)</th>
+              </tr>
+            </thead>
+            <tbody id="shc-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pan-India Mandi Price Bands (CACP / Agmarknet) -->
+      <div class="card p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="text-base font-extrabold text-emerald-950">
+              अखिल भारतीय मंडी मूल्य बैंड (Pan-India Mandi Price Bands)
+            </h3>
+            <p class="text-xs text-slate-600">CACP न्यूनतम समर्थन मूल्य व वास्तविक मंडी दरों का अनुमान (₹ प्रति क्विंटल)</p>
+          </div>
+        </div>
+
+        <div class="h-64">
+          <canvas id="fpoChart"></canvas>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse mt-3">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="p-2 font-bold">कृषि-जलवायु क्षेत्र (Zone)</th>
+                <th class="p-2 font-bold">न्यूनतम मूल्य (Min ₹/q)</th>
+                <th class="p-2 font-bold">अपेक्षित औसत (Modal ₹/q)</th>
+                <th class="p-2 font-bold">अधिकतम मूल्य (Max ₹/q)</th>
+              </tr>
+            </thead>
+            <tbody id="fpo-table-body" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mid-Season Dynamic In-Season Assimilation -->
+      <div class="card p-5 sm:p-6 space-y-4">
+        <h3 class="text-base font-extrabold text-emerald-950 border-b border-slate-100 pb-2">
+          मध्य-सत्र गतिशील समायोजन (In-Season Closed-Loop Event Assimilation)
+        </h3>
+        <p class="text-xs text-slate-600">
+          फसल के दौरान अप्रत्याशित मौसम या लक्षण दर्ज करें — इंजन तुरंत खाद व पानी की सलाह को पुनर्समायोजित करेगा।
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
+          <div class="sm:col-span-5">
+            <label for="assim-event" class="block text-xs font-bold text-slate-800 mb-1">खेत में घटित घटना (Event):</label>
+            <select id="assim-event" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-900 bg-white">
+              <option value="heavy_rain">भारी अनपेक्षित वर्षा (&gt;25 मिमी) — बारिश चेतावनी</option>
+              <option value="yellowing">पत्तियों में पीलापन (नाइट्रोजन/जिंक की कमी)</option>
+              <option value="dry_spell">10 दिन का सूखा / नहरी पानी की कमी</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-4">
+            <label for="assim-note" class="block text-xs font-bold text-slate-800 mb-1">अतिरिक्त विवरण / टिप्पणी:</label>
+            <input id="assim-note" type="text" placeholder="उदा: 48 घंटे में 35 मिमी बारिश दर्ज हुई" class="w-full min-h-[44px] rounded-xl border border-slate-300 px-3 py-2 text-xs text-slate-900 bg-white" />
+          </div>
+
+          <div class="sm:col-span-3">
+            <button id="assim-btn" type="button" class="w-full min-h-[44px] rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold transition shadow flex items-center justify-center gap-1">
+              <span>⚡</span> <span>सलाह अपडेट करें</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="assim-result" role="status" aria-live="polite" class="p-3 rounded-xl bg-emerald-50 text-emerald-950 text-xs font-semibold border border-emerald-200">
+          मध्य-सत्र घटना दर्ज होने पर यहाँ वास्तविक समायोजन दिखाई देगा।
+        </div>
+      </div>
+
+    </section>
+
   </main>
 
-  <!-- Contentinfo Landmark (WCAG SC 1.3.1) -->
-  <footer role="contentinfo" class="border-t border-slate-200 bg-white py-4 px-4 text-center text-xs text-slate-600">
+  <!-- Contentinfo Landmark -->
+  <footer role="contentinfo" class="border-t border-slate-200 bg-white py-4 px-4 text-center text-xs text-slate-600 no-print">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
       <p>
-        <strong>KhetSathi 360</strong> · Real-Time Weather + Uncertainty-Aware Hybrid Agronomy Platform · Grounded in ICAR PoP, FAO-56 &amp; Indian SHC Standards.
+        <strong>KhetSathi 360</strong> · राष्ट्रीय डिजिटल कृषि निर्णय प्रणाली · ICAR PoP, FAO-56 एवं भारत सरकार DAC&amp;FW मानकों द्वारा संचालित।
       </p>
       <p class="text-slate-500">
-        Compliant with WCAG 2.2 Level AA · Bilingual EN/HI
+        WCAG 2.2 Level AA प्रमाणित · द्विभाषी EN / हिन्दी
       </p>
     </div>
   </footer>
 
-  <!-- Core Script with Live API Fetch + Offline Resilience -->
+  <!-- ========================================================================= -->
+  <!-- OFF-SCREEN PRINTABLE SLIP (ACTIVE ONLY DURING @media print)                -->
+  <!-- ========================================================================= -->
+  <div id="printable-slip" class="hidden font-sans p-6 text-black bg-white max-w-xl mx-auto border-2 border-black rounded-lg">
+    <div class="border-b-2 border-black pb-3 text-center">
+      <div class="flex items-center justify-between">
+        <span class="text-2xl">🌾</span>
+        <div>
+          <h2 class="text-xl font-extrabold uppercase tracking-wide">KhetSathi 360 · किसान सलाह पर्ची</h2>
+          <p class="text-xs text-gray-700 font-semibold">राष्ट्रीय डिजिटल कृषि निर्णय प्रणाली · ICAR / DAC&amp;FW</p>
+        </div>
+        <span class="text-xs font-bold border border-black px-2 py-0.5 rounded">शासकीय मानक</span>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-2 gap-2 text-xs py-3 border-b border-gray-400">
+      <div><strong>स्थान (Location):</strong> <span id="slip-loc">Ghazipur, UP</span></div>
+      <div><strong>तारीख (Date):</strong> <span id="slip-date">--</span></div>
+      <div><strong>फसल (Crop):</strong> <span id="slip-crop">गेहूं (HD-2967)</span></div>
+      <div><strong>खेत का माप (Plot Area):</strong> <span id="slip-area">4.0 बीघा (1.00 हे.)</span></div>
+      <div><strong>सलाह आधार (Basis):</strong> <span id="slip-confidence">मिट्टी जांच सत्यापित (±5%)</span></div>
+      <div><strong>मौसम स्थिति (Weather):</strong> <span id="slip-weather">0% बारिश · खाद डालना सुरक्षित</span></div>
+    </div>
+
+    <div class="py-3">
+      <h3 class="text-xs font-bold uppercase tracking-wider mb-2">मानक खाद की बोरियां (Prescription Bags)</h3>
+      <table class="w-full text-xs border-collapse border border-black">
+        <thead>
+          <tr class="bg-gray-100 border-b border-black text-left">
+            <th class="p-1.5 border border-black">उर्वरक (Fertilizer)</th>
+            <th class="p-1.5 border border-black text-center">मानक बोरी (Bags)</th>
+            <th class="p-1.5 border border-black">मात्रा (Net kg)</th>
+            <th class="p-1.5 border border-black">प्रयोग का समय (Timing)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="p-1.5 border border-black font-bold">DAP (18-46-0)</td>
+            <td id="slip-dap-bags" class="p-1.5 border border-black font-bold text-center">2.5 बोरी</td>
+            <td id="slip-dap-kg" class="p-1.5 border border-black">125.0 kg</td>
+            <td class="p-1.5 border border-black">बुवाई के समय (Basal)</td>
+          </tr>
+          <tr>
+            <td class="p-1.5 border border-black font-bold">Urea (46% N)</td>
+            <td id="slip-urea-bags" class="p-1.5 border border-black font-bold text-center">4.5 बोरी</td>
+            <td id="slip-urea-kg" class="p-1.5 border border-black">202.5 kg</td>
+            <td class="p-1.5 border border-black">सिंचाई बाद 2–3 किश्तों में</td>
+          </tr>
+          <tr>
+            <td class="p-1.5 border border-black font-bold">MOP (60% K₂O)</td>
+            <td id="slip-mop-bags" class="p-1.5 border border-black font-bold text-center">1.5 बोरी</td>
+            <td id="slip-mop-kg" class="p-1.5 border border-black">75.0 kg</td>
+            <td class="p-1.5 border border-black">बुवाई के समय (Basal)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="text-[10px] text-gray-600 mt-1.5 italic">* डीएपी से मिली 18% नाइट्रोजन की मात्रा को यूरिया में से घटा दिया गया है ताकि खाद की बर्बादी न हो।</p>
+    </div>
+
+    <div id="slip-alerts-box" class="p-2 border border-black rounded text-[11px] mb-3 bg-gray-50">
+      <strong>मिट्टी सुधार चेतावनी:</strong> <span id="slip-alerts">Balanced parameters</span>
+    </div>
+
+    <div class="border-t-2 border-black pt-2 flex items-center justify-between text-[10px] text-gray-600">
+      <span>सत्यापन कोड: KS-695-UP-2026</span>
+      <span>KhetSathi 360 · शून्य बाज़ार पक्षपात</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT CORE ENGINE & REACTIVE STATE                                   -->
+  <!-- ========================================================================= -->
   <script>
     // Agronomic constants & ICAR Zones
     const ZONES = {
@@ -675,7 +755,7 @@
     };
 
     const CROPS = {
-      wheat:     { label: "Wheat",     hi: "गेहूँ",    n: 120, p: 60, k: 40, kc: [0.40, 1.15, 0.30] },
+      wheat:     { label: "Wheat",     hi: "गेहूं",    n: 120, p: 60, k: 40, kc: [0.40, 1.15, 0.30] },
       rice:      { label: "Rice",      hi: "धान",     n: 120, p: 60, k: 60, kc: [1.05, 1.20, 0.90] },
       maize:     { label: "Maize",     hi: "मक्का",   n: 120, p: 60, k: 40, kc: [0.30, 1.20, 0.50] },
       mustard:   { label: "Mustard",   hi: "सरसों",   n: 80,  p: 40, k: 40, kc: [0.35, 1.10, 0.35] },
@@ -684,26 +764,35 @@
     };
 
     const SHC_PRESETS = {
-      up: { zone: "zone4", crop: "wheat", lat: 25.5928, lon: 83.5770, n: 210, p: 14, k: 165, oc: 0.42, ph: 7.3, ec: 0.48, s: 11, zn: 0.45, fe: 4.8, cu: 0.52, mn: 3.1, b: 0.45 },
-      mh: { zone: "zone9", crop: "gram",  lat: 20.7002, lon: 77.0082, n: 175, p: 9,  k: 295, oc: 0.38, ph: 8.6, ec: 0.85, s: 8.5, zn: 0.38, fe: 3.9, cu: 0.44, mn: 2.6, b: 0.40 },
-      pb: { zone: "zone6", crop: "rice",  lat: 30.9010, lon: 75.8573, n: 310, p: 28, k: 190, oc: 0.56, ph: 7.8, ec: 0.62, s: 15, zn: 0.65, fe: 5.2, cu: 0.60, mn: 3.4, b: 0.55 }
+      up: { district: "Ghazipur", zone: "zone4", crop: "wheat", lat: 25.5928, lon: 83.5770, n: 210, p: 14, k: 165, oc: 0.42, ph: 7.3, ec: 0.48, s: 11, zn: 0.45, fe: 4.8, cu: 0.52, mn: 3.1, b: 0.45 },
+      mh: { district: "Vidarbha", zone: "zone9", crop: "gram",  lat: 20.7002, lon: 77.0082, n: 175, p: 9,  k: 295, oc: 0.38, ph: 8.6, ec: 0.85, s: 8.5, zn: 0.38, fe: 3.9, cu: 0.44, mn: 2.6, b: 0.40 },
+      pb: { district: "Ludhiana", zone: "zone6", crop: "rice",  lat: 30.9010, lon: 75.8573, n: 310, p: 28, k: 190, oc: 0.56, ph: 7.8, ec: 0.62, s: 15, zn: 0.65, fe: 5.2, cu: 0.60, mn: 3.4, b: 0.55 }
     };
 
-    // Global application state
-    let currentLang = "en";
-    let viewMode = "tech"; // "simple" or "tech"
+    // Land Unit Conversions
+    const LAND_CONV = {
+      bigha_pucca: 0.250000, // 4 Bigha = 1 Ha
+      bigha_kuccha: 0.160000, // ~6.25 Bigha = 1 Ha
+      acre: 0.404686,        // 2.471 Acres = 1 Ha
+      ha: 1.000000
+    };
+
+    // Application Reactive State
+    let currentLang = "hi";
+    let activeModule = "module-1"; // "module-1" or "module-2"
     let currentShcPreset = { ...SHC_PRESETS.up };
     let npkChart = null;
     let kcChart = null;
     let fpoChart = null;
-    let lastSimpleSpokenText = "";
+    let lastSpokenPlanText = "";
     let isBackendOnline = false;
     let debounceTimer = null;
     let currentWeatherData = null;
+    let lastCalculatedPlan = null;
 
     function getEl(id) { return document.getElementById(id); }
 
-    // Check backend health on startup
+    // Backend Health Verification
     async function checkBackendHealth() {
       try {
         const res = await fetch("/api/v1/health");
@@ -724,48 +813,23 @@
       }
     }
 
-    // Set UI mode (Simple Farmer vs Technical)
-    function setViewMode(mode) {
-      viewMode = mode;
-      const simpleBtn = getEl("mode-simple-btn");
-      const techBtn = getEl("mode-tech-btn");
-      const tabsWrap = getEl("tech-tabs-wrap");
+    // Land Unit Converter Handler
+    function updateLandUnitConverter() {
+      const val = parseFloat(getEl("plot-area-val").value) || 1.0;
+      const unitKey = getEl("plot-area-unit").value;
+      const factor = LAND_CONV[unitKey] || 0.25;
+      const canonicalHa = Math.max(0.05, val * factor);
 
-      if (mode === "simple") {
-        if (currentLang === "en") currentLang = "hi";
-        getEl("panel-simple").classList.remove("hidden");
-        getEl("panel-1").classList.add("hidden");
-        getEl("panel-2").classList.add("hidden");
-        tabsWrap.classList.add("hidden");
+      getEl("area-input").value = canonicalHa.toFixed(2);
 
-        simpleBtn.setAttribute("aria-checked", "true");
-        techBtn.setAttribute("aria-checked", "false");
-        simpleBtn.className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition shadow";
-        techBtn.className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold text-amber-200 hover:text-white transition";
+      const acreEquiv = (canonicalHa * 2.47105).toFixed(2);
+      const bighaEquiv = (canonicalHa * 4.0).toFixed(1);
 
-        getEl("hdr-subtitle").textContent = currentLang === "hi"
-          ? "किसान साथी — सटीक मौसम व स्थान के साथ आसान सलाह"
-          : "Simple Farmer Mode — Clear Step-by-Step Guidance";
-      } else {
-        getEl("panel-simple").classList.add("hidden");
-        getEl("panel-1").classList.remove("hidden");
-        getEl("panel-2").classList.add("hidden");
-        tabsWrap.classList.remove("hidden");
+      const isHi = currentLang === "hi";
+      getEl("converted-ha-pill").textContent = isHi
+        ? `= ${canonicalHa.toFixed(2)} हेक्टेयर (${acreEquiv} एकड़ / ${bighaEquiv} बीघा)`
+        : `= ${canonicalHa.toFixed(2)} ha (${acreEquiv} acres / ${bighaEquiv} bigha)`;
 
-        simpleBtn.setAttribute("aria-checked", "false");
-        techBtn.setAttribute("aria-checked", "true");
-        techBtn.className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 transition shadow";
-        simpleBtn.className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold text-amber-200 hover:text-white transition";
-
-        getEl("tab-btn-1").className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-700 text-white transition shadow";
-        getEl("tab-btn-1").setAttribute("aria-selected", "true");
-        getEl("tab-btn-2").className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white transition";
-        getEl("tab-btn-2").setAttribute("aria-selected", "false");
-
-        getEl("hdr-subtitle").textContent = currentLang === "hi"
-          ? "पूरे भारत के लिए सटीक मौसम, स्थान व हाइब्रिड कृषि सलाह इंजन"
-          : "Real-Time Weather + Uncertainty-Aware Deterministic & ML Residual Agronomy";
-      }
       runAdvisoryEngine();
     }
 
@@ -773,10 +837,14 @@
     function detectFieldGPS() {
       const geoStatus = getEl("geo-status-indicator");
       if (!navigator.geolocation) {
-        if (geoStatus) geoStatus.textContent = "GPS is not supported by your browser. Enter coordinates below.";
+        if (geoStatus) geoStatus.textContent = currentLang === "hi"
+          ? "⚠️ ब्राउज़र में GPS उपलब्ध नहीं है। ऊपर जिले का नाम खोजें।"
+          : "⚠️ GPS not supported by browser. Search district above.";
         return;
       }
-      if (geoStatus) geoStatus.textContent = "🛰️ Connecting to GPS satellites to pinpoint your field...";
+      if (geoStatus) geoStatus.textContent = currentLang === "hi"
+        ? "🛰️ सेटेलाइट से खेत का स्थान खोजा जा रहा है..."
+        : "🛰️ Pinpointing field location via GPS satellites...";
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const lat = pos.coords.latitude;
@@ -787,15 +855,16 @@
           fetchLocationAndWeather(lat, lon);
         },
         (err) => {
-          if (geoStatus) geoStatus.textContent = "⚠️ GPS access was not granted. Enter Latitude & Longitude or District manually.";
+          if (geoStatus) geoStatus.textContent = currentLang === "hi"
+            ? "⚠️ GPS अनुमति नहीं मिली। ऊपर जिले का नाम खोजें।"
+            : "⚠️ GPS permission denied. Search district name above.";
         },
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
       );
     }
 
-    // Fetch Location (District Spatial Model) and Live Weather (Open-Meteo)
+    // Fetch Location & Live Open-Meteo Weather
     async function fetchLocationAndWeather(lat, lon) {
-      // 1. Fetch nearest district & baseline soil from 695 spatial model
       let districtName = "District Near Field";
       try {
         const distResp = await fetch(`/api/v1/district/baseline?lat=${lat}&lon=${lon}`);
@@ -811,46 +880,40 @@
             getEl("soil-zn").value = distData.expected_soil.zn;
           }
           districtName = `${distData.nearest_district} (${distData.distance_km} km away)`;
+          getEl("geo-status-indicator").textContent = `📍 ${distData.nearest_district}, ${distData.zone.toUpperCase()} (${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E)`;
         }
       } catch (e) {
         console.warn("District spatial lookup error:", e);
       }
 
-      // 2. Fetch live NWP weather & FAO-56 ET0 from /api/v1/weather
       try {
         const weatherResp = await fetch(`/api/v1/weather?lat=${lat}&lon=${lon}&lang=${currentLang}`);
         if (weatherResp.ok) {
           const wData = await weatherResp.json();
           currentWeatherData = wData;
-          // Synchronize model inputs directly with live forecast
           getEl("et0-input").value = wData.et0_fao_mm_day;
           getEl("rain-prob-slider").value = wData.rain_prob_48h_pct;
 
-          // Update Technical Mode Live Weather Card
-          getEl("weather-card-loc").textContent = `${districtName} · ${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
-          getEl("weather-card-cond").textContent = wData.weather_condition;
-          getEl("weather-temp").textContent = wData.current_temp_c !== null ? `${wData.current_temp_c}°C` : "--";
-          getEl("weather-rh").textContent = wData.relative_humidity_pct !== null ? `${wData.relative_humidity_pct}%` : "--";
-          getEl("weather-et0").textContent = `${wData.et0_fao_mm_day} mm/d`;
-          getEl("weather-rain").textContent = `${wData.rain_prob_48h_pct}% (${wData.precipitation_sum_mm}mm)`;
-          getEl("weather-sync-status").textContent = `⚡ Live NWP Synced: Model using ${wData.et0_fao_mm_day} mm/d ET0 & ${wData.rain_prob_48h_pct}% rain probability.`;
-
-          // Update Simple Farmer Mode Weather Banner
           const isHi = currentLang === "hi";
-          getEl("sf-weather-loc").textContent = isHi
+          getEl("weather-loc-label").textContent = isHi
             ? `स्थान: ${districtName} (${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E)`
             : `Location: ${districtName} (${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E)`;
-          getEl("sf-weather-details").textContent = isHi
-            ? `मौसम: ${wData.weather_condition} | तापमान: ${wData.current_temp_c || '--'}°C | धूप/पानी खर्च (ET0): ${wData.et0_fao_mm_day} मिमी/दिन | 48 घंटे में बारिश: ${wData.rain_prob_48h_pct}%`
-            : `Weather: ${wData.weather_condition} | Temp: ${wData.current_temp_c || '--'}°C | Daily Water Need (ET0): ${wData.et0_fao_mm_day} mm/d | 48h Rain: ${wData.rain_prob_48h_pct}%`;
+          
+          getEl("weather-stat-line").textContent = isHi
+            ? `मौसम: ${wData.weather_condition} | तापमान: ${wData.current_temp_c !== null ? wData.current_temp_c + '°C' : '--'} | नमी: ${wData.relative_humidity_pct || '--'}% | धूप व पानी खर्च (ET0): ${wData.et0_fao_mm_day} मिमी/दिन | 48 घंटे में बारिश: ${wData.rain_prob_48h_pct}%`
+            : `Weather: ${wData.weather_condition} | Temp: ${wData.current_temp_c || '--'}°C | Humidity: ${wData.relative_humidity_pct || '--'}% | ET0 Water Demand: ${wData.et0_fao_mm_day} mm/d | 48h Rain: ${wData.rain_prob_48h_pct}%`;
 
-          const sfGuard = getEl("sf-weather-guardrail");
-          if (wData.rain_guardrail_hold_urea) {
-            sfGuard.className = "badge bg-red-100 text-red-950 border border-red-400 shrink-0";
-            sfGuard.textContent = isHi ? "यूरिया छिड़काव रोकें (बारिश)" : "HOLD Urea Top-Dress (Rain)";
+          const guardPill = getEl("weather-guardrail-pill");
+          if (wData.rain_guardrail_hold_urea || wData.rain_prob_48h_pct > 60) {
+            guardPill.className = "badge bg-red-100 text-red-950 border border-red-400 shrink-0 text-xs py-1.5 px-3";
+            guardPill.textContent = isHi
+              ? `⚠️ यूरिया छिड़काव रोकें! अगले 48 घंटे में बारिश की संभावना (${wData.rain_prob_48h_pct}%)`
+              : `⚠️ HOLD Urea Top-Dress! Rain probability ${wData.rain_prob_48h_pct}%`;
           } else {
-            sfGuard.className = "badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0";
-            sfGuard.textContent = isHi ? "खाद डालना सुरक्षित है" : "Clear to Top-Dress";
+            guardPill.className = "badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0 text-xs py-1.5 px-3";
+            guardPill.textContent = isHi
+              ? `✅ खाद डालना सुरक्षित है (बारिश की संभावना ${wData.rain_prob_48h_pct}%)`
+              : `✅ Clear to Top-Dress (Rain probability ${wData.rain_prob_48h_pct}%)`;
           }
         }
       } catch (e) {
@@ -860,38 +923,19 @@
       runAdvisoryEngine();
     }
 
-    // Main Advisory Calculation: Queries /api/v1/advisory or runs local fallback
+    // Main Advisory Engine (Deterministic ICAR + ML Residual)
     async function runAdvisoryEngine() {
-      const zoneKey = getEl("zone-select").value;
-      const cropKey = getEl("crop-select").value;
-      const area = Math.max(0.2, parseFloat(getEl("area-input").value) || 1.0);
-      const irr = getEl("irrigation-select").value;
+      const zoneKey = getEl("zone-select").value || "zone4";
+      const cropKey = getEl("crop-select").value || "wheat";
+      const areaHa = Math.max(0.05, parseFloat(getEl("area-input").value) || 1.0);
+      const irr = getEl("irrigation-select").value || "irrigated";
       const et0 = Math.max(1.0, parseFloat(getEl("et0-input").value) || 2.8);
       const delayDays = parseInt(getEl("delay-slider").value, 10) || 0;
-      const rainProb = parseInt(getEl("rain-prob-slider").value, 10) || 0;
+      const rainProb = parseInt(getEl("rain-prob-slider").value, 10) || 10;
       const noShc = getEl("no-shc-toggle").checked;
 
       const latVal = parseFloat(getEl("coord-lat").value);
       const lonVal = parseFloat(getEl("coord-lon").value);
-
-      // Sync Simple Mode Controls
-      getEl("sf-zone").value = zoneKey;
-      getEl("sf-crop").value = cropKey;
-      getEl("sf-area").value = area.toFixed(1);
-      getEl("sf-no-shc").checked = noShc;
-      getEl("sf-rain-toggle").checked = rainProb > 60;
-
-      // Update ARIA Slider Values
-      getEl("delay-val").textContent = `${delayDays} days`;
-      getEl("delay-slider").setAttribute("aria-valuenow", delayDays);
-      getEl("delay-slider").setAttribute("aria-valuetext", `${delayDays} days delay`);
-
-      getEl("rain-prob-val").textContent = `${rainProb}%`;
-      getEl("rain-prob-slider").setAttribute("aria-valuenow", rainProb);
-      getEl("rain-prob-slider").setAttribute("aria-valuetext", `${rainProb} percent rain probability`);
-
-      const shcGrid = getEl("shc-inputs-grid");
-      shcGrid.style.opacity = noShc ? "0.45" : "1";
 
       const soilN = noShc ? 240 : (parseFloat(getEl("soil-n").value) || 210);
       const soilP = noShc ? 15  : (parseFloat(getEl("soil-p").value) || 14);
@@ -900,14 +944,15 @@
       const soilPh = noShc ? 7.2 : (parseFloat(getEl("soil-ph").value) || 7.3);
       const soilZn = noShc ? 0.55 : (parseFloat(getEl("soil-zn").value) || 0.45);
 
-      const crop = CROPS[cropKey];
-      const zone = ZONES[zoneKey];
+      const crop = CROPS[cropKey] || CROPS.wheat;
+      const zone = ZONES[zoneKey] || ZONES.zone4;
+      const varName = zone.varieties[cropKey] || "उन्नत प्रमाणित किस्म";
 
-      // Prepare API Request Payload
+      // API Request Payload
       const apiPayload = {
         zone: zoneKey,
         crop: cropKey,
-        area_ha: area,
+        area_ha: areaHa,
         irrigation: irr,
         et0_mm_day: et0,
         sowing_delay_days: delayDays,
@@ -939,7 +984,7 @@
         }
       }
 
-      // Calculations (Local Deterministic Baseline & Math Trail)
+      // Local Deterministic Baseline Calculation
       let nMult = 1.0;
       if (soilN < 280 && soilOC < 0.5) nMult = 1.05;
       else if (soilN > 560) nMult = 0.75;
@@ -951,356 +996,327 @@
       const delayFactor = delayDays > 10 ? 0.92 : 1.0;
       const rainfedFactor = irr === "rainfed" ? 0.85 : 1.0;
 
-      let reqN = crop.n * nMult * delayFactor * rainfedFactor * area;
-      let reqP = crop.p * pMult * delayFactor * rainfedFactor * area;
-      let reqK = crop.k * kMult * delayFactor * rainfedFactor * area;
+      let reqN = crop.n * nMult * delayFactor * rainfedFactor * areaHa;
+      let reqP = crop.p * pMult * delayFactor * rainfedFactor * areaHa;
+      let reqK = crop.k * kMult * delayFactor * rainfedFactor * areaHa;
 
-      let deltaN = 0.0;
       if (apiResponse && apiResponse.ml_residual_delta_n_kg_ha) {
-        deltaN = apiResponse.ml_residual_delta_n_kg_ha;
-        reqN = Math.max(0, reqN + (deltaN * area));
+        reqN = Math.max(0, reqN + (apiResponse.ml_residual_delta_n_kg_ha * areaHa));
       }
 
       // DAP 18% N Credit deduction before Urea conversion
-      const dapKg = reqP / 0.46;
-      const nFromDap = dapKg * 0.18;
-      const remN = Math.max(0, reqN - nFromDap);
-      const ureaKg = remN / 0.46;
-      const mopKg = reqK / 0.60;
+      let dapKg = reqP / 0.46;
+      let nFromDap = dapKg * 0.18;
+      let remN = Math.max(0, reqN - nFromDap);
+      let ureaKg = remN / 0.46;
+      let mopKg = reqK / 0.60;
 
-      const dapBags = Math.round((dapKg / 50) * 2) / 2;
-      const ureaBags = Math.round((ureaKg / 45) * 2) / 2;
-      const mopBags = Math.round((mopKg / 50) * 2) / 2;
+      let dapBags = Math.round((dapKg / 50) * 2) / 2;
+      let ureaBags = Math.round((ureaKg / 45) * 2) / 2;
+      let mopBags = Math.round((mopKg / 50) * 2) / 2;
 
-      // Update KPI Cards
-      getEl("out-dap-bags").textContent = `${dapBags.toFixed(1)} bags`;
-      getEl("out-dap-kg").textContent = `${dapKg.toFixed(1)} kg (50 kg/bag)`;
-      getEl("out-urea-bags").textContent = `${ureaBags.toFixed(1)} bags`;
-      getEl("out-urea-kg").textContent = `${ureaKg.toFixed(1)} kg (45 kg/bag)`;
-      getEl("out-mop-bags").textContent = `${mopBags.toFixed(1)} bags`;
-      getEl("out-mop-kg").textContent = `${mopKg.toFixed(1)} kg (50 kg/bag)`;
+      // When backend is online, use backend authoritative product_plan values
+      if (apiResponse && apiResponse.product_plan) {
+        dapBags = apiResponse.product_plan.dap_bags_50kg;
+        dapKg = apiResponse.product_plan.dap_kg;
+        ureaBags = apiResponse.product_plan.urea_bags_45kg;
+        ureaKg = apiResponse.product_plan.urea_kg;
+        mopBags = apiResponse.product_plan.mop_bags_50kg;
+        mopKg = apiResponse.product_plan.mop_kg;
+        nFromDap = apiResponse.product_plan.n_credit_from_dap_kg;
+      }
 
-      const peakEtc = crop.kc[1] * et0;
-      getEl("out-etc").textContent = `${peakEtc.toFixed(2)} mm/d`;
-      getEl("out-etc-sub").textContent = `Kc mid = ${crop.kc[1].toFixed(2)} × Live ET0 (${et0.toFixed(2)})`;
+      // Update Big Visual Commercial Bag Display
+      const isHi = currentLang === "hi";
+      getEl("out-dap-bags").textContent = isHi ? `${dapBags.toFixed(1)} बोरी` : `${dapBags.toFixed(1)} bags`;
+      getEl("out-dap-sub").textContent = isHi ? `50 किलो वाली मानक बोरी (कुल ${dapKg.toFixed(1)} kg)` : `50 kg standard bag (Net ${dapKg.toFixed(1)} kg)`;
 
-      // Update Uncertainty Banner
-      const banner = getEl("confidence-banner");
-      const dot = getEl("conf-dot");
-      const cTitle = getEl("conf-title");
-      const cDesc = getEl("conf-desc");
+      getEl("out-urea-bags").textContent = isHi ? `${ureaBags.toFixed(1)} बोरी` : `${ureaBags.toFixed(1)} bags`;
+      getEl("out-urea-sub").textContent = isHi ? `45 किलो वाली मानक बोरी (कुल ${ureaKg.toFixed(1)} kg)` : `45 kg standard bag (Net ${ureaKg.toFixed(1)} kg)`;
+
+      getEl("out-mop-bags").textContent = isHi ? `${mopBags.toFixed(1)} बोरी` : `${mopBags.toFixed(1)} bags`;
+      getEl("out-mop-sub").textContent = isHi ? `50 किलो वाली मानक बोरी (कुल ${mopKg.toFixed(1)} kg)` : `50 kg standard bag (Net ${mopKg.toFixed(1)} kg)`;
+
+      // Confidence & Uncertainty Mode Indicator
+      const confBadge = getEl("confidence-badge");
+      const confDot = getEl("conf-dot");
+      const confTitle = getEl("conf-title");
 
       if (noShc) {
-        banner.className = "rounded-2xl p-4 border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-50 border-amber-300";
-        dot.className = "w-3.5 h-3.5 rounded-full bg-amber-600 mt-1 shrink-0";
-        cTitle.textContent = currentLang === "hi"
-          ? "ब्लॉक बेसलाइन मोड — ±15% अनिश्चितता सीमा"
-          : "Block Baseline Mode — ±15% Uncertainty Band";
-        cDesc.textContent = currentLang === "hi"
-          ? "मृदा स्वास्थ्य कार्ड नहीं चुना गया। क्षेत्रीय ब्लॉक मानक (ICAR) के आधार पर गणना। नजदीकी KVK से मिट्टी जांच कराने की सलाह दी जाती है।"
-          : "No Soil Health Card provided. Using regional block median ±15% range; confirm with a lab test.";
+        confBadge.className = "badge bg-amber-100 text-amber-950 border border-amber-300 shrink-0";
+        confDot.className = "w-2 h-2 rounded-full bg-amber-600";
+        confTitle.textContent = isHi ? "ब्लॉक बेसलाइन मोड (±15% अनिश्चितता दायरा)" : "Block Baseline Mode (±15% Uncertainty)";
       } else {
-        banner.className = "rounded-2xl p-4 border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-emerald-50 border-emerald-300";
-        dot.className = "w-3.5 h-3.5 rounded-full bg-emerald-700 mt-1 shrink-0";
-        cTitle.textContent = currentLang === "hi"
-          ? "सटीक मौसम व मिट्टी जाँच कार्ड आधारित सलाह (±5%)"
-          : "Live NWP Weather & SHC-Verified Mode — High Confidence (±5%)";
-        cDesc.textContent = currentLang === "hi"
-          ? "आपकी वास्तविक मिट्टी जांच, ओपन-मीटियो मौसम पूर्वानुमान और सरकारी कृषि मानक (ICAR) पर आधारित।"
-          : "Using plot Soil Health Card values, Open-Meteo live ET0/NWP weather, and ICAR zone rules. Zero marketplace bias.";
-      }
-
-      // Rain Guardrail Pill
-      const guardPill = getEl("weather-guardrail-pill");
-      if (rainProb > 60) {
-        guardPill.className = "badge bg-red-100 text-red-950 border border-red-400 shrink-0";
-        guardPill.textContent = currentLang === "hi"
-          ? `बारिश की चेतावनी (${rainProb}%): अभी यूरिया न डालें`
-          : `Rain Guardrail (${rainProb}%): HOLD Urea Top-Dress`;
-      } else {
-        guardPill.className = "badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0";
-        guardPill.textContent = currentLang === "hi"
-          ? `मौसम अनुकूल (${rainProb}%): खाद डालना सुरक्षित`
-          : `Rain Guardrail (${rainProb}%): Clear to Top-Dress`;
-      }
-
-      const varName = (apiResponse && apiResponse.recommended_variety) || zone.varieties[cropKey] || "Zone Notified Variety";
-      getEl("out-variety-badge").textContent = `Variety: ${varName}`;
-
-      if (currentLang === "hi") {
-        getEl("adv-heading").textContent = "किसान के लिए स्पष्ट सलाह (KhetSathi 360)";
-        getEl("adv-summary-text").textContent = (apiResponse && apiResponse.farmer_summary) || (
-          `${zone.stateHi} में ${area.toFixed(1)} हेक्टेयर ${crop.hi} (उन्नत किस्म: ${varName}) के लिए: बुवाई के समय ${dapBags.toFixed(1)} बोरी डीएपी और ${mopBags.toFixed(1)} बोरी पोटाश डालें। ` +
-          `डीएपी से ${nFromDap.toFixed(1)} किलो नाइट्रोजन मिल जाती है, इसलिए बचे हुए हिस्से के लिए ${ureaBags.toFixed(1)} बोरी यूरिया को सिंचाई के बाद 2 से 3 बार में डालें। ` +
-          (rainProb > 60 ? "अगले 2 दिनों में तेज़ बारिश की संभावना है—अभी यूरिया छिड़काव रोक दें, वरना खाद बह जाएगी।" : `वर्तमान मौसम के हिसाब से आज की पानी आवश्यकता ${peakEtc.toFixed(2)} मिमी/दिन है।`)
-        );
-      } else {
-        getEl("adv-heading").textContent = "Explainable Farmer Advisory";
-        getEl("adv-summary-text").textContent = (apiResponse && apiResponse.farmer_summary) || (
-          `For ${area.toFixed(1)} ha of ${crop.label} (${varName}) in ${zone.name}: apply ${dapBags.toFixed(1)} bags DAP and ${mopBags.toFixed(1)} bags MOP as basal dose. ` +
-          `Because DAP supplies ${nFromDap.toFixed(1)} kg N credit, only ${remN.toFixed(1)} kg N remains—requiring ${ureaBags.toFixed(1)} bags Urea split across vegetative stages. ` +
-          (rainProb > 60 ? "48h rain probability exceeds 60%—hold Urea top-dressing to prevent leaching." : `Schedule irrigation at ${peakEtc.toFixed(2)} mm/day peak ETc via live weather.`)
-        );
+        confBadge.className = "badge bg-emerald-100 text-emerald-950 border border-emerald-400 shrink-0";
+        confDot.className = "w-2 h-2 rounded-full bg-emerald-600";
+        confTitle.textContent = isHi ? "सटीक मौसम व मिट्टी जांच सत्यापित (±5% उच्च सटीकता)" : "Live NWP & SHC-Verified (±5% High Accuracy)";
       }
 
       // Soil Amendment Alerts
       const amendEl = getEl("amendment-alert");
       const alerts = (apiResponse && apiResponse.soil_alerts) || [];
       if (alerts.length === 0) {
-        if (soilPh < 5.5) alerts.push(`Acidic soil (pH ${soilPh.toFixed(1)} < 5.5): apply agricultural lime before basal fertilizer.`);
-        if (soilPh > 8.5) alerts.push(`Alkaline/sodic soil (pH ${soilPh.toFixed(1)} > 8.5): gypsum + green manure recommended.`);
-        if (soilZn < 0.5) alerts.push(`Zinc deficient (${soilZn.toFixed(2)} ppm < 0.5): add 25 kg/ha Zinc Sulphate (21%).`);
+        if (soilPh < 5.5) alerts.push(isHi ? `अम्लीय मिट्टी (pH ${soilPh.toFixed(1)} < 5.5): बुवाई से पहले 250 किग्रा/हेक्टेयर कृषि चूना (Lime) मिलाएं।` : `Acidic soil (pH ${soilPh.toFixed(1)} < 5.5): apply 250 kg/ha agricultural lime before sowing.`);
+        if (soilPh > 8.5) alerts.push(isHi ? `क्षारीय मिट्टी (pH ${soilPh.toFixed(1)} > 8.5): जिप्सम एवं ढैंचा/हरी खाद का प्रयोग अवश्य करें।` : `Alkaline/sodic soil (pH ${soilPh.toFixed(1)} > 8.5): gypsum + green manure recommended.`);
+        if (soilZn < 0.5) alerts.push(isHi ? `जिंक की भारी कमी (${soilZn.toFixed(2)} ppm < 0.5): बुवाई पर 25 किलो/हेक्टेयर जिंक सल्फेट (21%) डालें।` : `Zinc deficient (${soilZn.toFixed(2)} ppm < 0.5): add 25 kg/ha Zinc Sulphate.`);
       }
+
       if (alerts.length > 0) {
-        amendEl.textContent = "Soil Health Alert: " + alerts.join(" ");
+        amendEl.innerHTML = `<strong>⚠️ मिट्टी सुधार सलाह:</strong> ` + alerts.join("<br/>");
         amendEl.classList.remove("hidden");
       } else {
         amendEl.classList.add("hidden");
       }
 
-      // Audit Trail
-      const uncertaintyBand = noShc ? "±15% (Block Baseline Fallback)" : "±5% (SHC-Verified)";
-      const mlInfo = apiResponse ? ` | ML Residual=${apiResponse.ml_residual_delta_n_kg_ha.toFixed(2)} kg N/ha (${apiResponse.serving_mode})` : "";
-      const weatherInfo = (!isNaN(latVal) && !isNaN(lonVal)) ? `\n[WEATHER] Coordinates=(${latVal.toFixed(4)}°N, ${lonVal.toFixed(4)}°E) | Live FAO-56 ET0=${et0.toFixed(2)} mm/d | 48h RainProb=${rainProb}% | Source=Open-Meteo NWP` : "";
-
-      getEl("audit-trail").textContent =
-`[INPUTS] Zone=${zoneKey.toUpperCase()} (${zone.state}) | Crop=${crop.label} | Area=${area.toFixed(1)} ha | Delay=${delayDays}d | RainProb=${rainProb}%${mlInfo}${weatherInfo}
-[SOIL]   N=${soilN} kg/ha (×${nMult.toFixed(2)}) | P=${soilP} kg/ha (×${pMult.toFixed(2)}) | K=${soilK} kg/ha (×${kMult.toFixed(2)}) | OC=${soilOC}% | pH=${soilPh}
-[MATH]   Target Elemental = ${reqN.toFixed(1)} kg N, ${reqP.toFixed(1)} kg P2O5, ${reqK.toFixed(1)} kg K2O
-         1) DAP (46% P2O5) = ${reqP.toFixed(1)} / 0.46 = ${dapKg.toFixed(1)} kg (${dapBags.toFixed(1)} bags)
-         2) DAP N-Credit   = ${dapKg.toFixed(1)} × 0.18 = ${nFromDap.toFixed(1)} kg N
-         3) Remaining N    = ${reqN.toFixed(1)} - ${nFromDap.toFixed(1)} = ${remN.toFixed(1)} kg -> Urea = ${ureaKg.toFixed(1)} kg (${ureaBags.toFixed(1)} bags)
-         4) MOP (60% K2O)  = ${reqK.toFixed(1)} / 0.60 = ${mopKg.toFixed(1)} kg (${mopBags.toFixed(1)} bags)
-[GUARD]  Confidence=${uncertaintyBand} | Weather=${rainProb > 60 ? "HOLD_UREA_LEACHING_RISK" : "CLEAR"}
-[CITE]   ICAR Package of Practices · FCO Fertilizer Grades · FAO-56 Table 12 · DAC&FW SHC Thresholds · Open-Meteo NWP`;
-
-      updateSimpleFarmerUI(zone, crop, varName, area, dapBags, ureaBags, mopBags, noShc, rainProb, soilPh, soilZn);
-      updateCharts(reqN, reqP, reqK, dapKg, ureaKg, mopKg, crop, et0);
-      updateAccessibleDataTables(reqN, reqP, reqK, dapKg, ureaKg, mopKg, crop, et0);
-    }
-
-    // Populate Accessible Data Tables (for screen readers and tabular viewers)
-    function updateAccessibleDataTables(reqN, reqP, reqK, dapKg, ureaKg, mopKg, crop, et0) {
-      const npkTbody = getEl("npk-table-body");
-      if (npkTbody) {
-        npkTbody.innerHTML = `
-          <tr><td class="p-1.5 border font-semibold">Nitrogen (N)</td><td class="p-1.5 border">${reqN.toFixed(1)} kg</td><td class="p-1.5 border">Urea (46% N) [After DAP credit]</td><td class="p-1.5 border">${ureaKg.toFixed(1)} kg</td></tr>
-          <tr><td class="p-1.5 border font-semibold">Phosphorus (P₂O₅)</td><td class="p-1.5 border">${reqP.toFixed(1)} kg</td><td class="p-1.5 border">DAP (18-46-0)</td><td class="p-1.5 border">${dapKg.toFixed(1)} kg</td></tr>
-          <tr><td class="p-1.5 border font-semibold">Potassium (K₂O)</td><td class="p-1.5 border">${reqK.toFixed(1)} kg</td><td class="p-1.5 border">MOP (60% K₂O)</td><td class="p-1.5 border">${mopKg.toFixed(1)} kg</td></tr>
-        `;
-      }
-
-      const kcTbody = getEl("kc-table-body");
-      if (kcTbody) {
-        const [ki, km, ke] = crop.kc;
-        const stages = [
-          { name: "1. Sowing / Seedling", etc: (ki * et0).toFixed(2) },
-          { name: "2. Initial Vegetative", etc: (ki * et0).toFixed(2) },
-          { name: "3. Rapid Vegetative", etc: (((ki + km) / 2) * et0).toFixed(2) },
-          { name: "4. Mid-Season Flowering", etc: (km * et0).toFixed(2) },
-          { name: "5. Yield Formation / Grain Fill", etc: (km * et0).toFixed(2) },
-          { name: "6. Ripening / Maturity", etc: (((km + ke) / 2) * et0).toFixed(2) },
-          { name: "7. Harvest", etc: (ke * et0).toFixed(2) }
-        ];
-        kcTbody.innerHTML = stages.map(s => `<tr><td class="p-1.5 border font-semibold">${s.name}</td><td class="p-1.5 border">${s.etc} mm/d</td></tr>`).join("");
-      }
-    }
-
-    // Update Simple Farmer Mode Content
-    function updateSimpleFarmerUI(zone, crop, varName, area, dapBags, ureaBags, mopBags, noShc, rainProb, soilPh, soilZn) {
-      const isHi = currentLang === "hi";
-      const approxAcres = (area * 2.47).toFixed(1);
-
-      getEl("sf-hero-title").textContent = isHi ? "आपकी खेती की सीधी और आसान सलाह" : "Your Simple Farm Action Plan";
-      getEl("sf-hero-sub").textContent = isHi
-        ? "सिर्फ अपना इलाका, फसल और खेत का माप चुनें — तुरंत जानें कितनी खाद, पानी और क्या सावधानी चाहिए।"
-        : "Pick your region, crop, and field size — see exactly how many bags to use and what to do today.";
-      getEl("sf-gps-lbl").textContent = isHi ? "मेरा खेत खोजें (GPS)" : "Detect GPS Location";
-      getEl("sf-speak-lbl").textContent = isHi ? "सलाह सुनें" : "Listen to Plan";
-      getEl("sf-step1-title").textContent = isHi ? "कदम 1: अपने खेत की जानकारी चुनें" : "Step 1: Tell Us About Your Field";
-      getEl("sf-lbl-zone").textContent = isHi ? "आपका इलाका (राज्य)" : "Your Region / State";
-      getEl("sf-lbl-crop").textContent = isHi ? "कौन सी फसल बोनी है?" : "Which Crop?";
-      getEl("sf-lbl-area").textContent = isHi ? "खेत कितना बड़ा है? (हेक्टेयर)" : "Field Size (Hectares)";
-      getEl("sf-area-hint").textContent = isHi
-        ? `${area.toFixed(1)} हेक्टेयर ≈ लगभग ${approxAcres} एकड़ (4 बीघा)`
-        : `${area.toFixed(1)} hectare ≈ ${approxAcres} acres`;
-      getEl("sf-lbl-noshc").textContent = isHi
-        ? "मेरे पास मिट्टी जाँच कार्ड नहीं है (इलाके के हिसाब से अंदाज़ा दें)"
-        : "I don't have a Soil Card (estimate from my local area)";
-      getEl("sf-lbl-rain").textContent = isHi
-        ? "अगले 2 दिन में तेज़ बारिश की संभावना है (>60%)"
-        : "Heavy rain is expected in the next 2 days (>60%)";
-
-      getEl("sf-card-dap-title").textContent = isHi ? "बुवाई पर डीएपी (DAP)" : "DAP at Sowing";
-      getEl("sf-dap-bags").textContent = isHi ? `${dapBags.toFixed(1)} बोरी` : `${dapBags.toFixed(1)} bags`;
-      getEl("sf-dap-sub").textContent = isHi ? "50 किलो वाली मानक बोरी" : "50 kg standard bag";
-
-      getEl("sf-card-urea-title").textContent = isHi ? "यूरिया (Urea) — किश्तों में" : "Urea (In 2–3 Splits)";
-      getEl("sf-urea-bags").textContent = isHi ? `${ureaBags.toFixed(1)} बोरी` : `${ureaBags.toFixed(1)} bags`;
-      getEl("sf-urea-sub").textContent = isHi ? "45 किलो वाली मानक बोरी" : "45 kg standard bag";
-
-      getEl("sf-card-mop-title").textContent = isHi ? "पोटाश (MOP)" : "Potash (MOP)";
-      getEl("sf-mop-bags").textContent = isHi ? `${mopBags.toFixed(1)} बोरी` : `${mopBags.toFixed(1)} bags`;
-      getEl("sf-mop-sub").textContent = isHi ? "50 किलो वाली मानक बोरी" : "50 kg standard bag";
-
-      getEl("sf-action-title").textContent = isHi ? "कदम 2: अब खेत में क्या करना है? (आसान निर्देश)" : "Step 2: Exactly What To Do on Your Field";
-
+      // Chronological Action Plan Cards
       const actions = [];
       if (isHi) {
         actions.push({
           icon: "🌱",
           tone: "emerald",
-          title: `1. सही बीज चुनें (${crop.hi})`,
-          body: `${zone.stateHi} के लिए ${varName} किस्म का प्रमाणित बीज बोएं। इससे मौसम की मार से बचाव होगा और पैदावार अच्छी मिलेगी।`
+          title: `1. प्रमाणित बीज चयन — ${crop.hi} (${varName})`,
+          body: `${zone.stateHi} के लिए ${varName} की प्रमाणित किस्में ही बोएं। इससे रोगों से बचाव होगा और भरपूर पैदावार मिलेगी।`
         });
         actions.push({
           icon: "🧺",
           tone: "amber",
-          title: "2. बुवाई के समय पहली खाद",
-          body: `अपने ${area.toFixed(1)} हेक्टेयर खेत में बुवाई के वक्त ${dapBags.toFixed(1)} बोरी डीएपी (DAP) और ${mopBags.toFixed(1)} बोरी पोटाश (MOP) मिट्टी में मिलाएं।`
+          title: "2. बुवाई के समय पहली खाद (Basal Application)",
+          body: `अपने ${areaHa.toFixed(2)} हेक्टेयर (${(areaHa * 4.0).toFixed(1)} बीघा) खेत में बुवाई के समय ${dapBags.toFixed(1)} बोरी डीएपी (DAP) और ${mopBags.toFixed(1)} बोरी पोटाश (MOP) मिट्टी में बीज के नीचे 4-5 सेमी गहराई पर दें।`
         });
         actions.push({
           icon: rainProb > 60 ? "🌧️" : "💧",
           tone: rainProb > 60 ? "red" : "sky",
-          title: rainProb > 60 ? "3. अभी यूरिया न डालें (बारिश चेतावनी)" : "3. यूरिया एक साथ न डालें",
+          title: rainProb > 60 ? "3. यूरिया रोकें! (भारी बारिश चेतावनी)" : "3. यूरिया की किश्तें (Top-Dressing)",
           body: rainProb > 60
-            ? `अगले 2 दिन में तेज़ बारिश आ सकती है (${rainProb}%)। अभी यूरिया डालने से खाद पानी के साथ बह जाएगी—मौसम साफ होने पर ही ${ureaBags.toFixed(1)} बोरी यूरिया 2-3 बार में डालें।`
-            : `कुल ${ureaBags.toFixed(1)} बोरी यूरिया को एक साथ न डालें। पहली और दूसरी सिंचाई के बाद बराबर बांटकर डालें ताकि फसल को पूरा लाभ मिले।`
-        });
-        if (soilZn < 0.5 || soilPh > 8.5 || soilPh < 5.5) {
-          const extra = [];
-          if (soilZn < 0.5) extra.push("ज़िंक की कमी दूर करने के लिए बुवाई पर 25 किलो/हेक्टेयर ज़िंक सल्फेट डालें");
-          if (soilPh > 8.5) extra.push("मिट्टी में क्षार ज्यादा है, इसलिए जिप्सम और गोबर की खाद का उपयोग करें");
-          if (soilPh < 5.5) extra.push("मिट्टी अम्लीय है, बुवाई से पहले कृषि चूना डालें");
-          actions.push({ icon: "🧪", tone: "amber", title: "4. मिट्टी सुधार की ज़रूरी सलाह", body: extra.join("। ") + "।" });
-        }
-        actions.push({
-          icon: "🛡️",
-          tone: "emerald",
-          title: noShc ? "फसल बीमा व मिट्टी जाँच" : "फसल बीमा (PMFBY) सुरक्षा",
-          body: noShc
-            ? "यह सलाह आपके इलाके के अंदाज़े से दी गई है। अगली बार नजदीकी कृषि केंद्र से मिट्टी की जाँच जरूर कराएं और प्रधानमंत्री फसल बीमा योजना (PMFBY) में पंजीकरण कराएं।"
-            : "प्राकृतिक आपदा से नुकसान से बचने के लिए प्रधानमंत्री फसल बीमा योजना (PMFBY) में समय पर बीमा जरूर कराएं।"
+            ? `अगले 48 घंटे में भारी बारिश की संभावना (${rainProb}%) है। अभी यूरिया का छिड़काव बिल्कुल न करें, वरना खाद पानी में बहकर नष्ट हो जाएगी। मौसम साफ होने पर ${ureaBags.toFixed(1)} बोरी यूरिया 2-3 किश्तों में दें।`
+            : `कुल ${ureaBags.toFixed(1)} बोरी यूरिया को कभी भी एक साथ न डालें। पहली सिंचाई (21 दिन पर) और दूसरी सिंचाई (45 दिन पर) के बाद बराबर बांटकर डालें। डीएपी से मिली 18% नाइट्रोजन को इसमें से घटाया गया है।`
         });
       } else {
         actions.push({
           icon: "🌱",
           tone: "emerald",
-          title: `1. Choose Certified Seed (${crop.label})`,
-          body: `For ${zone.state}, use ${varName} certified seeds instead of unverified dealer mixes for better resilience and yield.`
+          title: `1. Certified Seed Selection — ${crop.label} (${varName})`,
+          body: `Plant certified ${varName} seed bred specifically for ${zone.state} to ensure disease tolerance and standard yield.`
         });
         actions.push({
           icon: "🧺",
           tone: "amber",
-          title: "2. Fertilizer at Sowing Time",
-          body: `Mix ${dapBags.toFixed(1)} bags of DAP and ${mopBags.toFixed(1)} bags of Potash (MOP) into your ${area.toFixed(1)} ha field when sowing.`
+          title: "2. Basal Fertilizer at Sowing Time",
+          body: `Apply ${dapBags.toFixed(1)} bags of DAP (50kg) and ${mopBags.toFixed(1)} bags of MOP (50kg) into the seedbed across your ${areaHa.toFixed(2)} ha plot.`
         });
         actions.push({
           icon: rainProb > 60 ? "🌧️" : "💧",
           tone: rainProb > 60 ? "red" : "sky",
-          title: rainProb > 60 ? "3. Wait Before Applying Urea (Rain Alert)" : "3. Split Urea After Watering",
+          title: rainProb > 60 ? "3. Hold Urea! (Heavy Rain Leaching Risk)" : "3. Split Top-Dressing of Urea",
           body: rainProb > 60
-            ? `Heavy rain is likely within 48 hours (${rainProb}%). Do NOT spread Urea right now or it will wash away—wait until skies clear, then apply ${ureaBags.toFixed(1)} bags in 2–3 splits.`
-            : `Never put all ${ureaBags.toFixed(1)} bags of Urea at once. Spread it in 2–3 smaller rounds after irrigation so your crop absorbs it properly.`
-        });
-        actions.push({
-          icon: "🛡️",
-          tone: "emerald",
-          title: noShc ? "Get a Soil Test & Crop Insurance" : "Protect With Crop Insurance (PMFBY)",
-          body: noShc
-            ? "Because you don't have a Soil Card yet, this is a local area estimate. Visit your nearest KVK for a free Soil Health Card and enroll in PMFBY crop insurance."
-            : "Enroll your plot in PMFBY crop insurance before the deadline so unseasonal weather doesn't wipe out your income."
+            ? `48h rain probability is ${rainProb}%. Do NOT apply Urea today — wait for sunny weather to prevent fertilizer runoff. Then apply ${ureaBags.toFixed(1)} bags across 2–3 splits.`
+            : `Never broadcast all ${ureaBags.toFixed(1)} bags of Urea at once. Split across the 1st and 2nd irrigations. The 18% N credit from DAP is already deducted.`
         });
       }
 
-      const container = getEl("sf-action-list");
-      container.innerHTML = "";
-      const toneMap = {
-        emerald: "bg-emerald-50 border-emerald-300",
-        amber: "bg-amber-50 border-amber-300",
-        red: "bg-red-50 border-red-300",
-        sky: "bg-sky-50 border-sky-300"
+      const actionsContainer = getEl("action-cards-list");
+      actionsContainer.innerHTML = "";
+      const toneClasses = {
+        emerald: "bg-emerald-50/70 border-emerald-300",
+        amber: "bg-amber-50/70 border-amber-300",
+        red: "bg-red-50/80 border-red-400",
+        sky: "bg-sky-50/70 border-sky-300"
       };
 
       actions.forEach(a => {
-        const div = document.createElement("div");
-        div.className = `rounded-xl p-4 border flex items-start gap-3.5 shadow-sm ${toneMap[a.tone] || toneMap.emerald}`;
-        div.innerHTML = `
+        const item = document.createElement("div");
+        item.className = `rounded-xl p-4 border flex items-start gap-3.5 shadow-sm ${toneClasses[a.tone] || toneClasses.emerald}`;
+        item.innerHTML = `
           <span class="text-2xl leading-none mt-0.5 select-none" aria-hidden="true">${a.icon}</span>
           <div>
-            <h4 class="text-sm font-bold text-slate-950">${a.title}</h4>
-            <p class="text-sm font-medium text-slate-800 mt-1 leading-relaxed">${a.body}</p>
+            <h5 class="text-sm font-extrabold text-slate-950">${a.title}</h5>
+            <p class="text-xs sm:text-sm font-medium text-slate-800 mt-1 leading-relaxed">${a.body}</p>
           </div>
         `;
-        container.appendChild(div);
+        actionsContainer.appendChild(item);
       });
 
-      lastSimpleSpokenText = actions.map(a => `${a.title}. ${a.body}`).join(" ");
+      lastSpokenPlanText = actions.map(a => `${a.title}. ${a.body}`).join(" ");
+
+      // Save calculated plan for WhatsApp & Print Slip
+      lastCalculatedPlan = {
+        lang: currentLang,
+        districtName: getEl("weather-loc-label").textContent.replace("स्थान: ", "").replace("Location: ", ""),
+        lat: latVal || 25.59,
+        lon: lonVal || 83.58,
+        cropHi: crop.hi,
+        cropEn: crop.label,
+        variety: varName,
+        areaFormatted: `${(areaHa * 4.0).toFixed(1)} बीघा (${areaHa.toFixed(2)} हेक्टेयर)`,
+        areaHa: areaHa,
+        confidenceModeHi: noShc ? "ब्लॉक बेसलाइन (±15%)" : "मिट्टी जांच सत्यापित (±5%)",
+        confidenceModeEn: noShc ? "Block Baseline (±15%)" : "SHC-Verified (±5%)",
+        dapBags: dapBags,
+        dapKg: dapKg,
+        ureaBags: ureaBags,
+        ureaKg: ureaKg,
+        mopBags: mopBags,
+        mopKg: mopKg,
+        weatherCond: currentWeatherData ? currentWeatherData.weather_condition : "साफ आसमान",
+        temp: currentWeatherData ? currentWeatherData.current_temp_c : 24,
+        et0: et0,
+        rainProb: rainProb,
+        rainGuardrailHi: rainProb > 60 ? "यूरिया रोकें (बारिश जोखिम)" : "खाद डालना सुरक्षित है",
+        rainGuardrailEn: rainProb > 60 ? "HOLD Urea (Rain Risk)" : "Clear to Top-Dress",
+        soilAlerts: alerts
+      };
+
+      // Populate Print Slip DOM
+      updatePrintableSlip(lastCalculatedPlan);
+
+      // Audit Trail
+      const mlInfo = apiResponse ? ` | ML Residual=${apiResponse.ml_residual_delta_n_kg_ha.toFixed(2)} kg N/ha (${apiResponse.serving_mode})` : "";
+      getEl("audit-trail").textContent =
+`[INPUTS] Zone=${zoneKey.toUpperCase()} (${zone.state}) | Crop=${crop.label} | Area=${areaHa.toFixed(2)} ha (${(areaHa*4.0).toFixed(1)} Bigha) | RainProb=${rainProb}%${mlInfo}
+[SOIL]   N=${soilN} kg/ha (×${nMult.toFixed(2)}) | P=${soilP} kg/ha (×${pMult.toFixed(2)}) | K=${soilK} kg/ha (×${kMult.toFixed(2)}) | OC=${soilOC}% | pH=${soilPh} | Zn=${soilZn} ppm
+[TARGET] Elemental: N=${reqN.toFixed(1)} kg, P2O5=${reqP.toFixed(1)} kg, K2O=${reqK.toFixed(1)} kg
+[BAGS]   1) DAP (18-46-0) = ${reqP.toFixed(1)} / 0.46 = ${dapKg.toFixed(1)} kg -> ${dapBags.toFixed(1)} bags (50kg)
+         2) DAP N-Credit  = ${dapKg.toFixed(1)} × 0.18 = ${nFromDap.toFixed(1)} kg N (subtracted from Urea)
+         3) Remaining N   = ${reqN.toFixed(1)} - ${nFromDap.toFixed(1)} = ${remN.toFixed(1)} kg -> Urea = ${ureaKg.toFixed(1)} kg -> ${ureaBags.toFixed(1)} bags (45kg)
+         4) MOP (60% K2O) = ${reqK.toFixed(1)} / 0.60 = ${mopKg.toFixed(1)} kg -> ${mopBags.toFixed(1)} bags (50kg)
+[SAFETY] Confidence: ${noShc ? "±15% Block Baseline" : "±5% SHC-Verified"} | Rain Guardrail: ${rainProb > 60 ? "HOLD_UREA" : "CLEAR"}
+[CITE]   ICAR Package of Practices · FCO Commercial Standards · FAO-56 Irrigation Model · Open-Meteo NWP`;
+
+      // Update Visual Charts
+      updateCharts(reqN, reqP, reqK, dapKg, ureaKg, mopKg, crop, et0);
+    }
+
+    // Populate Off-screen Printable Slip DOM
+    function updatePrintableSlip(p) {
+      if (!p) return;
+      getEl("slip-loc").textContent = p.districtName;
+      getEl("slip-date").textContent = new Date().toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-IN');
+      getEl("slip-crop").textContent = `${p.cropHi} (${p.variety})`;
+      getEl("slip-area").textContent = p.areaFormatted;
+      getEl("slip-confidence").textContent = p.confidenceModeHi;
+      getEl("slip-weather").textContent = `${p.rainProb}% बारिश · ${p.rainGuardrailHi}`;
+      
+      getEl("slip-dap-bags").textContent = `${p.dapBags.toFixed(1)} बोरी`;
+      getEl("slip-dap-kg").textContent = `${p.dapKg.toFixed(1)} kg`;
+      getEl("slip-urea-bags").textContent = `${p.ureaBags.toFixed(1)} बोरी`;
+      getEl("slip-urea-kg").textContent = `${p.ureaKg.toFixed(1)} kg`;
+      getEl("slip-mop-bags").textContent = `${p.mopBags.toFixed(1)} बोरी`;
+      getEl("slip-mop-kg").textContent = `${p.mopKg.toFixed(1)} kg`;
+
+      const alertBox = getEl("slip-alerts-box");
+      if (p.soilAlerts && p.soilAlerts.length) {
+        alertBox.classList.remove("hidden");
+        getEl("slip-alerts").textContent = p.soilAlerts.join("; ");
+      } else {
+        alertBox.classList.add("hidden");
+      }
+    }
+
+    // WhatsApp Share Link Generator
+    function shareAdvisoryOnWhatsApp() {
+      if (!lastCalculatedPlan) return;
+      const p = lastCalculatedPlan;
+      const isHi = currentLang === "hi";
+
+      const text = isHi
+? `🌾 *किसान साथी 360 — खेत सलाह पर्ची*
+📅 दिनांक: ${new Date().toLocaleDateString('hi-IN')}
+📍 स्थान: ${p.districtName}
+🌾 फसल: *${p.cropHi}* (किस्म: ${p.variety})
+📐 खेत का माप: *${p.areaFormatted}*
+🛡️ सलाह आधार: ${p.confidenceModeHi}
+
+📦 *आवश्यक मानक खाद की बोरियां:*
+• *डीएपी (DAP 18-46-0):* *${p.dapBags.toFixed(1)} बोरी* (50 किग्रा) — बुवाई के समय
+• *यूरिया (Urea 46% N):* *${p.ureaBags.toFixed(1)} बोरी* (45 किग्रा) — 2-3 किश्तों में
+• *पोटाश (MOP 60% K₂O):* *${p.mopBags.toFixed(1)} बोरी* (50 किग्रा) — बुवाई के समय
+
+🌦️ *मौसम व सुरक्षा स्थिति:*
+• मौसम: ${p.weatherCond} | तापमान: ${p.temp}°C
+• 48 घंटे में बारिश: ${p.rainProb}% | *चेतावनी:* ${p.rainGuardrailHi}
+
+${p.soilAlerts.length ? '⚠️ *मिट्टी सुधार:* ' + p.soilAlerts.join('; ') + '\n' : ''}
+✅ *ICAR एवं भारत सरकार (DAC&FW) मानकों द्वारा प्रमाणित। शून्य बाज़ार पक्षपात।*
+🔗 ऑनलाइन सलाह पर्ची देखें: ${window.location.origin}`
+: `🌾 *KhetSathi 360 — Field Advisory Slip*
+📅 Date: ${new Date().toLocaleDateString('en-IN')}
+📍 Location: ${p.districtName}
+🌾 Crop: *${p.cropEn}* (${p.variety})
+📐 Plot Area: *${p.areaFormatted}*
+🛡️ Basis: ${p.confidenceModeEn}
+
+📦 *Prescribed Commercial Fertilizer Bags:*
+• *DAP (18-46-0):* *${p.dapBags.toFixed(1)} bags* (50kg) — Basal at sowing
+• *Urea (46% N):* *${p.ureaBags.toFixed(1)} bags* (45kg) — In 2-3 splits
+• *MOP (60% K₂O):* *${p.mopBags.toFixed(1)} bags* (50kg) — Basal at sowing
+
+🌦️ *Live Weather & Guardrail:*
+• Weather: ${p.weatherCond} | Temp: ${p.temp}°C
+• 48h Rain Probability: ${p.rainProb}% | *Guardrail:* ${p.rainGuardrailEn}
+
+${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') + '\n' : ''}
+✅ *Certified by ICAR Package of Practices & DAC&FW Standards. Zero Bias.*
+🔗 View Live Slip: ${window.location.origin}`;
+
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
     }
 
     // Chart.js Visualizations
     function updateCharts(reqN, reqP, reqK, dapKg, ureaKg, mopKg, crop, et0) {
-      const ctx1 = getEl("npkChart").getContext("2d");
-      if (npkChart) npkChart.destroy();
-      npkChart = new Chart(ctx1, {
-        type: "bar",
-        data: {
-          labels: ["N Need", "P2O5 Need", "K2O Need", "DAP (50kg)", "Urea (45kg)", "MOP (50kg)"],
-          datasets: [{
-            label: "kg for plot",
-            data: [reqN, reqP, reqK, dapKg, ureaKg, mopKg].map(v => Number(v.toFixed(1))),
-            backgroundColor: ["#047857", "#059669", "#10b981", "#d97706", "#f59e0b", "#fbbf24"],
-            borderRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => `${ctx.raw} kg for plot`
-              }
-            }
+      const ctx1 = getEl("npkChart");
+      if (ctx1) {
+        if (npkChart) npkChart.destroy();
+        npkChart = new Chart(ctx1.getContext("2d"), {
+          type: "bar",
+          data: {
+            labels: ["N Need", "P2O5 Need", "K2O Need", "DAP (50kg)", "Urea (45kg)", "MOP (50kg)"],
+            datasets: [{
+              label: "kg for plot",
+              data: [reqN, reqP, reqK, dapKg, ureaKg, mopKg].map(v => Number(v.toFixed(1))),
+              backgroundColor: ["#047857", "#059669", "#10b981", "#d97706", "#f59e0b", "#fbbf24"],
+              borderRadius: 6
+            }]
           },
-          scales: {
-            y: { beginAtZero: true, title: { display: true, text: "Kilograms (kg)" } }
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, title: { display: true, text: "Kilograms (kg)" } } }
           }
-        }
-      });
+        });
+      }
 
-      const ctx2 = getEl("kcChart").getContext("2d");
-      if (kcChart) kcChart.destroy();
-      const [ki, km, ke] = crop.kc;
-      const kcSeries = [ki, ki, (ki + km) / 2, km, km, (km + ke) / 2, ke];
-      const etcSeries = kcSeries.map(k => Number((k * et0).toFixed(2)));
-      kcChart = new Chart(ctx2, {
-        type: "line",
-        data: {
-          labels: ["Sowing", "Initial", "Vegetative", "Mid-Season", "Grain Fill", "Ripening", "Harvest"],
-          datasets: [{
-            label: "Crop Water Need ETc (mm/day)",
-            data: etcSeries,
-            borderColor: "#047857",
-            backgroundColor: "rgba(4, 120, 87, 0.15)",
-            fill: true,
-            tension: 0.3,
-            pointRadius: 4,
-            pointBackgroundColor: "#d97706"
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: { beginAtZero: true, title: { display: true, text: "Water Demand (mm/day)" } }
+      const ctx2 = getEl("kcChart");
+      if (ctx2) {
+        if (kcChart) kcChart.destroy();
+        const [ki, km, ke] = crop.kc;
+        const kcSeries = [ki, ki, (ki + km) / 2, km, km, (km + ke) / 2, ke];
+        const etcSeries = kcSeries.map(k => Number((k * et0).toFixed(2)));
+        kcChart = new Chart(ctx2.getContext("2d"), {
+          type: "line",
+          data: {
+            labels: ["Sowing", "Initial", "Vegetative", "Mid-Season", "Grain Fill", "Ripening", "Harvest"],
+            datasets: [{
+              label: "Crop Water Need ETc (mm/day)",
+              data: etcSeries,
+              borderColor: "#047857",
+              backgroundColor: "rgba(4, 120, 87, 0.15)",
+              fill: true,
+              tension: 0.3,
+              pointRadius: 4,
+              pointBackgroundColor: "#d97706"
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: "Water Demand (mm/day)" } } }
           }
-        }
-      });
+        });
+      }
     }
 
-    // Render 12-Parameter SHC Table (Prototype 2)
+    // Render 12-Parameter SHC Table (Module 2)
     function renderShcTable() {
       const p = currentShcPreset;
       const rows = [
@@ -1326,10 +1342,11 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-slate-50 transition";
         tr.innerHTML = `
-          <td class="py-2.5 px-2 font-bold text-slate-900">${name}</td>
-          <td class="py-2.5 px-2 font-mono font-semibold text-slate-800">${val} ${unit}</td>
-          <td class="py-2.5 px-2 text-slate-600">${thresh}</td>
-          <td class="py-2.5 px-2"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeCol}">${status}</span></td>
+          <td class="py-2.5 px-3 font-bold text-slate-900">${name}</td>
+          <td class="py-2.5 px-3 font-mono font-semibold text-slate-800">${val}</td>
+          <td class="py-2.5 px-3 text-slate-600">${unit}</td>
+          <td class="py-2.5 px-3 text-slate-600">${thresh}</td>
+          <td class="py-2.5 px-3"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeCol}">${status}</span></td>
         `;
         tbody.appendChild(tr);
       });
@@ -1341,9 +1358,10 @@
       getEl("shc-amendment-note").textContent = notes.length ? notes.join(" · ") : "Balanced micronutrients across 12 parameters";
     }
 
-    // Render Pan-India Mandi Price Bands (Prototype 2)
+    // Pan-India Mandi Price Bands (Module 2)
     function renderFpoChart() {
-      const ctx = getEl("fpoChart").getContext("2d");
+      const ctx = getEl("fpoChart");
+      if (!ctx) return;
       if (fpoChart) fpoChart.destroy();
       const zonesData = [
         { name: "Zone 4 (UP)", min: 2180, modal: 2320, max: 2460 },
@@ -1354,7 +1372,7 @@
         { name: "Zone 13 (GJ)", min: 2210, modal: 2350, max: 2490 }
       ];
 
-      fpoChart = new Chart(ctx, {
+      fpoChart = new Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
           labels: zonesData.map(z => z.name),
@@ -1367,21 +1385,18 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          scales: {
-            y: { beginAtZero: false, min: 1900, title: { display: true, text: "Price (₹ / quintal)" } }
-          }
+          scales: { y: { beginAtZero: false, min: 1900, title: { display: true, text: "Price (₹ / quintal)" } } }
         }
       });
 
-      // Populate Accessible Mandi Price Table
       const fpoTbody = getEl("fpo-table-body");
       if (fpoTbody) {
         fpoTbody.innerHTML = zonesData.map(z => `
-          <tr>
-            <td class="p-1.5 border font-semibold">${z.name}</td>
-            <td class="p-1.5 border">₹${z.min}</td>
-            <td class="p-1.5 border font-bold text-emerald-900">₹${z.modal}</td>
-            <td class="p-1.5 border">₹${z.max}</td>
+          <tr class="hover:bg-slate-50">
+            <td class="p-2 font-semibold text-slate-900">${z.name}</td>
+            <td class="p-2 text-slate-700">₹${z.min}</td>
+            <td class="p-2 font-bold text-emerald-900">₹${z.modal}</td>
+            <td class="p-2 text-slate-700">₹${z.max}</td>
           </tr>
         `).join("");
       }
@@ -1399,7 +1414,7 @@
         if (resp.ok) {
           const rec = await resp.json();
           suggBox.innerHTML = `
-            <div class="p-2.5 hover:bg-emerald-50 cursor-pointer border-b border-slate-100" data-district="${rec.address}" data-zone="${rec.zone}" data-lat="${rec.lat || 25.59}" data-lon="${rec.lon || 83.58}" data-n="${rec.expected_soil ? rec.expected_soil.n : 210}" data-p="${rec.expected_soil ? rec.expected_soil.p : 14}" data-k="${rec.expected_soil ? rec.expected_soil.k : 165}" data-oc="${rec.expected_soil ? rec.expected_soil.oc : 0.45}" data-ph="${rec.expected_soil ? rec.expected_soil.ph : 7.2}">
+            <div class="p-3 hover:bg-emerald-50 cursor-pointer border-b border-slate-100" data-district="${rec.address}" data-zone="${rec.zone}" data-lat="${rec.lat || 25.59}" data-lon="${rec.lon || 83.58}">
               <div class="font-bold text-slate-900">${rec.address}</div>
               <div class="text-[11px] text-slate-600">Agro-Zone: ${rec.zone.toUpperCase()} · Top Crops: ${rec.crops.join(", ")}</div>
               <div class="text-[10px] text-emerald-800 font-semibold mt-0.5">Click to auto-fill district soil baseline &amp; coordinates</div>
@@ -1417,7 +1432,7 @@
             fetchLocationAndWeather(lat, lon);
           });
         } else {
-          suggBox.innerHTML = `<div class="p-2 text-slate-500 text-[11px]">No exact district match found in 695 index.</div>`;
+          suggBox.innerHTML = `<div class="p-2.5 text-slate-500 text-xs">No exact district match found in 695 index.</div>`;
           suggBox.classList.remove("hidden");
         }
       } catch (err) {
@@ -1425,107 +1440,43 @@
       }
     }
 
-    // Event Listeners on DOM Load
-    document.addEventListener("DOMContentLoaded", () => {
-      checkBackendHealth();
+    // Simulated OCR Scanning Animation
+    function runSimulatedOcr(presetData) {
+      const dropzone = getEl("shc-dropzone");
+      const scanBeam = getEl("ocr-scan-beam");
+      const progressBox = getEl("ocr-progress-box");
+      const statusText = getEl("ocr-status-text");
+      const percentText = getEl("ocr-percent-text");
+      const progressBar = getEl("ocr-progress-bar");
 
-      ["zone-select", "crop-select", "area-input", "irrigation-select", "et0-input",
-       "delay-slider", "rain-prob-slider", "no-shc-toggle",
-       "soil-n", "soil-p", "soil-k", "soil-oc", "soil-ph", "soil-zn"].forEach(id => {
-        getEl(id).addEventListener("input", runAdvisoryEngine);
-        getEl(id).addEventListener("change", runAdvisoryEngine);
-      });
+      scanBeam.classList.remove("hidden");
+      progressBox.classList.remove("hidden");
 
-      // Simple Farmer Mode 2-Way Sync
-      getEl("sf-zone").addEventListener("change", (e) => { getEl("zone-select").value = e.target.value; runAdvisoryEngine(); });
-      getEl("sf-crop").addEventListener("change", (e) => { getEl("crop-select").value = e.target.value; runAdvisoryEngine(); });
-      getEl("sf-area").addEventListener("input", (e) => { getEl("area-input").value = e.target.value; runAdvisoryEngine(); });
-      getEl("sf-no-shc").addEventListener("change", (e) => { getEl("no-shc-toggle").checked = e.target.checked; runAdvisoryEngine(); });
-      getEl("sf-rain-toggle").addEventListener("change", (e) => { getEl("rain-prob-slider").value = e.target.checked ? 75 : 0; runAdvisoryEngine(); });
+      statusText.textContent = "दस्तावेज़ स्कैन हो रहा है (Reading Document & Structure)...";
+      percentText.textContent = "25%";
+      progressBar.style.width = "25%";
 
-      // Mode Switchers
-      getEl("mode-simple-btn").addEventListener("click", () => setViewMode("simple"));
-      getEl("mode-tech-btn").addEventListener("click", () => setViewMode("tech"));
+      setTimeout(() => {
+        statusText.textContent = "12 मृदा तत्वों की पहचान (Extracting NPK, OC, pH, Micronutrients)...";
+        percentText.textContent = "65%";
+        progressBar.style.width = "65%";
+      }, 500);
 
-      // GPS Location Buttons
-      getEl("btn-detect-gps").addEventListener("click", detectFieldGPS);
-      getEl("sf-gps-btn").addEventListener("click", detectFieldGPS);
+      setTimeout(() => {
+        statusText.textContent = "ICAR व सरकारी मानकों से तुलना (Validating against DAC&FW)...";
+        percentText.textContent = "90%";
+        progressBar.style.width = "90%";
+      }, 950);
 
-      // Manual Coordinates Fetch Button
-      getEl("btn-fetch-coords").addEventListener("click", () => {
-        const lat = parseFloat(getEl("coord-lat").value);
-        const lon = parseFloat(getEl("coord-lon").value);
-        if (!isNaN(lat) && !isNaN(lon)) {
-          fetchLocationAndWeather(lat, lon);
-        } else {
-          alert("Please enter valid Latitude (6 to 38°N) and Longitude (68 to 98°E).");
-        }
-      });
+      setTimeout(() => {
+        scanBeam.classList.add("hidden");
+        progressBox.classList.add("hidden");
 
-      // District Search Input with Debounce
-      getEl("district-search-input").addEventListener("input", (e) => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => searchDistrict(e.target.value), 350);
-      });
-
-      // Voice Audio Narration via Web Speech API
-      getEl("sf-speak-btn").addEventListener("click", () => {
-        if ("speechSynthesis" in window && lastSimpleSpokenText) {
-          window.speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance(lastSimpleSpokenText);
-          u.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
-          u.rate = 0.92;
-          window.speechSynthesis.speak(u);
-        } else {
-          alert("Audio synthesis is not supported on this browser.");
-        }
-      });
-
-      // Tab Switching
-      getEl("tab-btn-1").addEventListener("click", () => {
-        getEl("panel-1").classList.remove("hidden");
-        getEl("panel-2").classList.add("hidden");
-        getEl("tab-btn-1").setAttribute("aria-selected", "true");
-        getEl("tab-btn-2").setAttribute("aria-selected", "false");
-        getEl("tab-btn-1").className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-700 text-white transition shadow";
-        getEl("tab-btn-2").className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white transition";
-      });
-
-      getEl("tab-btn-2").addEventListener("click", () => {
-        getEl("panel-2").classList.remove("hidden");
-        getEl("panel-1").classList.add("hidden");
-        getEl("tab-btn-2").setAttribute("aria-selected", "true");
-        getEl("tab-btn-1").setAttribute("aria-selected", "false");
-        getEl("tab-btn-2").className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-700 text-white transition shadow";
-        getEl("tab-btn-1").className = "dark-focus min-h-[36px] px-3.5 py-1.5 rounded-lg text-xs font-bold text-emerald-200 hover:text-white transition";
-        renderFpoChart();
-      });
-
-      // Language Switcher
-      getEl("lang-toggle").addEventListener("click", () => {
-        currentLang = currentLang === "en" ? "hi" : "en";
-        document.documentElement.lang = currentLang;
-        getEl("lang-toggle").setAttribute("aria-label", `Switch Language (Current: ${currentLang === 'hi' ? 'Hindi' : 'English'})`);
-        setViewMode(viewMode);
-      });
-
-      // SHC Presets
-      document.querySelectorAll(".shc-preset-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const key = btn.getAttribute("data-preset");
-          currentShcPreset = { ...SHC_PRESETS[key] };
-          getEl("coord-lat").value = currentShcPreset.lat;
-          getEl("coord-lon").value = currentShcPreset.lon;
-          renderShcTable();
-        });
-      });
-
-      // Transfer SHC Parameters to Advisory Engine
-      getEl("send-to-engine-btn").addEventListener("click", () => {
-        getEl("zone-select").value = currentShcPreset.zone;
-        getEl("crop-select").value = currentShcPreset.crop;
+        // Apply data
+        currentShcPreset = { ...presetData };
         getEl("coord-lat").value = currentShcPreset.lat;
         getEl("coord-lon").value = currentShcPreset.lon;
+        getEl("zone-select").value = currentShcPreset.zone;
         getEl("soil-n").value = currentShcPreset.n;
         getEl("soil-p").value = currentShcPreset.p;
         getEl("soil-k").value = currentShcPreset.k;
@@ -1533,19 +1484,236 @@
         getEl("soil-ph").value = currentShcPreset.ph;
         getEl("soil-zn").value = currentShcPreset.zn;
         getEl("no-shc-toggle").checked = false;
-        getEl("tab-btn-1").click();
+
+        // Auto select crop
+        const cropCard = document.querySelector(`.crop-card[data-crop="${currentShcPreset.crop}"]`);
+        if (cropCard) cropCard.click();
+
+        renderShcTable();
+        fetchLocationAndWeather(currentShcPreset.lat, currentShcPreset.lon);
+
+        // Switch to direct entry or proceed step
+        getEl("step-3-container").scrollIntoView({ behavior: "smooth" });
+      }, 1300);
+    }
+
+    // Module Switcher (Tab 1 vs Tab 2)
+    function switchModule(mod) {
+      activeModule = mod;
+      const tab1 = getEl("tab-module-1");
+      const tab2 = getEl("tab-module-2");
+      const pan1 = getEl("panel-module-1");
+      const pan2 = getEl("panel-module-2");
+
+      if (mod === "module-1") {
+        pan1.classList.remove("hidden");
+        pan2.classList.add("hidden");
+        tab1.setAttribute("aria-selected", "true");
+        tab2.setAttribute("aria-selected", "false");
+        tab1.className = "dark-focus min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-emerald-700 text-white shadow transition flex items-center gap-1.5";
+        tab2.className = "dark-focus min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-200 hover:text-white transition flex items-center gap-1.5";
+        runAdvisoryEngine();
+      } else {
+        pan2.classList.remove("hidden");
+        pan1.classList.add("hidden");
+        tab2.setAttribute("aria-selected", "true");
+        tab1.setAttribute("aria-selected", "false");
+        tab2.className = "dark-focus min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-emerald-700 text-white shadow transition flex items-center gap-1.5";
+        tab1.className = "dark-focus min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-200 hover:text-white transition flex items-center gap-1.5";
+        renderFpoChart();
+        renderShcTable();
+      }
+    }
+
+    // DOM Ready Event Listeners
+    document.addEventListener("DOMContentLoaded", () => {
+      checkBackendHealth();
+
+      // Land Unit Conversion Listeners
+      getEl("plot-area-val").addEventListener("input", updateLandUnitConverter);
+      getEl("plot-area-unit").addEventListener("change", updateLandUnitConverter);
+
+      // Interactive Crop Buttons
+      document.querySelectorAll(".crop-card").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".crop-card").forEach(c => {
+            c.className = "crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 hover:border-emerald-400 font-bold text-xs flex flex-col items-center gap-1 transition";
+          });
+          btn.className = "crop-card min-h-[44px] p-2.5 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-emerald-950 font-bold text-xs flex flex-col items-center gap-1 shadow-sm transition";
+          getEl("crop-select").value = btn.getAttribute("data-crop");
+          runAdvisoryEngine();
+        });
+      });
+
+      // Direct Entry vs OCR Choice Switcher
+      getEl("btn-choice-direct").addEventListener("click", () => {
+        getEl("section-direct-entry").classList.remove("hidden");
+        getEl("section-ocr-upload").classList.add("hidden");
+        getEl("btn-choice-direct").className = "min-h-[38px] px-3.5 py-1 rounded-lg text-xs font-bold bg-emerald-700 text-white shadow transition";
+        getEl("btn-choice-ocr").className = "min-h-[38px] px-3.5 py-1 rounded-lg text-xs font-bold text-slate-700 hover:text-emerald-900 transition";
+        getEl("btn-choice-direct").setAttribute("aria-checked", "true");
+        getEl("btn-choice-ocr").setAttribute("aria-checked", "false");
+      });
+
+      getEl("btn-choice-ocr").addEventListener("click", () => {
+        getEl("section-ocr-upload").classList.remove("hidden");
+        getEl("section-direct-entry").classList.add("hidden");
+        getEl("btn-choice-ocr").className = "min-h-[38px] px-3.5 py-1 rounded-lg text-xs font-bold bg-emerald-700 text-white shadow transition";
+        getEl("btn-choice-direct").className = "min-h-[38px] px-3.5 py-1 rounded-lg text-xs font-bold text-slate-700 hover:text-emerald-900 transition";
+        getEl("btn-choice-ocr").setAttribute("aria-checked", "true");
+        getEl("btn-choice-direct").setAttribute("aria-checked", "false");
+      });
+
+      // SHC File Drag & Drop
+      const dropzone = getEl("shc-dropzone");
+      const fileInput = getEl("shc-file-input");
+      getEl("btn-browse-file").addEventListener("click", () => fileInput.click());
+      dropzone.addEventListener("click", (e) => {
+        if (e.target !== getEl("btn-browse-file")) fileInput.click();
+      });
+
+      dropzone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropzone.classList.add("border-emerald-600", "bg-emerald-100/50");
+      });
+      dropzone.addEventListener("dragleave", () => {
+        dropzone.classList.remove("border-emerald-600", "bg-emerald-100/50");
+      });
+      dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropzone.classList.remove("border-emerald-600", "bg-emerald-100/50");
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+          runSimulatedOcr(SHC_PRESETS.up);
+        }
+      });
+      fileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files.length) {
+          runSimulatedOcr(SHC_PRESETS.up);
+        }
+      });
+
+      // SHC Presets
+      document.querySelectorAll(".shc-preset-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const key = btn.getAttribute("data-preset");
+          runSimulatedOcr(SHC_PRESETS[key] || SHC_PRESETS.up);
+        });
+      });
+
+      // Irrigation & Fallback Toggles
+      getEl("irrigation-select").addEventListener("change", runAdvisoryEngine);
+      getEl("no-shc-toggle").addEventListener("change", runAdvisoryEngine);
+
+      // Fine-tuning soil inputs
+      ["soil-n", "soil-p", "soil-k", "soil-oc", "soil-ph", "soil-zn"].forEach(id => {
+        getEl(id).addEventListener("input", runAdvisoryEngine);
+      });
+
+      // GPS Detect Button
+      getEl("btn-detect-gps").addEventListener("click", detectFieldGPS);
+
+      // District Search Input with Debounce
+      getEl("district-search-input").addEventListener("input", (e) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => searchDistrict(e.target.value), 350);
+      });
+
+      // Step 2 Proceed Button
+      getEl("btn-proceed-calculate").addEventListener("click", () => {
+        runAdvisoryEngine();
+        getEl("step-3-container").scrollIntoView({ behavior: "smooth" });
+      });
+
+      // Web Speech Synthesis Audio
+      function speakPlan() {
+        if ("speechSynthesis" in window && lastSpokenPlanText) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(lastSpokenPlanText);
+          u.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
+          u.rate = 0.92;
+          window.speechSynthesis.speak(u);
+        } else {
+          alert(currentLang === "hi" ? "इस ब्राउज़र में ऑडियो सुविधा उपलब्ध नहीं है।" : "Audio synthesis is not supported in this browser.");
+        }
+      }
+      getEl("btn-listen-speech").addEventListener("click", speakPlan);
+      getEl("btn-listen-speech-2").addEventListener("click", speakPlan);
+
+      // WhatsApp Share
+      getEl("btn-share-whatsapp").addEventListener("click", shareAdvisoryOnWhatsApp);
+
+      // Print Slip Button
+      getEl("btn-print-slip").addEventListener("click", () => {
+        if (!lastCalculatedPlan) runAdvisoryEngine();
+        window.print();
+      });
+
+      // Module Navigation Tabs
+      getEl("tab-module-1").addEventListener("click", () => switchModule("module-1"));
+      getEl("tab-module-2").addEventListener("click", () => switchModule("module-2"));
+
+      // Send to Engine Button in Module 2
+      getEl("send-to-engine-btn").addEventListener("click", () => {
+        getEl("coord-lat").value = currentShcPreset.lat;
+        getEl("coord-lon").value = currentShcPreset.lon;
+        getEl("zone-select").value = currentShcPreset.zone;
+        getEl("soil-n").value = currentShcPreset.n;
+        getEl("soil-p").value = currentShcPreset.p;
+        getEl("soil-k").value = currentShcPreset.k;
+        getEl("soil-oc").value = currentShcPreset.oc;
+        getEl("soil-ph").value = currentShcPreset.ph;
+        getEl("soil-zn").value = currentShcPreset.zn;
+        getEl("no-shc-toggle").checked = false;
+
+        const cropCard = document.querySelector(`.crop-card[data-crop="${currentShcPreset.crop}"]`);
+        if (cropCard) cropCard.click();
+
+        switchModule("module-1");
         fetchLocationAndWeather(currentShcPreset.lat, currentShcPreset.lon);
       });
 
-      // Mid-Season Closed-Loop Assimilation
+      // Bilingual Language Toggle
+      getEl("lang-toggle").addEventListener("click", () => {
+        currentLang = currentLang === "hi" ? "en" : "hi";
+        document.documentElement.lang = currentLang;
+        getEl("lang-toggle-text").textContent = currentLang === "hi" ? "हिन्दी / EN" : "English / HI";
+
+        const isHi = currentLang === "hi";
+        getEl("farmer-hero-title").textContent = isHi ? "आपकी खेती की सीधी, सटीक और आसान सलाह" : "Simple, Accurate & Transparent Farm Advisory";
+        getEl("farmer-hero-sub").textContent = isHi
+          ? "अपना खेत या मिट्टी जांच कार्ड अपलोड करें, मौसम के अनुसार सटीक खाद (DAP, यूरिया, पोटाश) की बोरियां जानें और पानी की सही योजना पाएं।"
+          : "Upload your Soil Health Card or enter plot details to know exact bags of DAP, Urea, and Potash with weather-aware irrigation schedules.";
+        getEl("lbl-detect-gps").textContent = isHi ? "मेरा खेत पहचानें (1-Click GPS)" : "Pinpoint My Farm (1-Click GPS)";
+        getEl("lbl-listen-speech").textContent = isHi ? "सलाह बोलकर सुनें" : "Listen in Speech";
+        getEl("lbl-dist-search").textContent = isHi ? "जिले का नाम खोजें (695 जिलों का डेटाबेस)" : "Search District Name (695 Districts Index)";
+        getEl("lbl-crop-cards").textContent = isHi ? "फसल चुनें (Select Crop)" : "Select Target Crop";
+        getEl("lbl-noshc-text").textContent = isHi ? "मेरे पास मिट्टी जांच कार्ड नहीं है (इलाके के ब्लॉक औसत से सलाह लें)" : "I don't have a Soil Card (Use regional block median)";
+        getEl("lbl-step1-head").textContent = isHi ? "कदम 1: खेत की जानकारी दें या मिट्टी कार्ड अपलोड करें" : "Step 1: Land Details or Soil Health Card Upload";
+        getEl("lbl-step2-head").textContent = isHi ? "कदम 2: मौसम सुरक्षा जांच व गणना" : "Step 2: Weather Guardrail & Advisory Proceed";
+        getEl("lbl-step3-head").textContent = isHi ? "कदम 3: खेत में क्या करें (सरल व स्पष्ट कार्य योजना)" : "Step 3: What To Do on Your Farm (Action Plan)";
+        getEl("lbl-proceed-calc").textContent = isHi ? "सटीक खाद व पानी की सलाह तैयार करें (Calculate Advisory Plan) →" : "Calculate Accurate Advisory Plan →";
+
+        updateLandUnitConverter();
+        if (currentWeatherData) fetchLocationAndWeather(parseFloat(getEl("coord-lat").value), parseFloat(getEl("coord-lon").value));
+      });
+
+      // Mid-Season Assimilation in Module 2
       getEl("assim-btn").addEventListener("click", () => {
         const ev = getEl("assim-event").value;
         const note = getEl("assim-note").value.trim();
         const prefix = note ? `[${note}] ` : "";
+        const isHi = currentLang === "hi";
         const msgMap = {
-          heavy_rain: prefix + "Assimilated >25mm unseasonal rainfall: Urea top-dressing paused 72h, field drainage check flagged, and 20mm credited to irrigation balance.",
-          yellowing:  prefix + "Assimilated leaf yellowing: Potential N/Zn deficiency detected—cross-check Zinc (<0.5 ppm) or prepare 2% foliar Urea spray; flagged for KVK/FPO agronomist.",
-          dry_spell:  prefix + "Assimilated 10-day dry spell: Moved next irrigation up by 3 days via FAO-56 water balance; advised mulching and drought-tolerant varietal guidance."
+          heavy_rain: isHi
+            ? prefix + "भारी वर्षा (>25 मिमी) दर्ज: यूरिया छिड़काव 72 घंटे के लिए स्थगित, जल निकासी की जांच, तथा सिंचाई बजट में 20 मिमी की बचत जोड़ी गई।"
+            : prefix + "Assimilated >25mm unseasonal rainfall: Urea top-dressing paused 72h, field drainage check flagged, and 20mm credited to irrigation balance.",
+          yellowing: isHi
+            ? prefix + "पत्तियों में पीलापन दर्ज: नाइट्रोजन या जिंक की संभावित कमी—जिंक सल्फेट अथवा 2% यूरिया घोल के पर्णीय छिड़काव की सिफारिश।"
+            : prefix + "Assimilated leaf yellowing: Potential N/Zn deficiency detected—cross-check Zinc (<0.5 ppm) or prepare 2% foliar Urea spray.",
+          dry_spell: isHi
+            ? prefix + "10 दिन का सूखा दर्ज: FAO-56 जल संतुलन मॉडल के अनुसार अगली सिंचाई 3 दिन पहले तय की गई; नमी संरक्षण हेतु पलवार (mulching) की सलाह।"
+            : prefix + "Assimilated 10-day dry spell: Moved next irrigation up by 3 days via FAO-56 water balance; advised mulching and drought-tolerant guidance."
         };
         getEl("assim-result").textContent = msgMap[ev];
         if (ev === "heavy_rain") {
@@ -1556,7 +1724,8 @@
         runAdvisoryEngine();
       });
 
-      // Initial execution
+      // Initial Execution
+      updateLandUnitConverter();
       renderShcTable();
       fetchLocationAndWeather(25.5928, 83.5770);
     });
