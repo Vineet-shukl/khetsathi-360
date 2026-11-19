@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.env
+data/raw/*
+!data/raw/.gitkeep
+tracker_download.xlsx
+*.log
+

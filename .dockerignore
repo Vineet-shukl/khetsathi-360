@@ -1,0 +1,15 @@
+data/
+tests/
+ml_pipeline/
+.git/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+venv/
+env/
+.env
+tracker_download.xlsx
+*.csv
+scratch_*.py

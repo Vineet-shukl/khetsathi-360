@@ -1,0 +1,18 @@
+{
+  "name": "KhetSathi 360",
+  "description": "AI-Powered Precision Agronomy Decision Support Platform for 140M Indian Smallholders",
+  "keywords": ["agritech", "fastapi", "machine-learning", "precision-agriculture", "india", "icar"],
+  "image": "heroku/python",
+  "env": {
+    "ENABLE_ML_RESIDUAL": {
+      "description": "Enable ML residual layer on top of deterministic ICAR rules",
+      "value": "true"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}

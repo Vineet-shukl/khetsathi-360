@@ -1,0 +1,9 @@
+{
+  "model_version": "hybrid-ridge-v2-real-seed42",
+  "artifact_sha256": "12e3a28155e6",
+  "seed": 42,
+  "split_year": 2015,
+  "yield_model": "yield-ridge-v1-real",
+  "total_districts": 695,
+  "total_samples": 5646
+}
