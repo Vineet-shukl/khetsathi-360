@@ -5,7 +5,6 @@ Provides 10m-resolution satellite vegetation index (NDVI, NDRE) and 250m gridded
 soil physical properties (clay fraction, bulk density, CEC) for precision field monitoring.
 """
 import math
-from typing import Dict, Optional
 from app.contracts import SatelliteVegetationIndex
 
 
