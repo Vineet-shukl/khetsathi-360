@@ -231,6 +231,49 @@ class AnalyticsCoverageResponse(BaseModel):
     zones_covered: List[str]
 
 
+class OrganicInputPlan(BaseModel):
+    vermicompost_tonnes: float
+    vermicompost_bags_50kg: float
+    bio_npk_consortia_litres: float
+    jeevamrut_litres: float
+    neem_cake_kg: float
+    neem_cake_bags_50kg: float
+    bio_control_agent: str
+    application_guidelines_hi: List[str]
+    application_guidelines_en: List[str]
+
+
+class OrganicEconomics(BaseModel):
+    crop: CropId
+    area_ha: float
+    conventional_input_cost_inr: float
+    organic_input_cost_inr: float
+    input_cost_savings_inr: float
+    organic_market_premium_pct: float
+    expected_organic_price_per_q_inr: float
+    conventional_net_profit_inr: float
+    organic_net_profit_inr: float
+    net_profit_increase_inr: float
+    pkvy_annual_assistance_inr: float
+    total_farmer_benefit_inr: float
+
+
+class OrganicSupplierRoute(BaseModel):
+    channel_name: str
+    channel_type: Literal["Government Portal", "Buyer Network", "Certification System", "FPO Cluster"]
+    url: str
+    contact_info: str
+    benefit_description_hi: str
+    benefit_description_en: str
+
+
+class OrganicAdvisoryResponse(BaseModel):
+    input_plan: OrganicInputPlan
+    economics: OrganicEconomics
+    supplier_routes: List[OrganicSupplierRoute]
+    conversion_timeline: List[str]
+
+
 AdvisoryResponse.model_rebuild()
 
 

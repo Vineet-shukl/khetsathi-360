@@ -17,8 +17,10 @@ from app.contracts import (
     AdvisoryRequest,
     AdvisoryResponse,
     AnalyticsCoverageResponse,
+    CropId,
     InvestorMetricsResponse,
     LocationSearchResult,
+    OrganicAdvisoryResponse,
     ROIEstimate,
     ROIEstimateRequest,
     SatelliteVegetationIndex,
@@ -275,6 +277,20 @@ async def ocr_upload_shc(
         raise HTTPException(status_code=422, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Soil Health Card extraction error: {e}")
+
+
+@app.get("/api/v1/organic/advisory", response_model=OrganicAdvisoryResponse)
+def get_organic_advisory_endpoint(
+    crop: CropId = Query("wheat", description="Target crop identifier"),
+    area_ha: float = Query(1.0, ge=0.05, le=100.0, description="Field area in hectares"),
+    conventional_profit: float = Query(0.0, ge=0.0, description="Conventional net profit benchmark in INR")
+):
+    """
+    Returns complete bio-input schedule, comparative cost-benefit economics,
+    PKVY subsidies, and direct supplier/FPO market routes to motivate organic transition.
+    """
+    from app.organic_engine import calculate_organic_advisory
+    return calculate_organic_advisory(crop=crop, area_ha=area_ha, current_conventional_profit=conventional_profit)
 
 
 # ---------------------------------------------------------------------------
