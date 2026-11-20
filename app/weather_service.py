@@ -11,22 +11,24 @@ for any latitude/longitude in India without requiring third-party API keys:
 
 Includes TTL caching (15 minutes) and graceful climatological fallback if offline.
 """
+
+import json
 import logging
 import time
 import urllib.parse
 import urllib.request
-import json
-from typing import Any, Dict, List, Optional, Tuple
-from app.contracts import WeatherForecastResponse, WeatherIrregularity, LocationSearchResult
+from typing import Any
+
+from app.contracts import LocationSearchResult, WeatherForecastResponse, WeatherIrregularity
 
 logger = logging.getLogger(__name__)
 
 # In-memory TTL cache: (rounded_lat, rounded_lon, lang) -> (timestamp, WeatherForecastResponse)
-_WEATHER_CACHE: Dict[Tuple[float, float, str], Tuple[float, WeatherForecastResponse]] = {}
+_WEATHER_CACHE: dict[tuple[float, float, str], tuple[float, WeatherForecastResponse]] = {}
 CACHE_TTL_SECONDS = 900.0  # 15 minutes
 
 # Geocoding cache: query_lower -> (timestamp, List[LocationSearchResult])
-_GEOCODE_CACHE: Dict[str, Tuple[float, List[LocationSearchResult]]] = {}
+_GEOCODE_CACHE: dict[str, tuple[float, list[LocationSearchResult]]] = {}
 GEOCODE_TTL_SECONDS = 1800.0  # 30 minutes
 
 # WMO Weather interpretation codes (WMO 4501)
@@ -61,13 +63,13 @@ def _get_wmo_description(code: int, lang: str = "en") -> str:
 
 
 def evaluate_weather_irregularities(
-    current_temp_c: Optional[float],
-    relative_humidity_pct: Optional[float],
+    current_temp_c: float | None,
+    relative_humidity_pct: float | None,
     et0_fao_mm_day: float,
     rain_prob_48h_pct: int,
     precipitation_sum_mm: float,
     language: str = "en",
-) -> Tuple[bool, bool, bool, bool, List[WeatherIrregularity]]:
+) -> tuple[bool, bool, bool, bool, list[WeatherIrregularity]]:
     """
     Evaluates 4 critical microclimatic irregularities and produces plain-language actionable advisories:
       1. Heavy Rain: rain_prob_48h > 60% or precip_sum >= 25mm -> Hold urea top-dressing.
@@ -80,7 +82,7 @@ def evaluate_weather_irregularities(
     high_et0 = et0_fao_mm_day >= 5.0
     high_humidity = relative_humidity_pct is not None and relative_humidity_pct >= 80.0
 
-    irregularities: List[WeatherIrregularity] = []
+    irregularities: list[WeatherIrregularity] = []
 
     if hold_urea:
         irregularities.append(
@@ -264,8 +266,8 @@ def fetch_live_weather(
 def search_pinpoint_locations(
     query: str,
     count: int = 8,
-    district_records: Optional[List[Dict[str, Any]]] = None,
-) -> List[LocationSearchResult]:
+    district_records: list[dict[str, Any]] | None = None,
+) -> list[LocationSearchResult]:
     """
     Searches villages, tehsils, mandis, towns, and districts across India (Blinkit/Swiggy style):
       1. Calls Open-Meteo Geocoding API with country_code=IN.
@@ -283,7 +285,7 @@ def search_pinpoint_locations(
         if now - cached_time < GEOCODE_TTL_SECONDS:
             return cached_results
 
-    results: List[LocationSearchResult] = []
+    results: list[LocationSearchResult] = []
     seen_coords = set()
 
     # 1. Search Open-Meteo Geocoding for hyper-local locality/village

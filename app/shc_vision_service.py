@@ -5,12 +5,13 @@ Extracts official 12-parameter DAC&FW Soil Health Card laboratory values
 (N, P, K, Organic Carbon, pH, Zinc, Sulphur, EC) from uploaded smartphone photos or PDFs.
 Uses Gemini 1.5 Flash Vision REST API via httpx, with an intelligent fallback when offline.
 """
+
 import base64
 import json
 import logging
 import os
 import re
-from typing import Optional
+
 import httpx
 
 from app.contracts import SHCOCRResponse
@@ -50,9 +51,7 @@ Do not include markdown ticks, extra commentary, or trailing text. Output pure J
 
 
 async def extract_shc_from_image(
-    image_bytes: bytes,
-    mime_type: str = "image/jpeg",
-    preferred_district: Optional[str] = None
+    image_bytes: bytes, mime_type: str = "image/jpeg", preferred_district: str | None = None
 ) -> SHCOCRResponse:
     """
     Extracts numerical soil values from an image using Gemini Vision API if key exists,
@@ -67,20 +66,20 @@ async def extract_shc_from_image(
         try:
             b64_data = base64.b64encode(image_bytes).decode("utf-8")
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-            
+
             payload = {
                 "contents": [
                     {
                         "parts": [
                             {"inline_data": {"mime_type": mime_type, "data": b64_data}},
-                            {"text": VISION_SYSTEM_PROMPT}
+                            {"text": VISION_SYSTEM_PROMPT},
                         ]
                     }
                 ],
                 "generationConfig": {
                     "response_mime_type": "application/json",
                     "temperature": 0.1,
-                }
+                },
             }
 
             async with httpx.AsyncClient(timeout=25.0) as client:
@@ -105,10 +104,12 @@ async def extract_shc_from_image(
                             state=parsed.get("state"),
                             confidence_pct=float(parsed.get("confidence_pct", 95.0)),
                             extracted_via="gemini_1.5_flash_vision",
-                            raw_summary="Successfully scanned with Gemini 1.5 Flash Multimodal Vision."
+                            raw_summary="Successfully scanned with Gemini 1.5 Flash Multimodal Vision.",
                         )
         except Exception as e:
-            logger.warning("Gemini Vision API call failed or timed out: %s; falling back to verified regional parser.", e)
+            logger.warning(
+                "Gemini Vision API call failed or timed out: %s; falling back to verified regional parser.", e
+            )
 
     # Intelligent agronomic baseline fallback (for offline or local environments)
     # Calibrated to real Indo-Gangetic Plains / DAC&FW benchmark distributions
@@ -125,5 +126,5 @@ async def extract_shc_from_image(
         state="Uttar Pradesh",
         confidence_pct=92.5,
         extracted_via="verified_dacfw_regional_extractor",
-        raw_summary="Soil parameters mapped to DAC&FW Middle Gangetic Alluvial benchmark."
+        raw_summary="Soil parameters mapped to DAC&FW Middle Gangetic Alluvial benchmark.",
     )

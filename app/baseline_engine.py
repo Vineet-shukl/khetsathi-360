@@ -1,54 +1,93 @@
-from typing import Dict, List, Tuple
 from app.contracts import AdvisoryRequest, ProductPlan
 
-ZONES: Dict[str, Dict] = {
+ZONES: dict[str, dict] = {
     "zone4": {
         "name": "Middle Gangetic Plains (E. UP, Bihar)",
-        "varieties": {"wheat": "HD-2967 / DBW-187", "rice": "MTU-7029 / Sahbhagi Dhan", "maize": "DHM-117", "mustard": "RH-749", "gram": "JG-14", "sugarcane": "Co-0238"},
+        "varieties": {
+            "wheat": "HD-2967 / DBW-187",
+            "rice": "MTU-7029 / Sahbhagi Dhan",
+            "maize": "DHM-117",
+            "mustard": "RH-749",
+            "gram": "JG-14",
+            "sugarcane": "Co-0238",
+        },
         "baseline_soil": {"n": 240.0, "p": 15.0, "k": 180.0, "oc": 0.45, "ph": 7.2, "zn": 0.55},
     },
     "zone6": {
         "name": "Trans-Gangetic Plains (Punjab, Haryana)",
-        "varieties": {"wheat": "PBW-826 / HD-3086", "rice": "PR-126 / Pusa Basmati 1121", "maize": "PMH-1", "mustard": "RH-725", "gram": "PBG-7", "sugarcane": "CoJ-85"},
+        "varieties": {
+            "wheat": "PBW-826 / HD-3086",
+            "rice": "PR-126 / Pusa Basmati 1121",
+            "maize": "PMH-1",
+            "mustard": "RH-725",
+            "gram": "PBG-7",
+            "sugarcane": "CoJ-85",
+        },
         "baseline_soil": {"n": 290.0, "p": 22.0, "k": 195.0, "oc": 0.52, "ph": 7.6, "zn": 0.60},
     },
     "zone8": {
         "name": "Central Plateau & Hills (MP, Bundelkhand)",
-        "varieties": {"wheat": "HI-1544 / MP-3336", "rice": "JR-201", "maize": "JM-216", "mustard": "Pusa Mustard-25", "gram": "JG-11 / RVG-202", "sugarcane": "CoJN-86572"},
+        "varieties": {
+            "wheat": "HI-1544 / MP-3336",
+            "rice": "JR-201",
+            "maize": "JM-216",
+            "mustard": "Pusa Mustard-25",
+            "gram": "JG-11 / RVG-202",
+            "sugarcane": "CoJN-86572",
+        },
         "baseline_soil": {"n": 215.0, "p": 13.0, "k": 230.0, "oc": 0.44, "ph": 7.4, "zn": 0.48},
     },
     "zone9": {
         "name": "Western Plateau & Hills (Vidarbha, MH)",
-        "varieties": {"wheat": "NIAW-1994", "rice": "PKV-HMT", "maize": "Rajarshi", "mustard": "Shatabdi", "gram": "Jaki-9218", "sugarcane": "Co-86032"},
+        "varieties": {
+            "wheat": "NIAW-1994",
+            "rice": "PKV-HMT",
+            "maize": "Rajarshi",
+            "mustard": "Shatabdi",
+            "gram": "Jaki-9218",
+            "sugarcane": "Co-86032",
+        },
         "baseline_soil": {"n": 185.0, "p": 10.0, "k": 285.0, "oc": 0.39, "ph": 8.1, "zn": 0.42},
     },
     "zone10": {
         "name": "Southern Plateau & Hills (KA, AP, TN)",
-        "varieties": {"wheat": "UAS-304", "rice": "BPT-5204 / RNR-15048", "maize": "NAH-1137", "mustard": "Local Check", "gram": "JG-11", "sugarcane": "Co-86032"},
+        "varieties": {
+            "wheat": "UAS-304",
+            "rice": "BPT-5204 / RNR-15048",
+            "maize": "NAH-1137",
+            "mustard": "Local Check",
+            "gram": "JG-11",
+            "sugarcane": "Co-86032",
+        },
         "baseline_soil": {"n": 225.0, "p": 16.0, "k": 210.0, "oc": 0.48, "ph": 7.0, "zn": 0.50},
     },
     "zone13": {
         "name": "Gujarat Plains & Hills (Gujarat)",
-        "varieties": {"wheat": "GW-496", "rice": "GR-11", "maize": "GAYMH-1", "mustard": "GM-3", "gram": "GG-5", "sugarcane": "CoN-05071"},
+        "varieties": {
+            "wheat": "GW-496",
+            "rice": "GR-11",
+            "maize": "GAYMH-1",
+            "mustard": "GM-3",
+            "gram": "GG-5",
+            "sugarcane": "CoN-05071",
+        },
         "baseline_soil": {"n": 205.0, "p": 14.0, "k": 240.0, "oc": 0.41, "ph": 7.7, "zn": 0.46},
     },
 }
 
-CROPS: Dict[str, Dict] = {
-    "wheat":     {"n": 120.0, "p": 60.0, "k": 40.0, "kc_mid": 1.15},
-    "rice":      {"n": 120.0, "p": 60.0, "k": 60.0, "kc_mid": 1.20},
-    "maize":     {"n": 120.0, "p": 60.0, "k": 40.0, "kc_mid": 1.20},
-    "mustard":   {"n": 80.0,  "p": 40.0, "k": 40.0, "kc_mid": 1.10},
-    "gram":      {"n": 20.0,  "p": 40.0, "k": 20.0, "kc_mid": 1.05},
+CROPS: dict[str, dict] = {
+    "wheat": {"n": 120.0, "p": 60.0, "k": 40.0, "kc_mid": 1.15},
+    "rice": {"n": 120.0, "p": 60.0, "k": 60.0, "kc_mid": 1.20},
+    "maize": {"n": 120.0, "p": 60.0, "k": 40.0, "kc_mid": 1.20},
+    "mustard": {"n": 80.0, "p": 40.0, "k": 40.0, "kc_mid": 1.10},
+    "gram": {"n": 20.0, "p": 40.0, "k": 20.0, "kc_mid": 1.05},
     "sugarcane": {"n": 250.0, "p": 85.0, "k": 85.0, "kc_mid": 1.25},
 }
 
 
-def resolve_soil(req: AdvisoryRequest) -> Tuple[Dict[str, float], bool]:
+def resolve_soil(req: AdvisoryRequest) -> tuple[dict[str, float], bool]:
     base = ZONES[req.zone]["baseline_soil"]
-    if req.soil is None or all(
-        getattr(req.soil, f) is None for f in ("n_kg_ha", "p_kg_ha", "k_kg_ha")
-    ):
+    if req.soil is None or all(getattr(req.soil, f) is None for f in ("n_kg_ha", "p_kg_ha", "k_kg_ha")):
         return dict(base), True
 
     resolved = {
@@ -62,9 +101,13 @@ def resolve_soil(req: AdvisoryRequest) -> Tuple[Dict[str, float], bool]:
     return resolved, False
 
 
-def compute_baseline_npk_ha(req: AdvisoryRequest, soil: Dict[str, float]) -> Tuple[float, float, float]:
+def compute_baseline_npk_ha(req: AdvisoryRequest, soil: dict[str, float]) -> tuple[float, float, float]:
     crop = CROPS[req.crop]
-    n_mult = 1.05 if (soil["n"] < 280 and soil["oc"] < 0.5) else (0.75 if soil["n"] > 560 else (0.90 if soil["n"] >= 280 else 1.0))
+    n_mult = (
+        1.05
+        if (soil["n"] < 280 and soil["oc"] < 0.5)
+        else (0.75 if soil["n"] > 560 else (0.90 if soil["n"] >= 280 else 1.0))
+    )
     p_mult = 1.15 if soil["p"] < 10 else (0.75 if soil["p"] > 25 else 1.0)
     k_mult = 1.15 if soil["k"] < 120 else (0.70 if soil["k"] > 280 else 1.0)
 
@@ -95,8 +138,8 @@ def convert_to_bags(req_n_total: float, req_p_total: float, req_k_total: float) 
     )
 
 
-def evaluate_soil_alerts(soil: Dict[str, float]) -> List[str]:
-    alerts: List[str] = []
+def evaluate_soil_alerts(soil: dict[str, float]) -> list[str]:
+    alerts: list[str] = []
     if soil["ph"] < 5.5:
         alerts.append(f"Acidic soil (pH {soil['ph']:.1f} < 5.5): apply agricultural lime before basal dose.")
     elif soil["ph"] > 8.5:

@@ -8,25 +8,24 @@ Evaluates trained artifacts against realistic production promotion gates:
   4. District spatial model: N-Low / P-Low MAE <= 22.0, strictly beats national mean
   5. Slice fairness across all 6 agro-climatic zones
 """
+
 import json
+import sys
 import time
 from pathlib import Path
-import sys
-from typing import Dict
 
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from app.district_soil_model import haversine_km
+from app.ml_residual import ResidualMLModel
+from app.yield_model import TYPICAL_YIELDS, YieldModel
 from ml_pipeline.train import (
-    SEED,
     SPLIT_YEAR,
     load_real_agronomic_dataset,
 )
-from app.ml_residual import ResidualMLModel
-from app.district_soil_model import haversine_km
-from app.yield_model import YieldModel, TYPICAL_YIELDS
 
 # ---------------------------------------------------------------------------
 # Promotion Gates
@@ -50,7 +49,7 @@ PROMOTION_GATES = {
 # ---------------------------------------------------------------------------
 # 1. Yield Model Evaluation
 # ---------------------------------------------------------------------------
-def evaluate_yield_model() -> Dict:
+def evaluate_yield_model() -> dict:
     bundle_path = ROOT / "artifacts" / "yield_model_bundle.json"
     model = YieldModel(bundle_path)
 
@@ -62,7 +61,7 @@ def evaluate_yield_model() -> Dict:
 
     for c in crops_tested:
         for d in sample_districts:
-            pred_y, (ci_low, ci_high), hist_y, imp_pct = model.predict_yield(c, district=d)
+            pred_y, (ci_low, ci_high), hist_y, _imp_pct = model.predict_yield(c, district=d)
             if pred_y > 0 and hist_y > 0:
                 valid_predictions += 1
             if ci_low <= pred_y <= ci_high:
@@ -94,7 +93,7 @@ def evaluate_yield_model() -> Dict:
 # ---------------------------------------------------------------------------
 # 1. District Spatial IDW Evaluation
 # ---------------------------------------------------------------------------
-def evaluate_real_district_model() -> Dict:
+def evaluate_real_district_model() -> dict:
     bundle_path = ROOT / "artifacts" / "district_soil_bundle.json"
     data = json.loads(bundle_path.read_text(encoding="utf-8"))
     records = data["records"]
@@ -137,22 +136,16 @@ def evaluate_real_district_model() -> Dict:
         "baseline_p_low_mae": round(float(np.mean(base_err_p)), 2),
         "baseline_k_low_mae": round(float(np.mean(base_err_k)), 2),
     }
-    assert metrics["n_low_mae"] <= PROMOTION_GATES["district_n_low_mae_max"], (
-        f"N-Low gate failed: {metrics}"
-    )
-    assert metrics["p_low_mae"] <= PROMOTION_GATES["district_p_low_mae_max"], (
-        f"P-Low gate failed: {metrics}"
-    )
-    assert metrics["n_low_mae"] < metrics["baseline_n_low_mae"], (
-        "Model must beat national mean"
-    )
+    assert metrics["n_low_mae"] <= PROMOTION_GATES["district_n_low_mae_max"], f"N-Low gate failed: {metrics}"
+    assert metrics["p_low_mae"] <= PROMOTION_GATES["district_p_low_mae_max"], f"P-Low gate failed: {metrics}"
+    assert metrics["n_low_mae"] < metrics["baseline_n_low_mae"], "Model must beat national mean"
     return metrics
 
 
 # ---------------------------------------------------------------------------
 # 2. ML Residual Model Evaluation (Temporal Holdout)
 # ---------------------------------------------------------------------------
-def run_evaluation() -> Dict:
+def run_evaluation() -> dict:
     dist_metrics = evaluate_real_district_model()
     yield_metrics = evaluate_yield_model()
 
@@ -180,7 +173,7 @@ def run_evaluation() -> Dict:
     improvement_pct = ((baseline_mae - ml_mae) / baseline_mae) * 100.0 if baseline_mae > 0 else 0.0
 
     # Per-zone slice evaluation
-    zone_maes: Dict[str, float] = {}
+    zone_maes: dict[str, float] = {}
     for z in sorted(set(z_test)):
         mask = np.array([zi == z for zi in z_test])
         if mask.sum() > 0:
@@ -191,7 +184,7 @@ def run_evaluation() -> Dict:
     metrics = {
         "district_spatial_eval": dist_metrics,
         "yield_eval": yield_metrics,
-        "n_test_samples": int(len(X_test)),
+        "n_test_samples": len(X_test),
         "split_boundary": f"years > {SPLIT_YEAR}",
         "baseline_mae": round(baseline_mae, 3),
         "ml_mae": round(ml_mae, 3),
@@ -207,12 +200,10 @@ def run_evaluation() -> Dict:
         f"< {PROMOTION_GATES['mae_improvement_pct_min']}% required"
     )
     assert metrics["p95_latency_ms"] <= PROMOTION_GATES["p95_latency_ms_max"], (
-        f"Latency gate failed: {metrics['p95_latency_ms']:.4f} ms "
-        f"> {PROMOTION_GATES['p95_latency_ms_max']} ms"
+        f"Latency gate failed: {metrics['p95_latency_ms']:.4f} ms > {PROMOTION_GATES['p95_latency_ms_max']} ms"
     )
     assert metrics["max_zone_mae"] <= PROMOTION_GATES["max_zone_mae"], (
-        f"Zone slice gate failed: max zone MAE {metrics['max_zone_mae']:.3f} "
-        f"> {PROMOTION_GATES['max_zone_mae']}"
+        f"Zone slice gate failed: max zone MAE {metrics['max_zone_mae']:.3f} > {PROMOTION_GATES['max_zone_mae']}"
     )
 
     print("=" * 60)
@@ -220,8 +211,12 @@ def run_evaluation() -> Dict:
     print(f"  Holdout Test Samples: {metrics['n_test_samples']} ({metrics['split_boundary']})")
     print(f"  Naive Baseline MAE:   {metrics['baseline_mae']:.3f} kg N/ha")
     print(f"  ML Residual MAE:      {metrics['ml_mae']:.3f} kg N/ha")
-    print(f"  MAE Improvement:      {metrics['mae_improvement_pct']:.1f}% (gate >= {PROMOTION_GATES['mae_improvement_pct_min']}%)")
-    print(f"  p95 Latency:          {metrics['p95_latency_ms']:.4f} ms (gate <= {PROMOTION_GATES['p95_latency_ms_max']} ms)")
+    print(
+        f"  MAE Improvement:      {metrics['mae_improvement_pct']:.1f}% (gate >= {PROMOTION_GATES['mae_improvement_pct_min']}%)"
+    )
+    print(
+        f"  p95 Latency:          {metrics['p95_latency_ms']:.4f} ms (gate <= {PROMOTION_GATES['p95_latency_ms_max']} ms)"
+    )
     print(f"  Max Zone MAE:         {metrics['max_zone_mae']:.3f} kg N/ha (gate <= {PROMOTION_GATES['max_zone_mae']})")
     print(f"  Zone Breakdown:       {zone_maes}")
     print(f"  District N-Low MAE:   {dist_metrics['n_low_mae']} (baseline: {dist_metrics['baseline_n_low_mae']})")

@@ -1,6 +1,8 @@
 import io
 import unittest
+
 from fastapi.testclient import TestClient
+
 from app.api import app
 
 
@@ -14,7 +16,7 @@ class TestSHCVisionOCR(unittest.TestCase):
         resp = self.client.post(
             "/api/v1/shc/ocr-upload",
             files={"file": ("soil_health_card.jpg", dummy_image, "image/jpeg")},
-            params={"district": "Ghazipur"}
+            params={"district": "Ghazipur"},
         )
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
@@ -30,10 +32,7 @@ class TestSHCVisionOCR(unittest.TestCase):
     def test_shc_ocr_upload_empty_file(self):
         """Verifies empty uploaded file returns 422."""
         empty_file = io.BytesIO(b"")
-        resp = self.client.post(
-            "/api/v1/shc/ocr-upload",
-            files={"file": ("empty.jpg", empty_file, "image/jpeg")}
-        )
+        resp = self.client.post("/api/v1/shc/ocr-upload", files={"file": ("empty.jpg", empty_file, "image/jpeg")})
         self.assertEqual(resp.status_code, 422)
 
 

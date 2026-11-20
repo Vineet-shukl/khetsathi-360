@@ -1,5 +1,7 @@
 import unittest
+
 from fastapi.testclient import TestClient
+
 from app.api import app
 from app.satellite_service import calculate_satellite_vegetation
 
@@ -43,7 +45,7 @@ class TestSatelliteAndSoilGrids(unittest.TestCase):
             "sowing_delay_days": 5,
             "irrigation": "tubewell",
             "et0_mm_day": 3.0,
-            "rain_prob_48h_pct": 10
+            "rain_prob_48h_pct": 10,
         }
         resp = self.client.post("/api/v1/advisory", json=payload)
         self.assertEqual(resp.status_code, 200)

@@ -11,31 +11,32 @@ Verifies:
   7. API health endpoint reporting model version and real data provenance
   8. Agronomic safety guardrails: strict ±15% bound enforcement
 """
+
 import os
-from pathlib import Path
 import sys
 import unittest
+from pathlib import Path
+
 import numpy as np
 from fastapi.testclient import TestClient
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app.baseline_engine import convert_to_bags, compute_baseline_npk_ha, resolve_soil
+from app.baseline_engine import compute_baseline_npk_ha, convert_to_bags, resolve_soil
 from app.contracts import AdvisoryRequest, SoilTestInput
 from app.ml_residual import ResidualMLModel
+from ml_pipeline.evaluate import PROMOTION_GATES, run_evaluation
 from ml_pipeline.train import (
-    SEED,
-    SPLIT_YEAR,
-    train_and_save,
-    PARTII_FILE,
-    PARTI_FILE,
     DISTRICT_CSV,
-    load_real_district_records,
-    load_real_agronomic_dataset,
+    PARTI_FILE,
+    PARTII_FILE,
+    SPLIT_YEAR,
     generate_pan_india_residual_dataset,
+    load_real_agronomic_dataset,
+    load_real_district_records,
+    train_and_save,
 )
-from ml_pipeline.evaluate import run_evaluation, PROMOTION_GATES
 
 
 class TestKhetSathiMLSystem(unittest.TestCase):
@@ -43,6 +44,7 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def setUpClass(cls):
         train_and_save()
         from app.api import app
+
         cls.client = TestClient(app)
 
     # ------------------------------------------------------------------
@@ -115,11 +117,20 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def test_advisory_endpoint_hybrid_and_fallback(self):
         """Advisory returns hybrid_ml when enabled, falls back to deterministic when disabled."""
         payload = {
-            "zone": "zone4", "crop": "wheat", "area_ha": 1.0, "irrigation": "tubewell",
-            "et0_mm_day": 3.8, "sowing_delay_days": 12, "rain_prob_48h_pct": 75,
+            "zone": "zone4",
+            "crop": "wheat",
+            "area_ha": 1.0,
+            "irrigation": "tubewell",
+            "et0_mm_day": 3.8,
+            "sowing_delay_days": 12,
+            "rain_prob_48h_pct": 75,
             "soil": {
-                "n_kg_ha": 210, "p_kg_ha": 14, "k_kg_ha": 165,
-                "oc_pct": 0.42, "ph": 7.3, "zn_ppm": 0.45,
+                "n_kg_ha": 210,
+                "p_kg_ha": 14,
+                "k_kg_ha": 165,
+                "oc_pct": 0.42,
+                "ph": 7.3,
+                "zn_ppm": 0.45,
             },
             "language": "hi",
         }
@@ -142,8 +153,13 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def test_advisory_without_soil_uses_baseline(self):
         """When farmer provides no soil test, confidence_mode indicates baseline estimate."""
         payload = {
-            "zone": "zone6", "crop": "rice", "area_ha": 2.0, "irrigation": "canal",
-            "et0_mm_day": 5.0, "sowing_delay_days": 0, "rain_prob_48h_pct": 10,
+            "zone": "zone6",
+            "crop": "rice",
+            "area_ha": 2.0,
+            "irrigation": "canal",
+            "et0_mm_day": 5.0,
+            "sowing_delay_days": 0,
+            "rain_prob_48h_pct": 10,
         }
         r = self.client.post("/api/v1/advisory", json=payload)
         self.assertEqual(r.status_code, 200)
@@ -154,11 +170,20 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def test_advisory_english_summary(self):
         """Verifies English summary generation with variety and bag recommendations."""
         payload = {
-            "zone": "zone10", "crop": "maize", "area_ha": 1.5, "irrigation": "rainfed",
-            "et0_mm_day": 4.0, "sowing_delay_days": 5, "rain_prob_48h_pct": 30,
+            "zone": "zone10",
+            "crop": "maize",
+            "area_ha": 1.5,
+            "irrigation": "rainfed",
+            "et0_mm_day": 4.0,
+            "sowing_delay_days": 5,
+            "rain_prob_48h_pct": 30,
             "soil": {
-                "n_kg_ha": 200, "p_kg_ha": 12, "k_kg_ha": 150,
-                "oc_pct": 0.5, "ph": 7.0, "zn_ppm": 0.6,
+                "n_kg_ha": 200,
+                "p_kg_ha": 12,
+                "k_kg_ha": 150,
+                "oc_pct": 0.5,
+                "ph": 7.0,
+                "zn_ppm": 0.6,
             },
             "language": "en",
         }
@@ -173,7 +198,7 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def test_real_partII_dataset_exists_and_loads(self):
         """Verify partII real dataset has expected row count (>5000) and columns."""
         self.assertTrue(PARTII_FILE.exists(), f"Missing file: {PARTII_FILE}")
-        X, y, zones, years = load_real_agronomic_dataset()
+        X, y, _zones, years = load_real_agronomic_dataset()
         self.assertGreater(len(X), 5000, f"Expected >5000 samples, got {len(X)}")
         self.assertEqual(X.shape[0], len(y))
         self.assertEqual(X.shape[0], len(years))
@@ -199,7 +224,7 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def test_residual_dataset_no_nans(self):
         """Verifies generated feature matrix and targets contain no NaN values."""
         X, y, zones = generate_pan_india_residual_dataset()
-        self.assertFalse(any(map(lambda v: v != v, y)), "NaN detected in residual targets")
+        self.assertFalse(np.isnan(y).any(), "NaN detected in residual targets")
         self.assertFalse(np.isnan(X).any(), "NaN detected in feature matrix X")
         valid_zones = {"zone4", "zone6", "zone8", "zone9", "zone10", "zone13"}
         for z in set(zones):
@@ -211,14 +236,18 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def test_shc_parse_endpoint(self):
         """Classifies Soil Health Card parameters into Low/Medium/High and alerts."""
         payload = {
-            "n_kg_ha": 200.0, "p_kg_ha": 8.0, "k_kg_ha": 150.0,
-            "oc_pct": 0.4, "ph": 7.0, "zn_ppm": 0.3,
+            "n_kg_ha": 200.0,
+            "p_kg_ha": 8.0,
+            "k_kg_ha": 150.0,
+            "oc_pct": 0.4,
+            "ph": 7.0,
+            "zn_ppm": 0.3,
         }
         r = self.client.post("/api/v1/shc/parse", json=payload)
         self.assertEqual(r.status_code, 200)
         data = r.json()
         self.assertEqual(len(data["classifications"]), 6)
-        n_class = [c for c in data["classifications"] if c["parameter"] == "Available N"][0]
+        n_class = next(c for c in data["classifications"] if c["parameter"] == "Available N")
         self.assertEqual(n_class["status"], "Low")
         self.assertTrue(any("Zinc" in f for f in data["amendment_flags"]))
 
@@ -269,11 +298,19 @@ class TestKhetSathiMLSystem(unittest.TestCase):
     def test_advisory_enriched_with_live_coordinates(self):
         """Passing lat & lon to advisory auto-enriches calculation with live weather & ET0."""
         payload = {
-            "zone": "zone4", "crop": "wheat", "area_ha": 1.0, "irrigation": "tubewell",
-            "lat": 25.59, "lon": 83.58,
+            "zone": "zone4",
+            "crop": "wheat",
+            "area_ha": 1.0,
+            "irrigation": "tubewell",
+            "lat": 25.59,
+            "lon": 83.58,
             "soil": {
-                "n_kg_ha": 210, "p_kg_ha": 14, "k_kg_ha": 165,
-                "oc_pct": 0.42, "ph": 7.3, "zn_ppm": 0.45,
+                "n_kg_ha": 210,
+                "p_kg_ha": 14,
+                "k_kg_ha": 165,
+                "oc_pct": 0.42,
+                "ph": 7.3,
+                "zn_ppm": 0.45,
             },
             "language": "hi",
         }
@@ -293,11 +330,20 @@ class TestKhetSathiMLSystem(unittest.TestCase):
         model = ResidualMLModel(bundle_path)
 
         req = AdvisoryRequest(
-            zone="zone4", crop="wheat", area_ha=1.0, irrigation="tubewell",
-            et0_mm_day=3.8, sowing_delay_days=0, rain_prob_48h_pct=25,
+            zone="zone4",
+            crop="wheat",
+            area_ha=1.0,
+            irrigation="tubewell",
+            et0_mm_day=3.8,
+            sowing_delay_days=0,
+            rain_prob_48h_pct=25,
             soil=SoilTestInput(
-                n_kg_ha=250, p_kg_ha=15, k_kg_ha=180,
-                oc_pct=0.45, ph=7.2, zn_ppm=0.55,
+                n_kg_ha=250,
+                p_kg_ha=15,
+                k_kg_ha=180,
+                oc_pct=0.45,
+                ph=7.2,
+                zn_ppm=0.55,
             ),
         )
         soil, _ = resolve_soil(req)
@@ -365,7 +411,9 @@ class TestKhetSathiMLSystem(unittest.TestCase):
         self.assertAlmostEqual(data["production_tonnes"], 7.6, places=1)
         self.assertEqual(data["msp_price_inr_per_q"], 2275.0)
         self.assertAlmostEqual(data["gross_revenue_inr"], 7.6 * 22750.0, places=0)
-        self.assertAlmostEqual(data["net_profit_inr"], data["gross_revenue_inr"] - data["total_input_cost_inr"], places=0)
+        self.assertAlmostEqual(
+            data["net_profit_inr"], data["gross_revenue_inr"] - data["total_input_cost_inr"], places=0
+        )
         self.assertGreater(data["roi_pct"], 0.0)
         self.assertGreater(data["break_even_area_ha"], 0.0)
         self.assertGreater(data["cost_benefit_ratio"], 1.0)
@@ -382,7 +430,6 @@ class TestKhetSathiMLSystem(unittest.TestCase):
         up_state = [s for s in data["states"] if "uttar pradesh" in s["state"].lower()]
         self.assertTrue(len(up_state) > 0)
         self.assertGreater(up_state[0]["districts_count"], 40)
-
 
 
 if __name__ == "__main__":

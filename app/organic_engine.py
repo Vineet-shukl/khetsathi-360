@@ -15,7 +15,7 @@ Calculates:
      - APEDA Organic Mandi & Exporter Network
      - Local FPO Aggregation Clusters.
 """
-from typing import Dict, List
+
 from app.contracts import (
     CropId,
     OrganicAdvisoryResponse,
@@ -26,7 +26,7 @@ from app.contracts import (
 from app.yield_model import INPUT_COST_PER_HA, MSP_TABLE, TYPICAL_YIELDS
 
 # Bio-Input Requirements per Hectare by Crop
-ORGANIC_INPUT_SPECS: Dict[str, Dict] = {
+ORGANIC_INPUT_SPECS: dict[str, dict] = {
     "wheat": {
         "vermicompost_t_ha": 2.5,
         "bio_npk_l_ha": 2.0,
@@ -72,7 +72,7 @@ ORGANIC_INPUT_SPECS: Dict[str, Dict] = {
 }
 
 # Verified Direct-to-Buyer & Government Supplier Routes
-VERIFIED_SUPPLIER_ROUTES: List[OrganicSupplierRoute] = [
+VERIFIED_SUPPLIER_ROUTES: list[OrganicSupplierRoute] = [
     OrganicSupplierRoute(
         channel_name="Jaivik Kheti Portal (जैविक खेती पोर्टल)",
         channel_type="Government Portal",
@@ -131,14 +131,14 @@ def calculate_organic_advisory(
 
     app_hi = [
         f"1. बुवाई पूर्व: खेत की अंतिम जुताई पर {vc_t} टन ({vc_bags} बोरी) वर्मीकम्पोस्ट और {neem_cake_kg} किलो नीम की खली समान रूप से फैलाकर मिट्टी में मिलाएं।",
-        f"2. बीज उपचार: बुवाई से पहले तरल बायो-एनपीके (Azotobacter/Rhizobium + PSB) के 500 मिलीलीटर से बीजों का उपचार कर छाया में सुखाएं।",
+        "2. बीज उपचार: बुवाई से पहले तरल बायो-एनपीके (Azotobacter/Rhizobium + PSB) के 500 मिलीलीटर से बीजों का उपचार कर छाया में सुखाएं।",
         f"3. खड़ी फसल में जीवामृत: पहली व दूसरी सिंचाई के पानी के साथ {jeevamrut_l} लीटर जीवामृत को बहाकर खेत में पहुंचाएं।",
         f"4. कीट नियंत्रण: रासायनिक कीटनाशकों के स्थान पर {spec['bio_control']} का प्रयोग करें।",
     ]
 
     app_en = [
         f"1. Basal Prep: Broadcast {vc_t} tonnes ({vc_bags} bags) of vermicompost and {neem_cake_kg} kg neem cake during final field prep.",
-        f"2. Seed Treatment: Inoculate seeds with liquid Bio-NPK consortia (500 ml) and shade dry before sowing.",
+        "2. Seed Treatment: Inoculate seeds with liquid Bio-NPK consortia (500 ml) and shade dry before sowing.",
         f"3. Jeevamrut Irrigation: Apply {jeevamrut_l} litres of fermented Jeevamrut mixed through irrigation channels.",
         f"4. Plant Defense: Deploy {spec['bio_control']} for non-chemical pest suppression.",
     ]
@@ -174,7 +174,7 @@ def calculate_organic_advisory(
     pkvy_annual = round(16666.0 * area_ha, 0)
 
     org_net_profit = round(org_gross_revenue - org_input_cost + pkvy_annual, 0)
-    
+
     # Calculate conventional benchmark profit if not passed
     if current_conventional_profit <= 0:
         conv_prod_q = (base_yield * area_ha) * 10.0

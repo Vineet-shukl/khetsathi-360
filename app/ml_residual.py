@@ -1,19 +1,19 @@
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple
+
 import numpy as np
 
-from app.contracts import AdvisoryRequest
 from app.baseline_engine import CROPS, ZONES
+from app.contracts import AdvisoryRequest
 
 ZONE_KEYS = list(ZONES.keys())
 CROP_KEYS = list(CROPS.keys())
 IRR_KEYS = ["tubewell", "canal", "rainfed"]
 
 
-def extract_features(req: AdvisoryRequest, soil: Dict[str, float]) -> np.ndarray:
+def extract_features(req: AdvisoryRequest, soil: dict[str, float]) -> np.ndarray:
     """Shared train/serve feature transform to guarantee zero train-serve skew."""
-    feats: List[float] = [
+    feats: list[float] = [
         soil["n"] / 500.0,
         soil["p"] / 50.0,
         soil["k"] / 400.0,
@@ -46,8 +46,8 @@ class ResidualMLModel:
         self.boot_biases = np.array(data["boot_biases"], dtype=np.float64)
 
     def predict_bounded(
-        self, req: AdvisoryRequest, soil: Dict[str, float], baseline_n_ha: float
-    ) -> Tuple[float, List[float]]:
+        self, req: AdvisoryRequest, soil: dict[str, float], baseline_n_ha: float
+    ) -> tuple[float, list[float]]:
         x = extract_features(req, soil)
         x_norm = (x - self.mean) / np.where(self.std < 1e-8, 1.0, self.std)
 

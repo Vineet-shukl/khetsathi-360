@@ -7,10 +7,10 @@ Provides:
   2. Farmer Economic ROI and Cost-Benefit Analysis using official CACP
      Minimum Support Prices (MSP) and C2 Comprehensive Cost of Cultivation.
 """
+
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -19,17 +19,17 @@ from app.contracts import CropId, ROIEstimate
 logger = logging.getLogger(__name__)
 
 # Official Minimum Support Prices (CACP / DES 2024-25 in ₹/quintal)
-MSP_TABLE: Dict[str, float] = {
-    "wheat": 2275.0,        # ₹2275 / quintal = ₹22,750 / tonne
-    "rice": 2203.0,         # ₹2203 / quintal = ₹22,030 / tonne
-    "maize": 2090.0,        # ₹2090 / quintal = ₹20,900 / tonne
-    "mustard": 5650.0,      # ₹5650 / quintal = ₹56,500 / tonne
-    "gram": 5440.0,         # ₹5440 / quintal = ₹54,400 / tonne
-    "sugarcane": 315.0,     # ₹315 / quintal (FRP) = ₹3,150 / tonne
+MSP_TABLE: dict[str, float] = {
+    "wheat": 2275.0,  # ₹2275 / quintal = ₹22,750 / tonne
+    "rice": 2203.0,  # ₹2203 / quintal = ₹22,030 / tonne
+    "maize": 2090.0,  # ₹2090 / quintal = ₹20,900 / tonne
+    "mustard": 5650.0,  # ₹5650 / quintal = ₹56,500 / tonne
+    "gram": 5440.0,  # ₹5440 / quintal = ₹54,400 / tonne
+    "sugarcane": 315.0,  # ₹315 / quintal (FRP) = ₹3,150 / tonne
 }
 
 # Average Comprehensive Cost of Cultivation (C2 Cost ₹/ha from DES CoC reports)
-INPUT_COST_PER_HA: Dict[str, float] = {
+INPUT_COST_PER_HA: dict[str, float] = {
     "wheat": 32500.0,
     "rice": 36800.0,
     "maize": 26500.0,
@@ -39,7 +39,7 @@ INPUT_COST_PER_HA: Dict[str, float] = {
 }
 
 # Typical Baseline Yields (t/ha) across Indian Agro-climatic zones
-TYPICAL_YIELDS: Dict[str, float] = {
+TYPICAL_YIELDS: dict[str, float] = {
     "wheat": 3.65,
     "rice": 3.20,
     "maize": 2.85,
@@ -52,14 +52,14 @@ TYPICAL_YIELDS: Dict[str, float] = {
 class YieldModel:
     """Loads yield bundle and predicts district yield + farmer ROI economics."""
 
-    def __init__(self, bundle_path: Optional[Path] = None):
+    def __init__(self, bundle_path: Path | None = None):
         self.version = "yield-ridge-v1-real"
-        self.crop_stats: Dict[str, Dict[str, float]] = {}
-        self.district_crop_stats: Dict[str, float] = {}
-        self.weights: Optional[np.ndarray] = None
+        self.crop_stats: dict[str, dict[str, float]] = {}
+        self.district_crop_stats: dict[str, float] = {}
+        self.weights: np.ndarray | None = None
         self.bias: float = 0.0
-        self.feature_mean: Optional[np.ndarray] = None
-        self.feature_std: Optional[np.ndarray] = None
+        self.feature_mean: np.ndarray | None = None
+        self.feature_std: np.ndarray | None = None
         self.n_samples: int = 8583
 
         if bundle_path and bundle_path.exists():
@@ -79,9 +79,9 @@ class YieldModel:
     def predict_yield(
         self,
         crop: CropId,
-        district: Optional[str] = None,
-        soil: Optional[Dict[str, float]] = None,
-    ) -> Tuple[float, List[float], float, float]:
+        district: str | None = None,
+        soil: dict[str, float] | None = None,
+    ) -> tuple[float, list[float], float, float]:
         """
         Returns:
           - predicted_yield_t_ha
@@ -128,8 +128,8 @@ class YieldModel:
         self,
         crop: CropId,
         area_ha: float = 1.0,
-        yield_t_ha: Optional[float] = None,
-        district: Optional[str] = None,
+        yield_t_ha: float | None = None,
+        district: str | None = None,
     ) -> ROIEstimate:
         """Computes comprehensive farmer ROI based on official MSP and C2 cost."""
         if yield_t_ha is None:

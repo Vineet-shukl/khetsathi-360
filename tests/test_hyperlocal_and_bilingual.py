@@ -2,10 +2,13 @@
 tests/test_hyperlocal_and_bilingual.py — Unit & Integration tests for
 Blinkit-style hyper-local location search and weather irregularity detection.
 """
+
 import unittest
+
 from fastapi.testclient import TestClient
+
 from app.api import app
-from app.weather_service import evaluate_weather_irregularities, search_pinpoint_locations
+from app.weather_service import evaluate_weather_irregularities
 
 
 class TestHyperLocalAndBilingual(unittest.TestCase):
@@ -32,7 +35,7 @@ class TestHyperLocalAndBilingual(unittest.TestCase):
 
     def test_weather_irregularity_heavy_rain(self):
         """Evaluates heavy rain irregularity (>60% rain prob) triggers urea hold."""
-        hold, heat, et0, rh, irs = evaluate_weather_irregularities(
+        hold, heat, et0, _rh, irs = evaluate_weather_irregularities(
             current_temp_c=25.0,
             relative_humidity_pct=70.0,
             et0_fao_mm_day=2.5,
@@ -50,7 +53,7 @@ class TestHyperLocalAndBilingual(unittest.TestCase):
 
     def test_weather_irregularity_heat_and_et0(self):
         """Evaluates heatwave (temp >= 35°C) and high evaporative deficit (ET0 >= 5.0)."""
-        hold, heat, et0, rh, irs = evaluate_weather_irregularities(
+        hold, heat, et0, _rh, irs = evaluate_weather_irregularities(
             current_temp_c=38.5,
             relative_humidity_pct=25.0,
             et0_fao_mm_day=5.8,
@@ -67,7 +70,7 @@ class TestHyperLocalAndBilingual(unittest.TestCase):
 
     def test_weather_irregularity_high_humidity(self):
         """Evaluates high humidity (RH >= 80%) fungal pathogen incubation risk."""
-        hold, heat, et0, rh, irs = evaluate_weather_irregularities(
+        _hold, _heat, _et0, rh, irs = evaluate_weather_irregularities(
             current_temp_c=26.0,
             relative_humidity_pct=88.0,
             et0_fao_mm_day=2.8,

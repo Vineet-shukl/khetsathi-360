@@ -15,22 +15,22 @@ on top of the deterministic ICAR/FAO-56 baseline, strictly bounded to ±15%.
 Temporal holdout split: train on years <= 2015, holdout test on years > 2015.
 Features are standardized strictly on the training partition (zero leakage).
 """
+
 import csv
 import hashlib
 import json
 import logging
-from pathlib import Path
 import sys
-from typing import Dict, List, Tuple
+from pathlib import Path
 
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from app.baseline_engine import ZONES, compute_baseline_npk_ha
 from app.contracts import AdvisoryRequest, SoilTestInput
-from app.ml_residual import CROP_KEYS, IRR_KEYS, ZONE_KEYS, extract_features
-from app.baseline_engine import ZONES, CROPS, compute_baseline_npk_ha
+from app.ml_residual import IRR_KEYS, extract_features
 
 SEED = 42
 logger = logging.getLogger(__name__)
@@ -44,19 +44,28 @@ PARTI_FILE = RAW_DIR / "partI_panel_state_crop_year.csv"
 DISTRICT_CSV = ROOT / "data" / "CropDataset-Enhanced.csv"
 
 # State to zone mapping
-STATE_TO_ZONE: Dict[str, str] = {
-    "uttar pradesh": "zone4", "bihar": "zone4", "jharkhand": "zone4",
-    "punjab": "zone6", "haryana": "zone6",
-    "madhya pradesh": "zone8", "chhattisgarh": "zone8", "rajasthan": "zone8",
+STATE_TO_ZONE: dict[str, str] = {
+    "uttar pradesh": "zone4",
+    "bihar": "zone4",
+    "jharkhand": "zone4",
+    "punjab": "zone6",
+    "haryana": "zone6",
+    "madhya pradesh": "zone8",
+    "chhattisgarh": "zone8",
+    "rajasthan": "zone8",
     "maharashtra": "zone9",
-    "karnataka": "zone10", "andhra pradesh": "zone10", "telangana": "zone10",
-    "tamil nadu": "zone10", "kerala": "zone10",
+    "karnataka": "zone10",
+    "andhra pradesh": "zone10",
+    "telangana": "zone10",
+    "tamil nadu": "zone10",
+    "kerala": "zone10",
     "gujarat": "zone13",
 }
 
 # Crop name normalization
-COC_CROP_MAP: Dict[str, str] = {
-    "Paddy": "rice", "Rice": "rice",
+COC_CROP_MAP: dict[str, str] = {
+    "Paddy": "rice",
+    "Rice": "rice",
     "Wheat": "wheat",
     "Maize": "maize",
     "Rapeseed & Mustard (Toria/Taramira)": "mustard",
@@ -76,33 +85,35 @@ def _parse_pct(val: str) -> float:
     return float(val.strip().replace("%", ""))
 
 
-def load_real_district_records(csv_path: Path) -> List[Dict]:
-    records: List[Dict] = []
+def load_real_district_records(csv_path: Path) -> list[dict]:
+    records: list[dict] = []
     with csv_path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if not row.get("Nitrogen - Low") or not row["Nitrogen - Low"].strip():
                 continue
             try:
-                records.append({
-                    "address": row["Address"].strip(),
-                    "region": row["Region"].strip(),
-                    "lat": float(row["Latitude"]),
-                    "lon": float(row["Longitude"]),
-                    "crops": [c.strip() for c in row["Crop"].split(",") if c.strip()],
-                    "n_high": _parse_pct(row["Nitrogen - High"]),
-                    "n_med": _parse_pct(row["Nitrogen - Medium"]),
-                    "n_low": _parse_pct(row["Nitrogen - Low"]),
-                    "p_high": _parse_pct(row["Phosphorous - High"]),
-                    "p_med": _parse_pct(row["Phosphorous - Medium"]),
-                    "p_low": _parse_pct(row["Phosphorous - Low"]),
-                    "k_high": _parse_pct(row["Potassium - High"]),
-                    "k_med": _parse_pct(row["Potassium - Medium"]),
-                    "k_low": _parse_pct(row["Potassium - Low"]),
-                    "ph_acid": _parse_pct(row["pH - Acidic"]),
-                    "ph_neut": _parse_pct(row["pH - Neutral"]),
-                    "ph_alk": _parse_pct(row["pH - Alkaline"]),
-                })
+                records.append(
+                    {
+                        "address": row["Address"].strip(),
+                        "region": row["Region"].strip(),
+                        "lat": float(row["Latitude"]),
+                        "lon": float(row["Longitude"]),
+                        "crops": [c.strip() for c in row["Crop"].split(",") if c.strip()],
+                        "n_high": _parse_pct(row["Nitrogen - High"]),
+                        "n_med": _parse_pct(row["Nitrogen - Medium"]),
+                        "n_low": _parse_pct(row["Nitrogen - Low"]),
+                        "p_high": _parse_pct(row["Phosphorous - High"]),
+                        "p_med": _parse_pct(row["Phosphorous - Medium"]),
+                        "p_low": _parse_pct(row["Phosphorous - Low"]),
+                        "k_high": _parse_pct(row["Potassium - High"]),
+                        "k_med": _parse_pct(row["Potassium - Medium"]),
+                        "k_low": _parse_pct(row["Potassium - Low"]),
+                        "ph_acid": _parse_pct(row["pH - Acidic"]),
+                        "ph_neut": _parse_pct(row["pH - Neutral"]),
+                        "ph_alk": _parse_pct(row["pH - Alkaline"]),
+                    }
+                )
             except ValueError:
                 continue
     return records
@@ -141,7 +152,7 @@ def train_real_district_model() -> None:
 # ---------------------------------------------------------------------------
 # 2. Real Agronomic & Soil Dataset Loading from data/raw/
 # ---------------------------------------------------------------------------
-def load_real_agronomic_dataset() -> Tuple[np.ndarray, np.ndarray, List[str], np.ndarray]:
+def load_real_agronomic_dataset() -> tuple[np.ndarray, np.ndarray, list[str], np.ndarray]:
     """
     Loads and processes real data from data/raw/:
       - partII_district_crop_year_2012_2017.csv (district SHC deficiency shares & yields)
@@ -157,10 +168,10 @@ def load_real_agronomic_dataset() -> Tuple[np.ndarray, np.ndarray, List[str], np
         raise FileNotFoundError(f"Required raw files missing: {PARTII_FILE} or {PARTI_FILE}")
 
     # Step 1: Pre-aggregate state×crop nutrient balances and price ratios from Part I
-    p1_records: Dict[Tuple[str, str], Dict[str, float]] = {}
+    p1_records: dict[tuple[str, str], dict[str, float]] = {}
     with PARTI_FILE.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        state_crop_accum: Dict[Tuple[str, str], List[Tuple[float, float]]] = {}
+        state_crop_accum: dict[tuple[str, str], list[tuple[float, float]]] = {}
         for row in reader:
             st = row["state_name"].strip()
             crop_raw = row["coc_crop"].strip()
@@ -181,10 +192,10 @@ def load_real_agronomic_dataset() -> Tuple[np.ndarray, np.ndarray, List[str], np
         }
 
     # Step 2: Load Part II district records (Rice, Wheat, Maize: 2012-2017)
-    rows_X: List[np.ndarray] = []
-    rows_y: List[float] = []
-    zones_list: List[str] = []
-    years_list: List[int] = []
+    rows_X: list[np.ndarray] = []
+    rows_y: list[float] = []
+    zones_list: list[str] = []
+    years_list: list[int] = []
 
     rng = np.random.default_rng(SEED)
 
@@ -228,9 +239,16 @@ def load_real_agronomic_dataset() -> Tuple[np.ndarray, np.ndarray, List[str], np
             irr = "tubewell" if zone in ["zone4", "zone6"] else str(rng.choice(IRR_KEYS))
 
             req = AdvisoryRequest(
-                zone=zone, crop=crop, area_ha=1.0, irrigation=irr,
-                et0_mm_day=et0, sowing_delay_days=delay, rain_prob_48h_pct=rain_p,
-                soil=SoilTestInput(n_kg_ha=n_val, p_kg_ha=p_val, k_kg_ha=k_val, oc_pct=oc_val, ph=ph_val, zn_ppm=zn_val),
+                zone=zone,
+                crop=crop,
+                area_ha=1.0,
+                irrigation=irr,
+                et0_mm_day=et0,
+                sowing_delay_days=delay,
+                rain_prob_48h_pct=rain_p,
+                soil=SoilTestInput(
+                    n_kg_ha=n_val, p_kg_ha=p_val, k_kg_ha=k_val, oc_pct=oc_val, ph=ph_val, zn_ppm=zn_val
+                ),
             )
             soil_dict = {"n": n_val, "p": p_val, "k": k_val, "oc": oc_val, "ph": ph_val, "zn": zn_val}
             x = extract_features(req, soil_dict)
@@ -294,9 +312,16 @@ def load_real_agronomic_dataset() -> Tuple[np.ndarray, np.ndarray, List[str], np
             irr = "tubewell" if zone in ["zone4", "zone6"] else str(rng.choice(IRR_KEYS))
 
             req = AdvisoryRequest(
-                zone=zone, crop=crop, area_ha=1.0, irrigation=irr,
-                et0_mm_day=et0, sowing_delay_days=delay, rain_prob_48h_pct=rain_p,
-                soil=SoilTestInput(n_kg_ha=n_val, p_kg_ha=p_val, k_kg_ha=k_val, oc_pct=oc_val, ph=ph_val, zn_ppm=zn_val),
+                zone=zone,
+                crop=crop,
+                area_ha=1.0,
+                irrigation=irr,
+                et0_mm_day=et0,
+                sowing_delay_days=delay,
+                rain_prob_48h_pct=rain_p,
+                soil=SoilTestInput(
+                    n_kg_ha=n_val, p_kg_ha=p_val, k_kg_ha=k_val, oc_pct=oc_val, ph=ph_val, zn_ppm=zn_val
+                ),
             )
             soil_dict = {"n": n_val, "p": p_val, "k": k_val, "oc": oc_val, "ph": ph_val, "zn": zn_val}
             x = extract_features(req, soil_dict)
@@ -326,8 +351,9 @@ def load_real_agronomic_dataset() -> Tuple[np.ndarray, np.ndarray, List[str], np
 
 
 def generate_pan_india_residual_dataset(
-    n_samples: int = 1200, seed: int = SEED,
-) -> Tuple[np.ndarray, np.ndarray, List[str]]:
+    n_samples: int = 1200,
+    seed: int = SEED,
+) -> tuple[np.ndarray, np.ndarray, list[str]]:
     """Loads the real agronomic dataset from data/raw/."""
     X, y, zones, _ = load_real_agronomic_dataset()
     return X, y, zones
@@ -336,7 +362,7 @@ def generate_pan_india_residual_dataset(
 # ---------------------------------------------------------------------------
 # 3. Ridge Regression Model
 # ---------------------------------------------------------------------------
-def fit_ridge(X_norm: np.ndarray, y: np.ndarray, alpha: float = 10.0) -> Tuple[np.ndarray, float]:
+def fit_ridge(X_norm: np.ndarray, y: np.ndarray, alpha: float = 10.0) -> tuple[np.ndarray, float]:
     n_samples, n_features = X_norm.shape
     Xb = np.hstack([X_norm, np.ones((n_samples, 1))])
     reg = np.eye(n_features + 1) * alpha
@@ -350,7 +376,7 @@ def fit_ridge(X_norm: np.ndarray, y: np.ndarray, alpha: float = 10.0) -> Tuple[n
 # ---------------------------------------------------------------------------
 def train_yield_model() -> None:
     """Trains district×crop yield model using real partII and partI panel data."""
-    crop_stats: Dict[str, Dict[str, float]] = {
+    crop_stats: dict[str, dict[str, float]] = {
         "wheat": {"mean_yield": 2.85, "min_yield": 1.2, "max_yield": 5.5, "n_samples": 1935},
         "rice": {"mean_yield": 2.65, "min_yield": 1.0, "max_yield": 4.8, "n_samples": 2896},
         "maize": {"mean_yield": 2.70, "min_yield": 0.8, "max_yield": 6.2, "n_samples": 2101},
@@ -358,7 +384,7 @@ def train_yield_model() -> None:
         "gram": {"mean_yield": 1.05, "min_yield": 0.4, "max_yield": 2.0, "n_samples": 234},
         "sugarcane": {"mean_yield": 74.5, "min_yield": 35.0, "max_yield": 125.0, "n_samples": 176},
     }
-    district_crop_accum: Dict[str, List[float]] = {}
+    district_crop_accum: dict[str, list[float]] = {}
 
     # Extract district×crop yields from partII
     if PARTII_FILE.exists():
@@ -407,7 +433,7 @@ def train_and_save() -> None:
     train_yield_model()
 
     # 3. Residual model with temporal holdout split (<= 2015 train, > 2015 test)
-    X, y, zones, years = load_real_agronomic_dataset()
+    X, y, _zones, years = load_real_agronomic_dataset()
 
     train_mask = years <= SPLIT_YEAR
     test_mask = years > SPLIT_YEAR
@@ -436,7 +462,7 @@ def train_and_save() -> None:
     bundle = {
         "model_version": model_version,
         "seed": SEED,
-        "n_total": int(len(X)),
+        "n_total": len(X),
         "n_train": n_train,
         "n_test": n_test,
         "split_year": SPLIT_YEAR,
@@ -469,7 +495,9 @@ def train_and_save() -> None:
         ),
         encoding="utf-8",
     )
-    print(f"Trained residual model on {len(X)} samples ({n_train} train <= {SPLIT_YEAR} / {n_test} test > {SPLIT_YEAR})")
+    print(
+        f"Trained residual model on {len(X)} samples ({n_train} train <= {SPLIT_YEAR} / {n_test} test > {SPLIT_YEAR})"
+    )
     print(f"  -> {bundle_path} (sha={sha})")
 
 

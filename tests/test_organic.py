@@ -1,5 +1,7 @@
 import unittest
+
 from fastapi.testclient import TestClient
+
 from app.api import app
 
 
@@ -12,7 +14,7 @@ class TestOrganicEngine(unittest.TestCase):
         resp = self.client.get("/api/v1/organic/advisory?crop=wheat&area_ha=1.0")
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
-        
+
         # Bio-inputs verification
         inp = data["input_plan"]
         self.assertGreater(inp["vermicompost_tonnes"], 1.0)

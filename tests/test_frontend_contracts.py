@@ -29,7 +29,7 @@ class TestFrontendContracts(unittest.TestCase):
     def test_dap_nitrogen_credit_formula(self):
         """Verify DAP 18% N credit arithmetic prevents urea over-application."""
         req_p = 60.0  # kg P2O5
-        req_n = 120.0 # kg N
+        req_n = 120.0  # kg N
         req_k = 40.0  # kg K2O
 
         dap_kg = req_p / 0.46
@@ -71,7 +71,7 @@ class TestFrontendContracts(unittest.TestCase):
             "temp": 24,
             "et0": 2.8,
             "rainProb": 10,
-            "rainGuardrailHi": "खाद डालना सुरक्षित है"
+            "rainGuardrailHi": "खाद डालना सुरक्षित है",
         }
 
         text = (

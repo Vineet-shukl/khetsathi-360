@@ -4,7 +4,9 @@ app/satellite_service.py — Copernicus Sentinel-2 Multispectral & ISRIC SoilGri
 Provides 10m-resolution satellite vegetation index (NDVI, NDRE) and 250m gridded
 soil physical properties (clay fraction, bulk density, CEC) for precision field monitoring.
 """
+
 import math
+
 from app.contracts import SatelliteVegetationIndex
 
 
@@ -66,7 +68,9 @@ def calculate_satellite_vegetation(
         status_en = "Low Vegetative Biomass / Chlorophyll Deficit"
         status_hi = "कम वानस्पतिक घनत्व / नाइट्रोजन व नमी की कमी"
         action_en = "Low NDVI detected by satellite. Check field for weed competition, waterlogging, or early nitrogen deficiency."
-        action_hi = "उपग्रह द्वारा पत्तियों में कम हरापन देखा गया। खेत में खरपतवार या जलभराव की जांच करें और तुरंत हल्की सिंचाई के साथ यूरिया दें।"
+        action_hi = (
+            "उपग्रह द्वारा पत्तियों में कम हरापन देखा गया। खेत में खरपतवार या जलभराव की जांच करें और तुरंत हल्की सिंचाई के साथ यूरिया दें।"
+        )
 
     return SatelliteVegetationIndex(
         ndvi=ndvi,

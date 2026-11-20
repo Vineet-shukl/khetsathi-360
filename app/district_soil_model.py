@@ -1,16 +1,32 @@
 import json
 import math
 from pathlib import Path
-from typing import Dict, List, Optional
+
 import numpy as np
 
-STATE_TO_ZONE: Dict[str, str] = {
-    "uttar pradesh": "zone4", "bihar": "zone4", "jharkhand": "zone4", "west bengal": "zone4", "odisha": "zone4",
-    "punjab": "zone6", "haryana": "zone6", "delhi": "zone6", "uttarakhand": "zone6", "himachal pradesh": "zone6", "jammu and kashmir": "zone6",
-    "madhya pradesh": "zone8", "chhattisgarh": "zone8", "rajasthan": "zone8",
-    "maharashtra": "zone9", "goa": "zone9",
-    "karnataka": "zone10", "andhra pradesh": "zone10", "telangana": "zone10",
-    "tamil nadu": "zone10", "kerala": "zone10", "puducherry": "zone10",
+STATE_TO_ZONE: dict[str, str] = {
+    "uttar pradesh": "zone4",
+    "bihar": "zone4",
+    "jharkhand": "zone4",
+    "west bengal": "zone4",
+    "odisha": "zone4",
+    "punjab": "zone6",
+    "haryana": "zone6",
+    "delhi": "zone6",
+    "uttarakhand": "zone6",
+    "himachal pradesh": "zone6",
+    "jammu and kashmir": "zone6",
+    "madhya pradesh": "zone8",
+    "chhattisgarh": "zone8",
+    "rajasthan": "zone8",
+    "maharashtra": "zone9",
+    "goa": "zone9",
+    "karnataka": "zone10",
+    "andhra pradesh": "zone10",
+    "telangana": "zone10",
+    "tamil nadu": "zone10",
+    "kerala": "zone10",
+    "puducherry": "zone10",
     "gujarat": "zone13",
 }
 
@@ -33,15 +49,31 @@ class DistrictSoilModel:
         self.version: str = data["model_version"]
         self.k_neighbors: int = int(data["k_neighbors"])
         self.power: float = float(data["idw_power"])
-        self.records: List[Dict] = data["records"]
+        self.records: list[dict] = data["records"]
         self.lats = np.array([r["lat"] for r in self.records], dtype=np.float64)
         self.lons = np.array([r["lon"] for r in self.records], dtype=np.float64)
         self.targets = np.array(
-            [[r["n_low"], r["n_med"], r["n_high"], r["p_low"], r["p_med"], r["p_high"], r["k_low"], r["k_med"], r["k_high"], r["ph_acid"], r["ph_neut"], r["ph_alk"]] for r in self.records],
+            [
+                [
+                    r["n_low"],
+                    r["n_med"],
+                    r["n_high"],
+                    r["p_low"],
+                    r["p_med"],
+                    r["p_high"],
+                    r["k_low"],
+                    r["k_med"],
+                    r["k_high"],
+                    r["ph_acid"],
+                    r["ph_neut"],
+                    r["ph_alk"],
+                ]
+                for r in self.records
+            ],
             dtype=np.float64,
         )
 
-    def lookup_by_name(self, query: str) -> Optional[Dict]:
+    def lookup_by_name(self, query: str) -> dict | None:
         q = query.strip().lower()
         for r in self.records:
             if q in r["address"].lower():
@@ -49,11 +81,11 @@ class DistrictSoilModel:
                 return dict(r, zone=zone)
         return None
 
-    def predict_by_coords(self, lat: float, lon: float) -> Dict:
+    def predict_by_coords(self, lat: float, lon: float) -> dict:
         dists = haversine_km(lat, lon, self.lats, self.lons)
         idx = np.argsort(dists)[: self.k_neighbors]
         d_k = np.maximum(dists[idx], 1.0)
-        w = 1.0 / (d_k ** self.power)
+        w = 1.0 / (d_k**self.power)
         w = w / np.sum(w)
         pred = w @ self.targets[idx]
         nearest = self.records[int(idx[0])]
@@ -80,7 +112,7 @@ class DistrictSoilModel:
         }
 
     @staticmethod
-    def dist_to_expected_soil(dist_probs: Dict) -> Dict[str, float]:
+    def dist_to_expected_soil(dist_probs: dict) -> dict[str, float]:
         """Convert SHC Low/Med/High % distribution into expected kg/ha & pH for baseline engine."""
         exp_n = (dist_probs["n_low"] * 190.0 + dist_probs["n_med"] * 420.0 + dist_probs["n_high"] * 600.0) / 100.0
         exp_p = (dist_probs["p_low"] * 7.0 + dist_probs["p_med"] * 17.5 + dist_probs["p_high"] * 32.0) / 100.0

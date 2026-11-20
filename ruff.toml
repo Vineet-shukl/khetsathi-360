@@ -1,0 +1,35 @@
+# Plankton Code Quality Standard for KhetSathi-360
+target-version = "py310"
+line-length = 120
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "E501", # line-length managed by formatter
+]
+allowed-confusables = ["–", "×"]
+
+[lint.per-file-ignores]
+# FastAPI uses Query(), File(), Path() in default function signatures
+"app/api.py" = ["B008"]
+# Test suites and training scripts use sys.path modifications before local imports
+"tests/*" = ["E402"]
+"ml_pipeline/*" = ["E402"]
+
+[lint.isort]
+known-first-party = ["app", "ml_pipeline"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+

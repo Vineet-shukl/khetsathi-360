@@ -1,4 +1,5 @@
-from typing import Dict, List, Literal, Optional
+from typing import Literal, Optional
+
 from pydantic import BaseModel, Field
 
 ZoneId = Literal["zone4", "zone6", "zone8", "zone9", "zone10", "zone13"]
@@ -7,14 +8,14 @@ IrrigationId = Literal["tubewell", "canal", "rainfed"]
 
 
 class SoilTestInput(BaseModel):
-    n_kg_ha: Optional[float] = Field(default=None, ge=10.0, le=1000.0)
-    p_kg_ha: Optional[float] = Field(default=None, ge=1.0, le=150.0)
-    k_kg_ha: Optional[float] = Field(default=None, ge=10.0, le=1000.0)
-    oc_pct: Optional[float] = Field(default=None, ge=0.05, le=3.0)
-    ph: Optional[float] = Field(default=None, ge=3.5, le=10.0)
-    zn_ppm: Optional[float] = Field(default=None, ge=0.05, le=10.0)
-    s_ppm: Optional[float] = Field(default=None, ge=0.5, le=100.0)
-    ec_dsm: Optional[float] = Field(default=None, ge=0.05, le=15.0)
+    n_kg_ha: float | None = Field(default=None, ge=10.0, le=1000.0)
+    p_kg_ha: float | None = Field(default=None, ge=1.0, le=150.0)
+    k_kg_ha: float | None = Field(default=None, ge=10.0, le=1000.0)
+    oc_pct: float | None = Field(default=None, ge=0.05, le=3.0)
+    ph: float | None = Field(default=None, ge=3.5, le=10.0)
+    zn_ppm: float | None = Field(default=None, ge=0.05, le=10.0)
+    s_ppm: float | None = Field(default=None, ge=0.5, le=100.0)
+    ec_dsm: float | None = Field(default=None, ge=0.05, le=15.0)
 
 
 class AdvisoryRequest(BaseModel):
@@ -25,9 +26,9 @@ class AdvisoryRequest(BaseModel):
     et0_mm_day: float = Field(default=3.8, ge=0.5, le=15.0)
     sowing_delay_days: int = Field(default=0, ge=0, le=45)
     rain_prob_48h_pct: int = Field(default=25, ge=0, le=100)
-    lat: Optional[float] = Field(default=None, ge=6.0, le=38.0)
-    lon: Optional[float] = Field(default=None, ge=68.0, le=98.0)
-    soil: Optional[SoilTestInput] = None
+    lat: float | None = Field(default=None, ge=6.0, le=38.0)
+    lon: float | None = Field(default=None, ge=68.0, le=98.0)
+    soil: SoilTestInput | None = None
     language: Literal["en", "hi"] = "en"
 
 
@@ -62,16 +63,16 @@ class AdvisoryResponse(BaseModel):
     uncertainty_pct: float
     rain_guardrail_hold_urea: bool
     recommended_variety: str
-    elemental_target_kg: Dict[str, float]
+    elemental_target_kg: dict[str, float]
     ml_residual_delta_n_kg_ha: float
-    ml_confidence_band_kg_ha: List[float]
+    ml_confidence_band_kg_ha: list[float]
     product_plan: ProductPlan
     peak_etc_mm_day: float
-    soil_alerts: List[str]
+    soil_alerts: list[str]
     farmer_summary: str
-    sources: List[str]
+    sources: list[str]
     live_weather: Optional["WeatherForecastResponse"] = None
-    satellite: Optional[SatelliteVegetationIndex] = None
+    satellite: SatelliteVegetationIndex | None = None
 
 
 class SHCParseRequest(BaseModel):
@@ -93,8 +94,8 @@ class SHCClassification(BaseModel):
 
 
 class SHCParseResponse(BaseModel):
-    classifications: List[SHCClassification]
-    amendment_flags: List[str]
+    classifications: list[SHCClassification]
+    amendment_flags: list[str]
 
 
 class SHCOCRResponse(BaseModel):
@@ -106,11 +107,11 @@ class SHCOCRResponse(BaseModel):
     zn_ppm: float
     s_ppm: float = 12.0
     ec_dsm: float = 0.5
-    district: Optional[str] = None
-    state: Optional[str] = None
+    district: str | None = None
+    state: str | None = None
     confidence_pct: float = 95.0
     extracted_via: str = "gemini_vision"
-    raw_summary: Optional[str] = None
+    raw_summary: str | None = None
 
 
 class WeatherIrregularity(BaseModel):
@@ -126,14 +127,14 @@ class WeatherIrregularity(BaseModel):
 
 class LocationSearchResult(BaseModel):
     name: str
-    admin1: Optional[str] = None  # State
-    admin2: Optional[str] = None  # District
+    admin1: str | None = None  # State
+    admin2: str | None = None  # District
     lat: float
     lon: float
     country: str = "India"
     source: Literal["open_meteo_geocoding", "district_database"]
     display_name: str
-    zone: Optional[str] = None
+    zone: str | None = None
 
 
 class WeatherForecastResponse(BaseModel):
@@ -141,9 +142,9 @@ class WeatherForecastResponse(BaseModel):
     lat: float
     lon: float
     timezone: str
-    current_temp_c: Optional[float] = None
-    relative_humidity_pct: Optional[float] = None
-    wind_speed_kmh: Optional[float] = None
+    current_temp_c: float | None = None
+    relative_humidity_pct: float | None = None
+    wind_speed_kmh: float | None = None
     weather_code: int = 0
     weather_condition: str
     et0_fao_mm_day: float
@@ -153,7 +154,7 @@ class WeatherForecastResponse(BaseModel):
     heat_stress_alert: bool = False
     high_et0_alert: bool = False
     high_humidity_alert: bool = False
-    irregularities: List[WeatherIrregularity] = Field(default_factory=list)
+    irregularities: list[WeatherIrregularity] = Field(default_factory=list)
     source: str
 
 
@@ -162,30 +163,30 @@ class WeatherForecastResponse(BaseModel):
 # ---------------------------------------------------------------------------
 class YieldPredictionRequest(BaseModel):
     crop: CropId = "wheat"
-    district_name: Optional[str] = Field(default=None, description="Target district name, e.g. Ghazipur, Ludhiana")
+    district_name: str | None = Field(default=None, description="Target district name, e.g. Ghazipur, Ludhiana")
     year: int = Field(default=2026, ge=1990, le=2030)
     area_ha: float = Field(default=1.0, ge=0.1, le=100.0)
-    soil: Optional[SoilTestInput] = None
-    lat: Optional[float] = Field(default=None, ge=6.0, le=38.0)
-    lon: Optional[float] = Field(default=None, ge=68.0, le=98.0)
+    soil: SoilTestInput | None = None
+    lat: float | None = Field(default=None, ge=6.0, le=38.0)
+    lon: float | None = Field(default=None, ge=68.0, le=98.0)
 
 
 class YieldPredictionResponse(BaseModel):
     crop: CropId
     district: str
     predicted_yield_t_ha: float
-    confidence_interval_t_ha: List[float]
+    confidence_interval_t_ha: list[float]
     historical_avg_yield_t_ha: float
     improvement_potential_pct: float
     model_version: str
-    data_sources: List[str]
+    data_sources: list[str]
 
 
 class ROIEstimateRequest(BaseModel):
     crop: CropId = "wheat"
     area_ha: float = Field(default=1.0, ge=0.1, le=100.0)
-    current_yield_t_ha: Optional[float] = Field(default=None, ge=0.1, le=200.0)
-    district_name: Optional[str] = None
+    current_yield_t_ha: float | None = Field(default=None, ge=0.1, le=200.0)
+    district_name: str | None = None
 
 
 class ROIEstimate(BaseModel):
@@ -213,22 +214,22 @@ class InvestorMetricsResponse(BaseModel):
     api_p95_latency_ms: float
     data_freshness: str
     safety_guardrails_enforced: str
-    core_datasets: List[str]
+    core_datasets: list[str]
 
 
 class StateCoverageSummary(BaseModel):
     state: str
     zone: str
     districts_count: int
-    representative_crops: List[str]
+    representative_crops: list[str]
 
 
 class AnalyticsCoverageResponse(BaseModel):
     total_districts: int
     total_states: int
-    states: List[StateCoverageSummary]
-    crops_supported: List[str]
-    zones_covered: List[str]
+    states: list[StateCoverageSummary]
+    crops_supported: list[str]
+    zones_covered: list[str]
 
 
 class OrganicInputPlan(BaseModel):
@@ -239,8 +240,8 @@ class OrganicInputPlan(BaseModel):
     neem_cake_kg: float
     neem_cake_bags_50kg: float
     bio_control_agent: str
-    application_guidelines_hi: List[str]
-    application_guidelines_en: List[str]
+    application_guidelines_hi: list[str]
+    application_guidelines_en: list[str]
 
 
 class OrganicEconomics(BaseModel):
@@ -270,10 +271,8 @@ class OrganicSupplierRoute(BaseModel):
 class OrganicAdvisoryResponse(BaseModel):
     input_plan: OrganicInputPlan
     economics: OrganicEconomics
-    supplier_routes: List[OrganicSupplierRoute]
-    conversion_timeline: List[str]
+    supplier_routes: list[OrganicSupplierRoute]
+    conversion_timeline: list[str]
 
 
 AdvisoryResponse.model_rebuild()
-
-

@@ -5,14 +5,23 @@ Serves deterministic ICAR/FAO-56 baseline with optional ML residual overlay.
 Model artifact is loaded from artifacts/model_bundle.json at startup.
 Set ENABLE_ML_RESIDUAL=false to disable ML overlay and use pure deterministic rules.
 """
+
 import os
 from pathlib import Path
-from typing import List, Optional
+
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 
+from app.baseline_engine import (
+    CROPS,
+    ZONES,
+    compute_baseline_npk_ha,
+    convert_to_bags,
+    evaluate_soil_alerts,
+    resolve_soil,
+)
 from app.contracts import (
     AdvisoryRequest,
     AdvisoryResponse,
@@ -33,18 +42,10 @@ from app.contracts import (
     YieldPredictionRequest,
     YieldPredictionResponse,
 )
-from app.weather_service import fetch_live_weather, search_pinpoint_locations
-from app.satellite_service import calculate_satellite_vegetation
-from app.baseline_engine import (
-    CROPS,
-    ZONES,
-    compute_baseline_npk_ha,
-    convert_to_bags,
-    evaluate_soil_alerts,
-    resolve_soil,
-)
+from app.district_soil_model import STATE_TO_ZONE, DistrictSoilModel
 from app.ml_residual import ResidualMLModel
-from app.district_soil_model import DistrictSoilModel, STATE_TO_ZONE
+from app.satellite_service import calculate_satellite_vegetation
+from app.weather_service import fetch_live_weather, search_pinpoint_locations
 from app.yield_model import YieldModel
 
 ARTIFACT_PATH = Path(__file__).resolve().parent.parent / "artifacts" / "model_bundle.json"
@@ -61,9 +62,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-_MODEL: Optional[ResidualMLModel] = ResidualMLModel(ARTIFACT_PATH) if ARTIFACT_PATH.exists() else None
-_DISTRICT_MODEL: Optional[DistrictSoilModel] = DistrictSoilModel(DISTRICT_PATH) if DISTRICT_PATH.exists() else None
-_YIELD_MODEL: Optional[YieldModel] = YieldModel(YIELD_PATH) if YIELD_PATH.exists() else None
+_MODEL: ResidualMLModel | None = ResidualMLModel(ARTIFACT_PATH) if ARTIFACT_PATH.exists() else None
+_DISTRICT_MODEL: DistrictSoilModel | None = DistrictSoilModel(DISTRICT_PATH) if DISTRICT_PATH.exists() else None
+_YIELD_MODEL: YieldModel | None = YieldModel(YIELD_PATH) if YIELD_PATH.exists() else None
 
 
 def ml_enabled() -> bool:
@@ -84,12 +85,11 @@ def health():
     }
 
 
-
 @app.get("/api/v1/district/baseline")
 def district_baseline(
-    query: Optional[str] = Query(default=None, description="District name, e.g. Ghazipur"),
-    lat: Optional[float] = Query(default=None, ge=6.0, le=38.0),
-    lon: Optional[float] = Query(default=None, ge=68.0, le=98.0),
+    query: str | None = Query(default=None, description="District name, e.g. Ghazipur"),
+    lat: float | None = Query(default=None, ge=6.0, le=38.0),
+    lon: float | None = Query(default=None, ge=68.0, le=98.0),
 ):
     if _DISTRICT_MODEL is None:
         raise HTTPException(status_code=503, detail="District model artifact not loaded")
@@ -113,9 +113,9 @@ def get_weather(
     return fetch_live_weather(lat=lat, lon=lon, language=lang)
 
 
-@app.get("/api/v1/location/search", response_model=List[LocationSearchResult])
+@app.get("/api/v1/location/search", response_model=list[LocationSearchResult])
 def search_location(
-    query: str = Query(..., min_length=2, description="Village, tehsil, town, or district name across India")
+    query: str = Query(..., min_length=2, description="Village, tehsil, town, or district name across India"),
 ):
     """Blinkit/Swiggy style pinpoint location search across Indian localities and 695 districts."""
     records = _DISTRICT_MODEL.records if _DISTRICT_MODEL else None
@@ -217,7 +217,8 @@ def generate_advisory(req: AdvisoryRequest):
             "DAC&FW Soil Health Card (695-District Dataset)",
             "DES APY District×Crop×Year Yield Data (data/raw/)",
             "Copernicus Sentinel-2 10m MSI + ISRIC SoilGrids 250m",
-        ] + (["Open-Meteo High-Resolution NWP (Real-Time Weather)"] if live_w else []),
+        ]
+        + (["Open-Meteo High-Resolution NWP (Real-Time Weather)"] if live_w else []),
         live_weather=live_w,
         satellite=sat_info,
     )
@@ -228,7 +229,7 @@ def get_satellite_vegetation(
     lat: float = Query(..., ge=6.0, le=38.0, description="Latitude in decimal degrees"),
     lon: float = Query(..., ge=68.0, le=98.0, description="Longitude in decimal degrees"),
     crop: str = Query("wheat", description="Crop identifier"),
-    days: int = Query(25, ge=1, le=180, description="Days after sowing")
+    days: int = Query(25, ge=1, le=180, description="Days after sowing"),
 ):
     """
     Returns Copernicus Sentinel-2 10m NDVI / NDRE vegetation indices and 250m SoilGrids physical profile.
@@ -239,12 +240,42 @@ def get_satellite_vegetation(
 @app.post("/api/v1/shc/parse", response_model=SHCParseResponse)
 def parse_shc(req: SHCParseRequest):
     classifications = [
-        SHCClassification(parameter="Available N", value=req.n_kg_ha, unit="kg/ha", status="Low" if req.n_kg_ha < 280 else ("Medium" if req.n_kg_ha <= 560 else "High")),
-        SHCClassification(parameter="Available P", value=req.p_kg_ha, unit="kg/ha", status="Low" if req.p_kg_ha < 10 else ("Medium" if req.p_kg_ha <= 25 else "High")),
-        SHCClassification(parameter="Available K", value=req.k_kg_ha, unit="kg/ha", status="Low" if req.k_kg_ha < 120 else ("Medium" if req.k_kg_ha <= 280 else "High")),
-        SHCClassification(parameter="Organic Carbon", value=req.oc_pct, unit="%", status="Low" if req.oc_pct < 0.5 else ("Medium" if req.oc_pct <= 0.75 else "High")),
-        SHCClassification(parameter="Soil pH", value=req.ph, unit="pH", status="Acidic" if req.ph < 6.0 else ("Optimal" if req.ph <= 7.5 else "Alkaline")),
-        SHCClassification(parameter="Zinc (Zn)", value=req.zn_ppm, unit="ppm", status="Low" if req.zn_ppm < 0.5 else ("Medium" if req.zn_ppm <= 1.0 else "High")),
+        SHCClassification(
+            parameter="Available N",
+            value=req.n_kg_ha,
+            unit="kg/ha",
+            status="Low" if req.n_kg_ha < 280 else ("Medium" if req.n_kg_ha <= 560 else "High"),
+        ),
+        SHCClassification(
+            parameter="Available P",
+            value=req.p_kg_ha,
+            unit="kg/ha",
+            status="Low" if req.p_kg_ha < 10 else ("Medium" if req.p_kg_ha <= 25 else "High"),
+        ),
+        SHCClassification(
+            parameter="Available K",
+            value=req.k_kg_ha,
+            unit="kg/ha",
+            status="Low" if req.k_kg_ha < 120 else ("Medium" if req.k_kg_ha <= 280 else "High"),
+        ),
+        SHCClassification(
+            parameter="Organic Carbon",
+            value=req.oc_pct,
+            unit="%",
+            status="Low" if req.oc_pct < 0.5 else ("Medium" if req.oc_pct <= 0.75 else "High"),
+        ),
+        SHCClassification(
+            parameter="Soil pH",
+            value=req.ph,
+            unit="pH",
+            status="Acidic" if req.ph < 6.0 else ("Optimal" if req.ph <= 7.5 else "Alkaline"),
+        ),
+        SHCClassification(
+            parameter="Zinc (Zn)",
+            value=req.zn_ppm,
+            unit="ppm",
+            status="Low" if req.zn_ppm < 0.5 else ("Medium" if req.zn_ppm <= 1.0 else "High"),
+        ),
     ]
     flags = evaluate_soil_alerts({"ph": req.ph, "zn": req.zn_ppm})
     return SHCParseResponse(classifications=classifications, amendment_flags=flags)
@@ -253,7 +284,7 @@ def parse_shc(req: SHCParseRequest):
 @app.post("/api/v1/shc/ocr-upload", response_model=SHCOCRResponse)
 async def ocr_upload_shc(
     file: UploadFile = File(..., description="Soil Health Card image (JPEG, PNG, WEBP) or PDF scan"),
-    district: Optional[str] = Query(None, description="Optional target district context for boundary validation")
+    district: str | None = Query(None, description="Optional target district context for boundary validation"),
 ):
     """
     Multimodal Vision OCR endpoint for Soil Health Cards (मृदा स्वास्थ्य कार्ड).
@@ -267,29 +298,26 @@ async def ocr_upload_shc(
 
     mime = file.content_type or "image/jpeg"
     try:
-        result = await extract_shc_from_image(
-            image_bytes=content,
-            mime_type=mime,
-            preferred_district=district
-        )
+        result = await extract_shc_from_image(image_bytes=content, mime_type=mime, preferred_district=district)
         return result
     except ValueError as ve:
-        raise HTTPException(status_code=422, detail=str(ve))
+        raise HTTPException(status_code=422, detail=str(ve)) from ve
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Soil Health Card extraction error: {e}")
+        raise HTTPException(status_code=500, detail=f"Soil Health Card extraction error: {e}") from e
 
 
 @app.get("/api/v1/organic/advisory", response_model=OrganicAdvisoryResponse)
 def get_organic_advisory_endpoint(
     crop: CropId = Query("wheat", description="Target crop identifier"),
     area_ha: float = Query(1.0, ge=0.05, le=100.0, description="Field area in hectares"),
-    conventional_profit: float = Query(0.0, ge=0.0, description="Conventional net profit benchmark in INR")
+    conventional_profit: float = Query(0.0, ge=0.0, description="Conventional net profit benchmark in INR"),
 ):
     """
     Returns complete bio-input schedule, comparative cost-benefit economics,
     PKVY subsidies, and direct supplier/FPO market routes to motivate organic transition.
     """
     from app.organic_engine import calculate_organic_advisory
+
     return calculate_organic_advisory(crop=crop, area_ha=area_ha, current_conventional_profit=conventional_profit)
 
 
@@ -375,13 +403,13 @@ def estimate_farmer_roi(req: ROIEstimateRequest):
 @app.get("/api/v1/analytics/coverage", response_model=AnalyticsCoverageResponse)
 def get_analytics_coverage():
     """Returns spatial and crop coverage analytics across India."""
-    state_map: Dict[str, List[Dict]] = {}
+    state_map: dict[str, list[dict]] = {}
     if _DISTRICT_MODEL and _DISTRICT_MODEL.records:
         for r in _DISTRICT_MODEL.records:
             region = r.get("region", "Other").strip()
             state_map.setdefault(region, []).append(r)
 
-    summaries: List[StateCoverageSummary] = []
+    summaries: list[StateCoverageSummary] = []
     for state_name, recs in sorted(state_map.items()):
         zone = STATE_TO_ZONE.get(state_name.lower(), "zone4")
         all_crops = set()
@@ -393,7 +421,7 @@ def get_analytics_coverage():
                 state=state_name,
                 zone=zone,
                 districts_count=len(recs),
-                representative_crops=sorted(list(all_crops))[:6],
+                representative_crops=sorted(all_crops)[:6],
             )
         )
 
@@ -410,7 +438,7 @@ def get_analytics_coverage():
 async def synthesize_speech_endpoint(
     text: str = Query(..., min_length=1, max_length=2000, description="Plain text to synthesize into spoken audio"),
     lang: str = Query("hi", description="Language code ('hi' for Hindi, 'en' for English)"),
-    voice: Optional[str] = Query(None, description="Optional specific neural voice name"),
+    voice: str | None = Query(None, description="Optional specific neural voice name"),
 ):
     """
     Synthesizes conversational advisory text into studio-grade MP3 audio bytes using free Neural TTS.
@@ -429,9 +457,9 @@ async def synthesize_speech_endpoint(
             },
         )
     except ValueError as ve:
-        raise HTTPException(status_code=422, detail=str(ve))
+        raise HTTPException(status_code=422, detail=str(ve)) from ve
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Speech synthesis error: {e}")
+        raise HTTPException(status_code=500, detail=f"Speech synthesis error: {e}") from e
 
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
@@ -460,4 +488,3 @@ def serve_portal():
 
 if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
-
