@@ -482,6 +482,14 @@ def serve_legacy_ui():
     return FileResponse(legacy_file, media_type="text/html")
 
 
+@app.get("/react", response_class=HTMLResponse)
+def serve_react_ui():
+    react_file = FRONTEND_DIR / "index_react.html"
+    if not react_file.exists():
+        react_file = FRONTEND_DIR / "index.html"
+    return FileResponse(react_file, media_type="text/html")
+
+
 @app.get("/manifest.json")
 def serve_manifest():
     manifest_file = FRONTEND_DIR / "manifest.json"
