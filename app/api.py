@@ -298,7 +298,12 @@ async def ocr_upload_shc(
 
     mime = file.content_type or "image/jpeg"
     try:
-        result = await extract_shc_from_image(image_bytes=content, mime_type=mime, preferred_district=district)
+        result = await extract_shc_from_image(
+            image_bytes=content,
+            mime_type=mime,
+            preferred_district=district,
+            filename=file.filename,
+        )
         return result
     except ValueError as ve:
         raise HTTPException(status_code=422, detail=str(ve)) from ve
@@ -488,6 +493,14 @@ def serve_react_ui():
     if not react_file.exists():
         react_file = FRONTEND_DIR / "index.html"
     return FileResponse(react_file, media_type="text/html")
+
+
+@app.get("/favicon.ico")
+def serve_favicon():
+    favicon_file = FRONTEND_DIR / "favicon.ico"
+    if favicon_file.exists():
+        return FileResponse(favicon_file, media_type="image/x-icon")
+    return Response(status_code=204)
 
 
 @app.get("/manifest.json")

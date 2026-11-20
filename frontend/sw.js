@@ -1,7 +1,7 @@
 // KhetSathi 360 — Offline Field Service Worker (PWA)
 // Enables zero-connectivity field operations for Indian farmers
 
-const CACHE_NAME = 'khetsathi-v1.3';
+const CACHE_NAME = 'khetsathi-v2.2';
 const STATIC_ASSETS = [
   '/',
   '/ui',
@@ -77,7 +77,29 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For HTML & static assets: Stale-while-revalidate / Cache-first
+  // For HTML navigation: Network-first to always serve fresh page, fallback to cache offline
+  if (req.mode === 'navigate' || (req.headers.get('accept') && req.headers.get('accept').includes('text/html'))) {
+    event.respondWith(
+      fetch(req)
+        .then((networkResp) => {
+          if (networkResp && networkResp.status === 200) {
+            const respClone = networkResp.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, respClone));
+          }
+          return networkResp;
+        })
+        .catch(async () => {
+          const cached = await caches.match(req);
+          return cached || (await caches.match('/')) || new Response('ऑफलाइन मोड: पेज लोड नहीं हो सका।', {
+            status: 503,
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+          });
+        })
+    );
+    return;
+  }
+
+  // For static assets (scripts, styles, fonts, images): Cache-first / Stale-while-revalidate
   event.respondWith(
     caches.match(req).then((cached) => {
       const fetchPromise = fetch(req)

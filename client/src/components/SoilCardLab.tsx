@@ -99,8 +99,12 @@ export const SoilCardLab: React.FC<SoilCardLabProps> = ({
       evaluateSoilHealth(newSoil);
     } catch (err: any) {
       console.warn('[SHC OCR] error:', err);
-      setScanStatus(isHi ? 'सत्यापन: नमूना कार्ड डेटा लोड किया गया।' : 'Fallback to validated sample card values.');
-      evaluateSoilHealth(soilState);
+      const msg = err?.message || (isHi ? 'अमान्य दस्तावेज़: यह मृदा स्वास्थ्य कार्ड नहीं है।' : 'Invalid Document: Not a Soil Health Card.');
+      setScanStatus(`⚠️ ${msg}`);
+      setOcrSuccess(false);
+      alert(isHi
+        ? `⚠️ अमान्य दस्तावेज़:\n${msg}\n\nकृपया आधिकारिक मृदा स्वास्थ्य कार्ड (Soil Health Card) या अधिकृत मिट्टी जांच पर्ची अपलोड करें।`
+        : `⚠️ Invalid Document:\n${msg}\n\nPlease upload an authentic Soil Health Card or accredited soil test laboratory report.`);
     } finally {
       setIsScanning(false);
     }

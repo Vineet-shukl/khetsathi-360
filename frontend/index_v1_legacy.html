@@ -2181,7 +2181,17 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         });
 
         if (!res.ok) {
-          throw new Error(`Upload failed with HTTP ${res.status}`);
+          let errorDetail = `HTTP ${res.status}`;
+          try {
+            const errData = await res.json();
+            if (errData && errData.detail) errorDetail = errData.detail;
+          } catch (_) {}
+          scanBeam.classList.add("hidden");
+          progressBox.classList.add("hidden");
+          alert(currentLang === "hi"
+            ? `⚠️ अमान्य दस्तावेज़:\n${errorDetail}\n\nकृपया कृषि विभाग द्वारा जारी आधिकारिक 'मृदा स्वास्थ्य कार्ड' (Soil Health Card) या अधिकृत मिट्टी जांच प्रयोगशाला की रिपोर्ट अपलोड करें।`
+            : `⚠️ Invalid Document:\n${errorDetail}\n\nPlease upload an authentic Soil Health Card or accredited soil test laboratory report.`);
+          return;
         }
 
         const data = await res.json();
@@ -2218,8 +2228,12 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         }, 600);
 
       } catch (err) {
-        console.warn("Real OCR failed, falling back to regional preset:", err);
-        runSimulatedOcr(SHC_PRESETS.up);
+        scanBeam.classList.add("hidden");
+        progressBox.classList.add("hidden");
+        console.error("OCR scan error:", err);
+        alert(currentLang === "hi"
+          ? "⚠️ दस्तावेज़ प्रसंस्करण में तकनीकी त्रुटि आई। कृपया फ़ाइल जांचें और पुनः प्रयास करें।"
+          : "⚠️ Error processing document. Please check the file and try again.");
       }
     }
 
