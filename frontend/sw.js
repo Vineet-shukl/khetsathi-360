@@ -1,19 +1,20 @@
 // KhetSathi 360 — Offline Field Service Worker (PWA)
 // Enables zero-connectivity field operations for Indian farmers
 
-const CACHE_NAME = 'khetsathi-v2.0';
+const CACHE_NAME = 'khetsathi-v1.3';
 const STATIC_ASSETS = [
   '/',
   '/ui',
-  '/manifest.json',
-  '/legacy',
+  '/static/manifest.json',
+  'https://cdn.tailwindcss.com/3.4.17',
+  'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[KhetSathi SW] Pre-caching static assets for v2.0');
+      console.log('[KhetSathi SW] Pre-caching static assets');
       return cache.addAll(STATIC_ASSETS).catch((err) => {
         console.warn('[KhetSathi SW] Pre-cache non-fatal error:', err);
       });

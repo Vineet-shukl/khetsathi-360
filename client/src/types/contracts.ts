@@ -14,6 +14,7 @@ export interface SoilTestInput {
   b_ppm?: number;
   fe_ppm?: number;
   s_ppm?: number;
+  ec_dsm?: number;
 }
 
 export interface AdvisoryRequest {
@@ -193,4 +194,44 @@ export interface LocationSearchResult {
   display_name?: string;
   district?: string;
   state?: string;
+}
+
+// Soil Health Card (SHC) Models
+export interface SHCOCRResponse {
+  n_kg_ha: number;
+  p_kg_ha: number;
+  k_kg_ha: number;
+  oc_pct: number;
+  ph: number;
+  zn_ppm: number;
+  s_ppm?: number;
+  ec_dsm?: number;
+  district?: string | null;
+  state?: string | null;
+  confidence_pct?: number;
+  extracted_via?: string;
+  raw_summary?: string | null;
+}
+
+export interface SHCClassification {
+  parameter: string;
+  value: number;
+  unit: string;
+  status: string;
+}
+
+export interface SHCParseResponse {
+  classifications: SHCClassification[];
+  amendment_flags: string[];
+}
+
+export interface FPOCluster {
+  name: string;
+  district: string;
+  state: string;
+  commodities: string[];
+  contact_person: string;
+  phone: string;
+  address: string;
+  verified: boolean;
 }

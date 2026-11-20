@@ -4,6 +4,9 @@ import type {
   CropId,
   LocationSearchResult,
   OrganicAdvisoryResponse,
+  SHCOCRResponse,
+  SHCParseResponse,
+  SoilTestInput,
   WeatherForecastResponse,
 } from '../types/contracts';
 
@@ -54,6 +57,59 @@ export async function fetchWeather(lat: number, lon: number, lang: 'hi' | 'en' =
   const res = await fetch(`${BASE_URL}/api/v1/weather?lat=${lat}&lon=${lon}&lang=${lang}`);
   if (!res.ok) {
     throw new Error('Failed to fetch weather forecast');
+  }
+  return res.json();
+}
+
+export async function uploadShcImage(file: File, district?: string): Promise<SHCOCRResponse> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const url = district
+    ? `${BASE_URL}/api/v1/shc/ocr-upload?district=${encodeURIComponent(district)}`
+    : `${BASE_URL}/api/v1/shc/ocr-upload`;
+  const res = await fetch(url, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Failed to extract Soil Health Card' }));
+    throw new Error(err.detail || 'Failed to extract Soil Health Card');
+  }
+  return res.json();
+}
+
+export async function parseShc(soil: SoilTestInput): Promise<SHCParseResponse> {
+  const payload = {
+    n_kg_ha: soil.n_kg_ha ?? 240.0,
+    p_kg_ha: soil.p_kg_ha ?? 14.5,
+    k_kg_ha: soil.k_kg_ha ?? 185.0,
+    oc_pct: soil.oc_pct ?? 0.45,
+    ph: soil.ph ?? 7.4,
+    zn_ppm: soil.zn_ppm ?? 0.65,
+    s_ppm: soil.s_ppm ?? 12.0,
+    ec_dsm: soil.ec_dsm ?? 0.5,
+  };
+  const res = await fetch(`${BASE_URL}/api/v1/shc/parse`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    throw new Error('Failed to parse Soil Health Card parameters');
+  }
+  return res.json();
+}
+
+export async function fetchDistrictBaseline(query?: string, lat?: number, lon?: number): Promise<any> {
+  const params = new URLSearchParams();
+  if (query) params.append('query', query);
+  if (lat !== undefined && lon !== undefined) {
+    params.append('lat', lat.toString());
+    params.append('lon', lon.toString());
+  }
+  const res = await fetch(`${BASE_URL}/api/v1/district/baseline?${params.toString()}`);
+  if (!res.ok) {
+    throw new Error('Failed to fetch district soil baseline');
   }
   return res.json();
 }
