@@ -96,31 +96,28 @@ export interface SatelliteVegetationIndex {
 }
 
 export interface OrganicInputPlan {
-  crop: string;
+  crop: CropId;
   area_ha: number;
   vermicompost_tonnes: number;
-  bio_npk_consortium_litres: number;
+  liquid_bio_npk_litres: number;
   jeevamrut_litres: number;
   neem_cake_kg: number;
-  schedule_hi: string;
-  schedule_en: string;
+  application_schedule: string[];
 }
 
 export interface OrganicEconomics {
-  chemical_input_cost_inr: number;
+  crop: CropId;
+  area_ha: number;
+  conventional_input_cost_inr: number;
   organic_input_cost_inr: number;
-  input_savings_pct: number;
-  expected_conventional_yield_kg_ha: number;
-  expected_organic_yield_kg_ha: number;
-  mandi_price_per_q_inr: number;
+  input_cost_savings_inr: number;
   organic_market_premium_pct: number;
   expected_organic_price_per_q_inr: number;
-  conventional_gross_revenue_inr: number;
-  organic_gross_revenue_inr: number;
-  pkvy_annual_subsidy_inr: number;
   conventional_net_profit_inr: number;
   organic_net_profit_inr: number;
-  profit_difference_inr: number;
+  net_profit_increase_inr: number;
+  pkvy_annual_assistance_inr: number;
+  total_farmer_benefit_inr: number;
 }
 
 export interface OrganicSupplierRoute {

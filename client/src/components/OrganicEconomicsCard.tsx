@@ -69,7 +69,7 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
           </div>
           <div className="text-right">
             <span className="text-xs font-black text-amber-300 bg-amber-900/60 px-2 py-1 rounded border border-amber-600/50 block">
-              +₹{Math.round(economics.profit_difference_inr).toLocaleString('en-IN')} {isHi ? 'अतिरिक्त लाभ' : 'Gain'}
+              +₹{Math.round(economics.net_profit_increase_inr).toLocaleString('en-IN')} {isHi ? 'अतिरिक्त लाभ' : 'Gain'}
             </span>
             <span className="text-[10px] text-emerald-200 font-medium">
               +{economics.organic_market_premium_pct}% {isHi ? 'ऑर्गेनिक मंडी प्रीमियम' : 'Premium'}
@@ -100,7 +100,7 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
               {isHi ? 'तरल जैव-एनपीके (Urea विकल्प)' : 'Liquid Bio-NPK'}
             </span>
             <span className="font-black text-emerald-900 text-sm">
-              {bio_inputs.bio_npk_consortium_litres.toFixed(1)} {isHi ? 'लीटर' : 'L'}
+              {bio_inputs.liquid_bio_npk_litres.toFixed(1)} {isHi ? 'लीटर' : 'L'}
             </span>
           </div>
           <div className="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs">
