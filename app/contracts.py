@@ -82,6 +82,29 @@ class SHCParseResponse(BaseModel):
     amendment_flags: List[str]
 
 
+class WeatherIrregularity(BaseModel):
+    code: Literal["heavy_rain", "heat_stress", "high_et0", "high_humidity"]
+    severity: Literal["warning", "alert", "info"] = "warning"
+    title_en: str
+    title_hi: str
+    message_en: str
+    message_hi: str
+    action_en: str
+    action_hi: str
+
+
+class LocationSearchResult(BaseModel):
+    name: str
+    admin1: Optional[str] = None  # State
+    admin2: Optional[str] = None  # District
+    lat: float
+    lon: float
+    country: str = "India"
+    source: Literal["open_meteo_geocoding", "district_database"]
+    display_name: str
+    zone: Optional[str] = None
+
+
 class WeatherForecastResponse(BaseModel):
     status: Literal["ok", "fallback"]
     lat: float
@@ -96,6 +119,10 @@ class WeatherForecastResponse(BaseModel):
     rain_prob_48h_pct: int
     precipitation_sum_mm: float
     rain_guardrail_hold_urea: bool
+    heat_stress_alert: bool = False
+    high_et0_alert: bool = False
+    high_humidity_alert: bool = False
+    irregularities: List[WeatherIrregularity] = Field(default_factory=list)
     source: str
 
 

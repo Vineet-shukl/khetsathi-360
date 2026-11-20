@@ -7,7 +7,7 @@ Set ENABLE_ML_RESIDUAL=false to disable ML overlay and use pure deterministic ru
 """
 import os
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
@@ -18,6 +18,7 @@ from app.contracts import (
     AdvisoryResponse,
     AnalyticsCoverageResponse,
     InvestorMetricsResponse,
+    LocationSearchResult,
     ROIEstimate,
     ROIEstimateRequest,
     SHCClassification,
@@ -28,7 +29,7 @@ from app.contracts import (
     YieldPredictionRequest,
     YieldPredictionResponse,
 )
-from app.weather_service import fetch_live_weather
+from app.weather_service import fetch_live_weather, search_pinpoint_locations
 from app.baseline_engine import (
     CROPS,
     ZONES,
@@ -105,6 +106,15 @@ def get_weather(
 ):
     """Real-time numerical weather prediction & FAO-56 ET0 forecast from Open-Meteo."""
     return fetch_live_weather(lat=lat, lon=lon, language=lang)
+
+
+@app.get("/api/v1/location/search", response_model=List[LocationSearchResult])
+def search_location(
+    query: str = Query(..., min_length=2, description="Village, tehsil, town, or district name across India")
+):
+    """Blinkit/Swiggy style pinpoint location search across Indian localities and 695 districts."""
+    records = _DISTRICT_MODEL.records if _DISTRICT_MODEL else None
+    return search_pinpoint_locations(query=query, count=8, district_records=records)
 
 
 @app.post("/api/v1/advisory", response_model=AdvisoryResponse)
