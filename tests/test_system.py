@@ -267,20 +267,24 @@ class TestKhetSathiMLSystem(unittest.TestCase):
         self.assertEqual(data["data_source"], "real")
 
     def test_frontend_served_at_root_and_ui(self):
-        """Root /, /ui, /portal, /login, and /investor serve the production frontend HTML with WCAG landmarks."""
-        for path in ["/", "/ui", "/portal", "/login", "/investor"]:
+        """Root /, /ui, /portal, /login, /investor, and /legacy serve the frontend HTML."""
+        for path in ["/", "/ui", "/portal", "/login", "/investor", "/legacy"]:
             r = self.client.get(path)
             self.assertEqual(r.status_code, 200)
             self.assertIn("text/html", r.headers.get("content-type", ""))
             self.assertTrue("KhetSathi 360" in r.text or "Redirecting" in r.text)
 
-    def test_service_worker_served(self):
-        """Service Worker /sw.js is served with application/javascript and Service-Worker-Allowed header."""
-        r = self.client.get("/sw.js")
-        self.assertEqual(r.status_code, 200)
-        self.assertIn("javascript", r.headers.get("content-type", ""))
-        self.assertEqual(r.headers.get("service-worker-allowed"), "/")
-        self.assertIn("khetsathi", r.text.lower())
+    def test_service_worker_and_manifest_served(self):
+        """Service Worker /sw.js and /manifest.json are served with appropriate headers."""
+        r_sw = self.client.get("/sw.js")
+        self.assertEqual(r_sw.status_code, 200)
+        self.assertIn("javascript", r_sw.headers.get("content-type", ""))
+        self.assertEqual(r_sw.headers.get("service-worker-allowed"), "/")
+        self.assertIn("khetsathi", r_sw.text.lower())
+
+        r_man = self.client.get("/manifest.json")
+        self.assertEqual(r_man.status_code, 200)
+        self.assertIn("manifest", r_man.headers.get("content-type", ""))
 
     # ------------------------------------------------------------------
     # 8. Real-Time Meteorological Weather & ET0 Integration

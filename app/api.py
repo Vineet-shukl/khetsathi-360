@@ -474,6 +474,22 @@ def serve_ui():
     return FileResponse(index_file, media_type="text/html")
 
 
+@app.get("/legacy", response_class=HTMLResponse)
+def serve_legacy_ui():
+    legacy_file = FRONTEND_DIR / "index_v1_legacy.html"
+    if not legacy_file.exists():
+        raise HTTPException(status_code=404, detail="Legacy frontend not found")
+    return FileResponse(legacy_file, media_type="text/html")
+
+
+@app.get("/manifest.json")
+def serve_manifest():
+    manifest_file = FRONTEND_DIR / "manifest.json"
+    if not manifest_file.exists():
+        raise HTTPException(status_code=404, detail="Manifest not found")
+    return FileResponse(manifest_file, media_type="application/manifest+json")
+
+
 @app.get("/sw.js")
 def serve_sw():
     sw_file = FRONTEND_DIR / "sw.js"
@@ -499,4 +515,7 @@ def serve_portal():
 
 
 if FRONTEND_DIR.exists():
+    assets_dir = FRONTEND_DIR / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
     app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
