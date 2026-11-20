@@ -474,6 +474,18 @@ def serve_ui():
     return FileResponse(index_file, media_type="text/html")
 
 
+@app.get("/sw.js")
+def serve_sw():
+    sw_file = FRONTEND_DIR / "sw.js"
+    if not sw_file.exists():
+        raise HTTPException(status_code=404, detail="Service worker not found")
+    return FileResponse(
+        sw_file,
+        media_type="application/javascript",
+        headers={"Service-Worker-Allowed": "/", "Cache-Control": "no-cache"},
+    )
+
+
 @app.get("/portal", response_class=HTMLResponse)
 @app.get("/login", response_class=HTMLResponse)
 @app.get("/investor", response_class=HTMLResponse)

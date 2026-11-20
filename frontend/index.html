@@ -147,6 +147,12 @@
     </div>
   </header>
 
+  <!-- Offline Field Mode Status Indicator (WCAG Live Region) -->
+  <aside id="offline-banner" role="status" aria-live="polite" class="hidden bg-amber-500 text-amber-950 px-4 py-2 text-xs sm:text-sm font-bold text-center flex items-center justify-center gap-2 border-b border-amber-600 shadow-sm transition">
+    <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-950 animate-ping" aria-hidden="true"></span>
+    <span id="offline-banner-text">🌾 ऑफलाइन फील्ड मोड सक्रिय (Offline Field Mode) — इंटरनेट न होने पर भी सुरक्षित स्थानीय कृषि मॉडल सक्रिय हैं।</span>
+  </aside>
+
   <!-- Main Landmark -->
   <main id="main-content" role="main" tabindex="-1" class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 focus:outline-none">
 
@@ -730,6 +736,20 @@
                 <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
             </div>
+
+            <!-- 1-Click WhatsApp Direct Cluster & Buyer Connect -->
+            <div class="mt-3 p-3.5 rounded-xl bg-gradient-to-r from-emerald-100/90 to-teal-50 border border-emerald-300 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+              <div class="flex items-center gap-2.5">
+                <span class="text-2xl" aria-hidden="true">💬</span>
+                <div>
+                  <span id="lbl-org-wa-title" class="font-bold text-emerald-950 block text-xs sm:text-sm">जैविक समूह व FPO खरीदार संपर्क (WhatsApp Direct Link)</span>
+                  <span id="lbl-org-wa-sub" class="text-[11px] text-emerald-800 block">अपनी चयनित फसल व रकबे का विवरण सीधे जैविक क्लस्टर / FPO को साझा करें</span>
+                </div>
+              </div>
+              <button id="btn-whatsapp-organic" type="button" class="w-full sm:w-auto px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5 shrink-0 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <span aria-hidden="true">📲</span> <span id="lbl-org-wa-btn">व्हाट्सएप पर संपर्क करें</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1142,7 +1162,11 @@
         assimSub: "फसल के दौरान अप्रत्याशित मौसम या लक्षण दर्ज करें — इंजन तुरंत खाद व पानी की सलाह को पुनर्समायोजित करेगा।",
         btnUpdateAssim: "सलाह अपडेट करें",
         footerText: "KhetSathi 360 · राष्ट्रीय डिजिटल कृषि निर्णय प्रणाली · ICAR PoP, FAO-56 एवं भारत सरकार DAC&FW मानकों द्वारा संचालित।",
-        footerSub: "WCAG 2.2 Level AA प्रमाणित · द्विभाषी EN / हिन्दी"
+        footerSub: "WCAG 2.2 Level AA प्रमाणित · द्विभाषी EN / हिन्दी",
+        offlineBanner: "🌾 ऑफलाइन फील्ड मोड सक्रिय (Offline Field Mode) — इंटरनेट न होने पर भी सुरक्षित स्थानीय कृषि मॉडल सक्रिय हैं।",
+        orgWaTitle: "जैविक समूह व FPO खरीदार संपर्क (WhatsApp Direct Link)",
+        orgWaSub: "अपनी चयनित फसल व रकबे का विवरण सीधे जैविक क्लस्टर / FPO को साझा करें",
+        orgWaBtn: "व्हाट्सएप पर संपर्क करें"
       },
       en: {
         brandBadge: "VERIFIED AGRI DECISION PLATFORM",
@@ -1218,7 +1242,11 @@
         assimSub: "Log unforeseen mid-season events — the engine recalculates fertilizer and irrigation dynamically.",
         btnUpdateAssim: "Update Advisory Plan",
         footerText: "KhetSathi 360 · National Digital Agri Decision Platform · Grounded in ICAR PoP, FAO-56 & DAC&FW Standards.",
-        footerSub: "WCAG 2.2 Level AA Compliant · Bilingual EN / Hindi"
+        footerSub: "WCAG 2.2 Level AA Compliant · Bilingual EN / Hindi",
+        offlineBanner: "🌾 Offline Field Mode Active — Operating seamlessly without internet using local cached agronomic baselines.",
+        orgWaTitle: "Organic Cluster & FPO Buyer Connect (WhatsApp Direct Link)",
+        orgWaSub: "Share your selected crop and area details directly with regional organic clusters and buyers",
+        orgWaBtn: "Connect via WhatsApp"
       }
     };
 
@@ -1333,7 +1361,11 @@
         "lbl-assim-sub": dict.assimSub,
         "lbl-btn-update-assim": dict.btnUpdateAssim,
         "lbl-footer-text": dict.footerText,
-        "lbl-footer-sub": dict.footerSub
+        "lbl-footer-sub": dict.footerSub,
+        "lbl-org-wa-title": dict.orgWaTitle,
+        "lbl-org-wa-sub": dict.orgWaSub,
+        "lbl-org-wa-btn": dict.orgWaBtn,
+        "offline-banner-text": dict.offlineBanner
       };
 
       for (const [id, val] of Object.entries(idMap)) {
@@ -2589,6 +2621,50 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         }
         runAdvisoryEngine();
       });
+
+      // 1-Click WhatsApp Direct Cluster & Buyer Connect Handler
+      const btnOrgWa = getEl("btn-whatsapp-organic");
+      if (btnOrgWa) {
+        btnOrgWa.addEventListener("click", () => {
+          const isHi = currentLang === "hi";
+          const cropKey = selectedCrop || "wheat";
+          const cropName = CROP_DB[cropKey]?.[isHi ? "name_hi" : "name_en"] || cropKey;
+          const areaVal = getEl("plot-area")?.value || "1";
+          const unitVal = getEl("plot-unit")?.value || "ha";
+          const text = isHi
+            ? `🌾 *KhetSathi 360 — जैविक खेती व बाजार लिंकेज अनुरोध*\n\nफसल: ${cropName}\nरकबा: ${areaVal} ${unitVal}\n\nमैं रासायनिक उर्वरक मुक्त जैविक खेती (PKVY/PGS प्रमाणीकरण) अपनाना चाहता हूँ। कृपया मुझे नजदीकी FPO एकत्रीकरण केंद्र व खरीद अनुबंध से जोड़ें।\n\nसत्यापित पोर्टल: https://www.jaivikkheti.in`
+            : `🌾 *KhetSathi 360 — Organic Farming & Direct Market Linkage Request*\n\nCrop: ${cropName}\nArea: ${areaVal} ${unitVal}\n\nI want to transition to certified organic cultivation under PKVY/PGS. Please connect me with the nearest FPO aggregation hub and direct buyer contract.\n\nVerified Portal: https://www.jaivikkheti.in`;
+          window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+        });
+      }
+
+      // Network Offline/Online Detection for Field Mode
+      function updateNetworkStatus() {
+        const banner = getEl("offline-banner");
+        if (!banner) return;
+        if (!navigator.onLine) {
+          banner.classList.remove("hidden");
+        } else {
+          banner.classList.add("hidden");
+        }
+      }
+      window.addEventListener("online", updateNetworkStatus);
+      window.addEventListener("offline", updateNetworkStatus);
+      updateNetworkStatus();
+
+      // PWA Offline Service Worker Registration
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => {
+              console.log("[KhetSathi] ServiceWorker registered with scope:", reg.scope);
+            })
+            .catch((err) => {
+              console.warn("[KhetSathi] ServiceWorker registration failed:", err);
+            });
+        });
+      }
 
       // Initial Execution
       setLanguage(currentLang);

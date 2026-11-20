@@ -274,6 +274,14 @@ class TestKhetSathiMLSystem(unittest.TestCase):
             self.assertIn("text/html", r.headers.get("content-type", ""))
             self.assertTrue("KhetSathi 360" in r.text or "Redirecting" in r.text)
 
+    def test_service_worker_served(self):
+        """Service Worker /sw.js is served with application/javascript and Service-Worker-Allowed header."""
+        r = self.client.get("/sw.js")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("javascript", r.headers.get("content-type", ""))
+        self.assertEqual(r.headers.get("service-worker-allowed"), "/")
+        self.assertIn("khetsathi", r.text.lower())
+
     # ------------------------------------------------------------------
     # 8. Real-Time Meteorological Weather & ET0 Integration
     # ------------------------------------------------------------------
