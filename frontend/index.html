@@ -35,6 +35,29 @@
       animation: scanline 2s infinite ease-in-out;
     }
 
+    /* Tactile Audio Equalizer Sound Wave Animation */
+    .sound-wave {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      height: 18px;
+    }
+    .sound-wave-bar {
+      width: 3.5px;
+      background: currentColor;
+      border-radius: 9999px;
+      animation: soundWaveAnim 0.9s ease-in-out infinite alternate;
+    }
+    .sound-wave-bar:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+    .sound-wave-bar:nth-child(2) { height: 16px; animation-delay: 0.25s; }
+    .sound-wave-bar:nth-child(3) { height: 10px; animation-delay: 0.15s; }
+    .sound-wave-bar:nth-child(4) { height: 18px; animation-delay: 0.35s; }
+    .sound-wave-bar:nth-child(5) { height: 8px; animation-delay: 0.2s; }
+    @keyframes soundWaveAnim {
+      0% { transform: scaleY(0.35); opacity: 0.7; }
+      100% { transform: scaleY(1.0); opacity: 1; }
+    }
+
     /* Print Slip Stylesheet (@media print) */
     @media print {
       body { background: white !important; color: black !important; margin: 0; padding: 0; }
@@ -498,7 +521,11 @@
           </button>
 
           <button id="btn-listen-speech-2" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow flex items-center gap-2">
-            <span>🔊</span> <span id="lbl-btn-listen2">पूरी सलाह दोबारा सुनें</span>
+            <span>🔊</span> <span id="lbl-btn-listen2">पूरी सलाह बोलकर सुनें</span>
+          </button>
+
+          <button id="btn-download-audio" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-700 hover:bg-amber-600 text-white transition shadow flex items-center gap-2">
+            <span>🎵</span> <span id="lbl-btn-download-audio">ऑडियो MP3 प्राप्त करें</span>
           </button>
         </div>
 
@@ -896,6 +923,7 @@
         btnWhatsapp: "WhatsApp पर पर्ची भेजें",
         btnPrint: "सलाह पर्ची प्रिंट करें (Print / PDF)",
         btnListen2: "पूरी सलाह दोबारा सुनें",
+        btnDownloadAudio: "ऑडियो MP3 प्राप्त करें",
         sciConsoleTitle: "वैज्ञानिक व अनुसंधान कंसोल (Scientific & Agronomic Console)",
         sciConsoleSub: "रासायनिक तत्व गणना, डीएपी नाइट्रोजन क्रेडिट समीकरण, हाइब्रिड एमएल रेसिडुअल व FAO-56 जल मांग वक्र",
         mod2Badge: "मृदा स्वास्थ्य प्रयोगशाला एवं FPO क्लस्टर कंसोल",
@@ -971,6 +999,7 @@
         btnWhatsapp: "Share Advisory on WhatsApp",
         btnPrint: "Print Advisory Slip (Print / PDF)",
         btnListen2: "Listen to Full Plan Again",
+        btnDownloadAudio: "Download Audio MP3",
         sciConsoleTitle: "Scientific & Agronomic Console",
         sciConsoleSub: "Elemental NPK targets, DAP nitrogen credit formulas, Hybrid ML residual & FAO-56 curves",
         mod2Badge: "Soil Health Laboratory & FPO Console",
@@ -1085,6 +1114,7 @@
         "lbl-btn-whatsapp": dict.btnWhatsapp,
         "lbl-btn-print": dict.btnPrint,
         "lbl-btn-listen2": dict.btnListen2,
+        "lbl-btn-download-audio": dict.btnDownloadAudio,
         "lbl-sci-console-title": dict.sciConsoleTitle,
         "lbl-sci-console-sub": dict.sciConsoleSub,
         "lbl-mod2-badge": dict.mod2Badge,
@@ -1539,7 +1569,11 @@
         actionsContainer.appendChild(item);
       });
 
-      lastSpokenPlanText = actions.map(a => `${a.title}. ${a.body}`).join(" ");
+      if (currentLang === "hi") {
+        lastSpokenPlanText = `नमस्कार किसान भाई! आपके ${currentLocationDisplayName} खेत में ${crop.hi} की फसल के लिए सलाह तैयार है। बुवाई के समय ${dapBags.toFixed(1)} बोरी डीएपी और ${mopBags.toFixed(1)} बोरी पोटाश दें। यूरिया कुल ${ureaBags.toFixed(1)} बोरी, दो से तीन किश्तों में सिंचाई के समय डालें। ${actions.map(a => a.body).join(" ")} खेतसाथी 360 आपके साथ है।`;
+      } else {
+        lastSpokenPlanText = `Hello Kisan Mitra! Crop advisory is ready for ${crop.label} in ${currentLocationDisplayName}. At sowing, apply ${dapBags.toFixed(1)} bags of DAP and ${mopBags.toFixed(1)} bags of MOP. Apply a total of ${ureaBags.toFixed(1)} bags of Urea in two to three splits with irrigation. ${actions.map(a => a.body).join(" ")} Happy farming!`;
+      }
 
       // Save calculated plan for WhatsApp & Print Slip
       lastCalculatedPlan = {
@@ -2028,20 +2062,118 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       getEl("btn-scientific-mode").addEventListener("click", toggleScientificMode);
       getEl("btn-close-sci-console").addEventListener("click", toggleScientificMode);
 
-      // Web Speech Synthesis Audio
-      function speakPlan() {
-        if ("speechSynthesis" in window && lastSpokenPlanText) {
-          window.speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance(lastSpokenPlanText);
-          u.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
-          u.rate = 0.92;
-          window.speechSynthesis.speak(u);
-        } else {
-          alert(currentLang === "hi" ? "इस ब्राउज़र में ऑडियो सुविधा उपलब्ध नहीं है।" : "Audio synthesis is not supported in this browser.");
-        }
+      // Tactile Audio Controller with Animated Sound Wave Equalizer
+      let isAudioPlaying = false;
+      let activeAudioElement = null;
+
+      function updateAudioButtons(playing) {
+        isAudioPlaying = playing;
+        const waveHtml = `<span class="sound-wave select-none mr-1.5" aria-hidden="true">
+          <span class="sound-wave-bar"></span>
+          <span class="sound-wave-bar"></span>
+          <span class="sound-wave-bar"></span>
+          <span class="sound-wave-bar"></span>
+          <span class="sound-wave-bar"></span>
+        </span>`;
+
+        ["btn-listen-speech", "btn-listen-speech-2"].forEach(id => {
+          const btn = getEl(id);
+          if (!btn) return;
+          if (playing) {
+            btn.innerHTML = `${waveHtml} <span class="font-extrabold text-slate-950">${currentLang === "hi" ? "⏹️ रोकें (Stop)" : "⏹️ Stop Voice"}</span>`;
+            btn.classList.add("ring-4", "ring-amber-300");
+          } else {
+            btn.innerHTML = `<span aria-hidden="true">🔊</span> <span>${currentLang === "hi" ? "सलाह बोलकर सुनें" : "Listen to Plan"}</span>`;
+            btn.classList.remove("ring-4", "ring-amber-300");
+          }
+        });
       }
+
+      function stopAudio() {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+        }
+        if (activeAudioElement) {
+          activeAudioElement.pause();
+          activeAudioElement.currentTime = 0;
+          activeAudioElement = null;
+        }
+        updateAudioButtons(false);
+      }
+
+      function fallbackToNeuralTTS(text) {
+        const url = `/api/v1/tts/synthesize?text=${encodeURIComponent(text)}&lang=${currentLang}`;
+        if (activeAudioElement) {
+          activeAudioElement.pause();
+        }
+        activeAudioElement = new Audio(url);
+        activeAudioElement.onended = () => updateAudioButtons(false);
+        activeAudioElement.onerror = () => {
+          updateAudioButtons(false);
+          alert(currentLang === "hi" ? "ऑडियो लोड करने में असमर्थ।" : "Could not load audio.");
+        };
+        activeAudioElement.play().catch(err => {
+          console.warn("Audio play prevented:", err);
+          updateAudioButtons(false);
+        });
+      }
+
+      function speakPlan() {
+        if (isAudioPlaying) {
+          stopAudio();
+          return;
+        }
+
+        if (!lastSpokenPlanText) {
+          runAdvisoryEngine();
+        }
+        if (!lastSpokenPlanText) return;
+
+        updateAudioButtons(true);
+
+        // Try Web Speech Synthesis first
+        if ("speechSynthesis" in window) {
+          try {
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(lastSpokenPlanText);
+            u.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
+            u.rate = 0.92;
+
+            // Check if Hindi voice is available
+            const voices = window.speechSynthesis.getVoices();
+            const matchingVoice = voices.find(v => v.lang.toLowerCase().startsWith(currentLang === "hi" ? "hi" : "en"));
+            if (matchingVoice) u.voice = matchingVoice;
+
+            u.onend = () => updateAudioButtons(false);
+            u.onerror = (e) => {
+              console.warn("SpeechSynthesis error, falling back to Neural TTS:", e);
+              fallbackToNeuralTTS(lastSpokenPlanText);
+            };
+
+            window.speechSynthesis.speak(u);
+            return;
+          } catch (e) {
+            console.warn("SpeechSynthesis exception:", e);
+          }
+        }
+
+        // Fallback to Backend Neural Audio
+        fallbackToNeuralTTS(lastSpokenPlanText);
+      }
+
       getEl("btn-listen-speech").addEventListener("click", speakPlan);
       getEl("btn-listen-speech-2").addEventListener("click", speakPlan);
+
+      // Download / Share MP3 Audio Slip
+      const btnDownloadAudio = getEl("btn-download-audio");
+      if (btnDownloadAudio) {
+        btnDownloadAudio.addEventListener("click", () => {
+          if (!lastSpokenPlanText) runAdvisoryEngine();
+          if (!lastSpokenPlanText) return;
+          const url = `/api/v1/tts/synthesize?text=${encodeURIComponent(lastSpokenPlanText)}&lang=${currentLang}`;
+          window.open(url, "_blank");
+        });
+      }
 
       // WhatsApp Share
       getEl("btn-share-whatsapp").addEventListener("click", shareAdvisoryOnWhatsApp);

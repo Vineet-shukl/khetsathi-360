@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from app.contracts import (
@@ -331,6 +331,33 @@ def get_analytics_coverage():
         zones_covered=list(ZONES.keys()),
     )
 
+
+@app.get("/api/v1/tts/synthesize")
+async def synthesize_speech_endpoint(
+    text: str = Query(..., min_length=1, max_length=2000, description="Plain text to synthesize into spoken audio"),
+    lang: str = Query("hi", description="Language code ('hi' for Hindi, 'en' for English)"),
+    voice: Optional[str] = Query(None, description="Optional specific neural voice name"),
+):
+    """
+    Synthesizes conversational advisory text into studio-grade MP3 audio bytes using free Neural TTS.
+    Returns audio/mpeg with public caching headers.
+    """
+    from app.tts_service import synthesize_neural_speech
+
+    try:
+        audio_bytes = await synthesize_neural_speech(text=text, lang=lang, voice=voice)
+        return Response(
+            content=audio_bytes,
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": 'inline; filename="khetsathi-advisory.mp3"',
+                "Cache-Control": "public, max-age=86400",
+            },
+        )
+    except ValueError as ve:
+        raise HTTPException(status_code=422, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Speech synthesis error: {e}")
 
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"

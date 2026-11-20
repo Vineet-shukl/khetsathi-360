@@ -1,0 +1,51 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "KhetSathi 360 Full Architecture Tour",
+  "steps": [
+    {
+      "file": "frontend/index.html",
+      "line": 170,
+      "description": "Step 1: Blinkit-Style Hyper-Local Location Picker.\nUses Open-Meteo geocoding and 1-click GPS to pinpoint villages, mandis, and tehsils rather than broad district centers."
+    },
+    {
+      "file": "frontend/index.html",
+      "line": 428,
+      "description": "Step 2: Default Pure Farmer View.\nDisplays high-contrast, easily readable commercial fertilizer bags (DAP 50kg, Urea 45kg, MOP 50kg), watering schedules, and audio playback without intimidating chemical equations."
+    },
+    {
+      "file": "frontend/index.html",
+      "line": 508,
+      "description": "Step 3: Dedicated Scientific Mode (#scientific-console).\nToggled on-demand by agronomists/researchers to inspect elemental NPK math, DAP 18% N-credit equations, and interactive Chart.js graphs."
+    },
+    {
+      "file": "app/weather_service.py",
+      "line": 150,
+      "description": "Step 4: Weather Irregularity & NWP Service.\nDetects heavy rain (>60% prob / >25mm rain), heat stress (>=35°C), high ET0 evaporative deficit, and high humidity pathogen risks to provide timely guardrails."
+    },
+    {
+      "file": "app/district_soil_model.py",
+      "line": 52,
+      "description": "Step 5: District Spatial Soil Model (IDW).\nUses KD-Tree and Inverse Distance Weighting across 695 DAC&FW Soil Health Card districts to infer local soil nutrient distribution."
+    },
+    {
+      "file": "app/baseline_engine.py",
+      "line": 65,
+      "description": "Step 6: Deterministic ICAR Baseline Engine.\nComputes baseline N-P-K demand tailored to crop, agro-climatic zone, sowing delay, and irrigation method."
+    },
+    {
+      "file": "app/ml_residual.py",
+      "line": 48,
+      "description": "Step 7: Hybrid ML Residual Model (Ridge Regression).\nTrained on 5,646 historical records to predict microclimate deviation (Delta N), strictly clamped to ±15% of baseline N for agronomic crop safety."
+    },
+    {
+      "file": "app/baseline_engine.py",
+      "line": 80,
+      "description": "Step 8: Statutory FCO Fertilizer Bag Conversion & DAP N-Credit.\nDeducts nitrogen supplied by DAP (18% N) from total target nitrogen before calculating required Urea bags."
+    },
+    {
+      "file": "app/yield_model.py",
+      "line": 79,
+      "description": "Step 9: Yield & Farmer ROI Model.\nCombines 1,299 district-crop yield curves with official CACP 2024-25 MSPs and C2 production costs to project gross revenue and net profit."
+    }
+  ]
+}
