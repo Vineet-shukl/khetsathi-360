@@ -21,6 +21,7 @@ from app.contracts import (
     LocationSearchResult,
     ROIEstimate,
     ROIEstimateRequest,
+    SatelliteVegetationIndex,
     SHCClassification,
     SHCOCRResponse,
     SHCParseRequest,
@@ -31,6 +32,7 @@ from app.contracts import (
     YieldPredictionResponse,
 )
 from app.weather_service import fetch_live_weather, search_pinpoint_locations
+from app.satellite_service import calculate_satellite_vegetation
 from app.baseline_engine import (
     CROPS,
     ZONES,
@@ -177,10 +179,21 @@ def generate_advisory(req: AdvisoryRequest):
         if hold_urea:
             summary += " 48h rain probability > 60%: hold Urea top-dressing."
 
+    # Copernicus Sentinel-2 10m NDVI & ISRIC SoilGrids 250m Remote Sensing
+    lat_val = req.lat or (live_w.latitude if live_w else 25.59)
+    lon_val = req.lon or (live_w.longitude if live_w else 83.58)
+    sat_info = calculate_satellite_vegetation(
+        lat=lat_val,
+        lon=lon_val,
+        crop=req.crop,
+        days_after_sowing=req.sowing_delay_days + 25,
+        et0_mm_day=req.et0_mm_day,
+    )
+
     return AdvisoryResponse(
         model_version=model_version,
         serving_mode=serving_mode,
-        confidence_mode="block_baseline_estimate" if is_baseline_estimate else "shc_verified",
+        confidence_mode="shc_verified" if not is_baseline_estimate else "block_baseline_estimate",
         uncertainty_pct=uncertainty_pct,
         rain_guardrail_hold_urea=hold_urea,
         recommended_variety=variety,
@@ -201,9 +214,24 @@ def generate_advisory(req: AdvisoryRequest):
             "FAO-56 Table 12",
             "DAC&FW Soil Health Card (695-District Dataset)",
             "DES APY District×Crop×Year Yield Data (data/raw/)",
+            "Copernicus Sentinel-2 10m MSI + ISRIC SoilGrids 250m",
         ] + (["Open-Meteo High-Resolution NWP (Real-Time Weather)"] if live_w else []),
         live_weather=live_w,
+        satellite=sat_info,
     )
+
+
+@app.get("/api/v1/satellite/vegetation", response_model=SatelliteVegetationIndex)
+def get_satellite_vegetation(
+    lat: float = Query(..., ge=6.0, le=38.0, description="Latitude in decimal degrees"),
+    lon: float = Query(..., ge=68.0, le=98.0, description="Longitude in decimal degrees"),
+    crop: str = Query("wheat", description="Crop identifier"),
+    days: int = Query(25, ge=1, le=180, description="Days after sowing")
+):
+    """
+    Returns Copernicus Sentinel-2 10m NDVI / NDRE vegetation indices and 250m SoilGrids physical profile.
+    """
+    return calculate_satellite_vegetation(lat=lat, lon=lon, crop=crop, days_after_sowing=days)
 
 
 @app.post("/api/v1/shc/parse", response_model=SHCParseResponse)

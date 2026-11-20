@@ -41,6 +41,20 @@ class ProductPlan(BaseModel):
     n_credit_from_dap_kg: float
 
 
+class SatelliteVegetationIndex(BaseModel):
+    ndvi: float
+    ndre: float
+    crop_vigor_status: str
+    crop_vigor_status_hi: str
+    satellite_name: str = "Copernicus Sentinel-2 (ESA 10m MSI)"
+    resolution_meters: float = 10.0
+    soilgrids_clay_pct: float = 24.5
+    soilgrids_bulk_density_g_cm3: float = 1.35
+    soilgrids_cec_mmol_kg: float = 18.2
+    remote_sensing_action_en: str
+    remote_sensing_action_hi: str
+
+
 class AdvisoryResponse(BaseModel):
     model_version: str
     serving_mode: Literal["hybrid_ml", "deterministic_fallback"]
@@ -57,6 +71,7 @@ class AdvisoryResponse(BaseModel):
     farmer_summary: str
     sources: List[str]
     live_weather: Optional["WeatherForecastResponse"] = None
+    satellite: Optional[SatelliteVegetationIndex] = None
 
 
 class SHCParseRequest(BaseModel):

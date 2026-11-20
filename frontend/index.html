@@ -433,6 +433,54 @@
           <!-- Dynamic Irregularity Cards Injected Here (Heavy Rain, Heat Stress, High ET0, High Humidity) -->
         </div>
 
+        <!-- Copernicus Sentinel-2 Satellite & 250m SoilGrids Remote Sensing Card -->
+        <div id="satellite-card" class="card tactile-card p-4 bg-slate-900 text-white border-slate-700 space-y-2.5 shadow-md">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">🛰️</span>
+              <div>
+                <span class="text-[10px] sm:text-xs font-black uppercase tracking-wider text-emerald-400">Copernicus Sentinel-2 (ESA 10m) &amp; SoilGrids 250m</span>
+                <h4 id="sat-vigor-title" class="text-xs sm:text-sm font-extrabold text-white">उपग्रह फसल स्वास्थ्य व सघनता (Live NDVI)</h4>
+              </div>
+            </div>
+            <span id="sat-ndvi-badge" class="px-2.5 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              NDVI: 0.62 · स्वस्थ विकास
+            </span>
+          </div>
+
+          <!-- NDVI Progress Bar Meter -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-[11px] font-bold text-slate-300">
+              <span>0.1 (कम वानस्पतिक घनत्व)</span>
+              <span id="sat-ndvi-val-text" class="text-emerald-300 font-extrabold">NDVI सूचकांक: 0.62</span>
+              <span>0.9 (सघन फसल)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+              <div id="sat-ndvi-bar" class="bg-gradient-to-r from-amber-500 via-emerald-400 to-green-500 h-2.5 rounded-full transition-all duration-500" style="width: 62%"></div>
+            </div>
+          </div>
+
+          <!-- SoilGrids 250m Physical Texture Row -->
+          <div class="grid grid-cols-3 gap-2 pt-1 border-t border-slate-800 text-center text-[11px]">
+            <div class="p-1.5 rounded-lg bg-slate-800/80">
+              <span class="text-slate-400 block">चिकनी मिट्टी (Clay)</span>
+              <span id="sat-clay-text" class="font-black text-emerald-300">24.5%</span>
+            </div>
+            <div class="p-1.5 rounded-lg bg-slate-800/80">
+              <span class="text-slate-400 block">मिट्टी घनत्व (Density)</span>
+              <span id="sat-density-text" class="font-black text-amber-300">1.38 g/cm³</span>
+            </div>
+            <div class="p-1.5 rounded-lg bg-slate-800/80">
+              <span class="text-slate-400 block">उर्वरक धारण (CEC)</span>
+              <span id="sat-cec-text" class="font-black text-cyan-300">18.5 mmol/kg</span>
+            </div>
+          </div>
+
+          <p id="sat-action-text" class="text-xs text-slate-200 font-semibold leading-relaxed pt-1">
+            उपग्रह के अनुसार फसल का वानस्पतिक विकास उत्तम है। सामान्य तय किश्तों में ही यूरिया दें।
+          </p>
+        </div>
+
         <!-- Hidden Weather Inputs for Model Sync -->
         <input id="et0-input" type="hidden" value="2.8" />
         <input id="rain-prob-slider" type="hidden" value="10" />
@@ -1524,6 +1572,27 @@
 
       getEl("out-mop-bags").textContent = isHi ? `${mopBags.toFixed(1)} बोरी` : `${mopBags.toFixed(1)} bags`;
       getEl("out-mop-sub").textContent = isHi ? `50 किलो वाली मानक बोरी (कुल ${mopKg.toFixed(1)} kg)` : `50 kg standard bag (Net ${mopKg.toFixed(1)} kg)`;
+
+      // Update Copernicus Sentinel-2 Satellite & SoilGrids UI
+      if (apiResponse && apiResponse.satellite) {
+        const sat = apiResponse.satellite;
+        const satTitleEl = getEl("sat-vigor-title");
+        if (satTitleEl) satTitleEl.textContent = isHi ? sat.crop_vigor_status_hi : sat.crop_vigor_status;
+        const satBadgeEl = getEl("sat-ndvi-badge");
+        if (satBadgeEl) satBadgeEl.textContent = `NDVI: ${sat.ndvi} · ${isHi ? 'सटीक उपग्रह स्कैन' : 'Sentinel-2 Scanned'}`;
+        const satValTextEl = getEl("sat-ndvi-val-text");
+        if (satValTextEl) satValTextEl.textContent = isHi ? `NDVI सूचकांक: ${sat.ndvi}` : `NDVI Index: ${sat.ndvi}`;
+        const satBarEl = getEl("sat-ndvi-bar");
+        if (satBarEl) satBarEl.style.width = `${Math.min(100, Math.round(sat.ndvi * 100))}%`;
+        const satClayEl = getEl("sat-clay-text");
+        if (satClayEl) satClayEl.textContent = `${sat.soilgrids_clay_pct}%`;
+        const satDensityEl = getEl("sat-density-text");
+        if (satDensityEl) satDensityEl.textContent = `${sat.soilgrids_bulk_density_g_cm3} g/cm³`;
+        const satCecEl = getEl("sat-cec-text");
+        if (satCecEl) satCecEl.textContent = `${sat.soilgrids_cec_mmol_kg} mmol/kg`;
+        const satActionEl = getEl("sat-action-text");
+        if (satActionEl) satActionEl.textContent = isHi ? sat.remote_sensing_action_hi : sat.remote_sensing_action_en;
+      }
 
       // Confidence & Uncertainty Mode Indicator
       const confBadge = getEl("confidence-badge");
