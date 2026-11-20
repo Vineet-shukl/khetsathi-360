@@ -6,4 +6,6 @@ data/raw/*
 tracker_download.xlsx
 *.log
 .pytest_cache/
+client/node_modules/
+client/dist/
 
