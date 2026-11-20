@@ -58,6 +58,25 @@
       100% { transform: scaleY(1.0); opacity: 1; }
     }
 
+    /* Smooth Entrance & Tactile Micro-Interactions */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+      animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .tactile-card {
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .tactile-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(14, 45, 31, 0.08);
+    }
+    .tactile-card:active {
+      transform: scale(0.985);
+    }
+
     /* Print Slip Stylesheet (@media print) */
     @media print {
       body { background: white !important; color: black !important; margin: 0; padding: 0; }
@@ -451,50 +470,76 @@
         <!-- Big Visual Commercial Fertilizer Bag Cards -->
         <div role="region" aria-label="Fertilizer Bag Recommendations" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <!-- DAP Card -->
-          <div class="card p-5 border-l-8 border-l-emerald-600 bg-emerald-50/50 shadow-sm space-y-1">
+          <div class="card tactile-card animate-fade-in-up p-5 border-l-8 border-l-emerald-600 bg-gradient-to-br from-emerald-50/70 to-white shadow-sm space-y-1.5">
             <div class="flex items-center justify-between">
-              <span id="lbl-card-dap-title" class="text-xs font-bold uppercase tracking-wider text-emerald-900">बुवाई पर डीएपी (DAP 18-46-0)</span>
-              <span class="text-lg">🟢</span>
+              <span id="lbl-card-dap-title" class="text-xs font-black uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> बुवाई पर डीएपी (DAP 18-46-0)
+              </span>
+              <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">50 kg बैग</span>
             </div>
-            <div id="out-dap-bags" class="text-3xl font-extrabold text-emerald-950" aria-live="polite">2.5 बोरी</div>
-            <p id="out-dap-sub" class="text-xs font-semibold text-slate-700">50 किलो वाली मानक बोरी (कुल 125 kg)</p>
-            <p id="out-dap-note" class="text-[11px] text-emerald-800 font-medium pt-1">प्रयोग: बुवाई के समय बीज के नीचे गहराई में दें।</p>
+            <div id="out-dap-bags" class="text-3xl sm:text-4xl font-black text-emerald-950 tracking-tight" aria-live="polite">2.5 बोरी</div>
+            <p id="out-dap-sub" class="text-xs font-bold text-slate-800">50 किलो वाली मानक बोरी (कुल 125 kg)</p>
+            <p id="out-dap-note" class="text-[11px] text-emerald-900 font-semibold pt-1 border-t border-emerald-200/60">प्रयोग: बुवाई के समय बीज के नीचे गहराई में दें।</p>
           </div>
 
           <!-- Urea Card -->
-          <div class="card p-5 border-l-8 border-l-amber-500 bg-amber-50/50 shadow-sm space-y-1">
+          <div class="card tactile-card animate-fade-in-up p-5 border-l-8 border-l-amber-500 bg-gradient-to-br from-amber-50/70 to-white shadow-sm space-y-1.5">
             <div class="flex items-center justify-between">
-              <span id="lbl-card-urea-title" class="text-xs font-bold uppercase tracking-wider text-amber-950">यूरिया (Urea 46% N) — किश्तों में</span>
-              <span class="text-lg">🟡</span>
+              <span id="lbl-card-urea-title" class="text-xs font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> यूरिया (Urea 46% N) — किश्तों में
+              </span>
+              <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">45 kg बैग</span>
             </div>
-            <div id="out-urea-bags" class="text-3xl font-extrabold text-amber-950" aria-live="polite">4.5 बोरी</div>
-            <p id="out-urea-sub" class="text-xs font-semibold text-slate-700">45 किलो वाली मानक बोरी (कुल 202.5 kg)</p>
-            <p id="out-urea-note" class="text-[11px] text-amber-900 font-medium pt-1">* डीएपी की नाइट्रोजन घटाने के बाद 2–3 किश्तों में दें।</p>
+            <div id="out-urea-bags" class="text-3xl sm:text-4xl font-black text-amber-950 tracking-tight" aria-live="polite">4.5 बोरी</div>
+            <p id="out-urea-sub" class="text-xs font-bold text-slate-800">45 किलो वाली मानक बोरी (कुल 202.5 kg)</p>
+            <p id="out-urea-note" class="text-[11px] text-amber-900 font-semibold pt-1 border-t border-amber-200/60">* डीएपी की नाइट्रोजन घटाने के बाद 2–3 किश्तों में दें।</p>
           </div>
 
           <!-- MOP Potash Card -->
-          <div class="card p-5 border-l-8 border-l-sky-600 bg-sky-50/50 shadow-sm space-y-1">
+          <div class="card tactile-card animate-fade-in-up p-5 border-l-8 border-l-sky-600 bg-gradient-to-br from-sky-50/70 to-white shadow-sm space-y-1.5">
             <div class="flex items-center justify-between">
-              <span id="lbl-card-mop-title" class="text-xs font-bold uppercase tracking-wider text-sky-950">पोटाश (MOP 60% K₂O)</span>
-              <span class="text-lg">🔵</span>
+              <span id="lbl-card-mop-title" class="text-xs font-black uppercase tracking-wider text-sky-950 flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-600"></span> पोटाश (MOP 60% K₂O)
+              </span>
+              <span class="text-xs font-black px-2 py-0.5 rounded-full bg-sky-100 text-sky-900 border border-sky-300">50 kg बैग</span>
             </div>
-            <div id="out-mop-bags" class="text-3xl font-extrabold text-sky-950" aria-live="polite">1.5 बोरी</div>
-            <p id="out-mop-sub" class="text-xs font-semibold text-slate-700">50 किलो वाली मानक बोरी (कुल 75 kg)</p>
-            <p id="out-mop-note" class="text-[11px] text-sky-900 font-medium pt-1">प्रयोग: बुवाई के समय डीएपी के साथ मिलाकर दें।</p>
+            <div id="out-mop-bags" class="text-3xl sm:text-4xl font-black text-sky-950 tracking-tight" aria-live="polite">1.5 बोरी</div>
+            <p id="out-mop-sub" class="text-xs font-bold text-slate-800">50 किलो वाली मानक बोरी (कुल 75 kg)</p>
+            <p id="out-mop-note" class="text-[11px] text-sky-900 font-semibold pt-1 border-t border-sky-200/60">प्रयोग: बुवाई के समय डीएपी के साथ मिलाकर दें।</p>
           </div>
         </div>
 
-        <!-- Dedicated Irrigation Timing Schedule Card -->
-        <div class="card p-4 sm:p-5 border-l-8 border-l-cyan-600 bg-cyan-50/40 space-y-2">
-          <div class="flex items-center justify-between">
-            <h4 id="lbl-irrigation-card-title" class="text-sm font-extrabold text-cyan-950 flex items-center gap-2">
+        <!-- Dedicated Irrigation Timing Schedule Card with Visual Timeline -->
+        <div class="card tactile-card p-4 sm:p-5 border-l-8 border-l-cyan-600 bg-cyan-50/40 space-y-3 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h4 id="lbl-irrigation-card-title" class="text-sm font-black text-cyan-950 flex items-center gap-2">
               <span>💧</span> <span>सिंचाई कब करें (Irrigation Schedule)</span>
             </h4>
-            <span id="irrigation-stage-pill" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-200 text-cyan-900">
+            <span id="irrigation-stage-pill" class="text-[11px] font-extrabold px-3 py-1 rounded-full bg-cyan-200 text-cyan-950 border border-cyan-300">
               आज पानी की जरूरत: 2.8 मिमी/दिन
             </span>
           </div>
-          <p id="irrigation-card-desc" class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
+
+          <!-- Visual 3-Stage Watering Timeline Bar -->
+          <div class="grid grid-cols-3 gap-2.5 pt-1 pb-1">
+            <div class="p-2.5 rounded-xl bg-white border border-cyan-200 text-center space-y-0.5 shadow-xs">
+              <span class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">1. पहली सिंचाई</span>
+              <div class="text-xs sm:text-sm font-black text-slate-900">20–25 दिन</div>
+              <div class="text-[10px] text-slate-600 font-semibold">CRI ताज जड़ अवस्था</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white border border-cyan-200 text-center space-y-0.5 shadow-xs">
+              <span class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">2. दूसरी सिंचाई</span>
+              <div class="text-xs sm:text-sm font-black text-slate-900">40–45 दिन</div>
+              <div class="text-[10px] text-slate-600 font-semibold">कल्ले फूटते समय</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-white border border-cyan-200 text-center space-y-0.5 shadow-xs">
+              <span class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">3. तीसरी सिंचाई</span>
+              <div class="text-xs sm:text-sm font-black text-slate-900">65–70 दिन</div>
+              <div class="text-[10px] text-slate-600 font-semibold">फूल/बाली बनते समय</div>
+            </div>
+          </div>
+
+          <p id="irrigation-card-desc" class="text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
             पहली सिंचाई बुवाई के 21 दिन बाद (ताज जड़ निकलते समय - CRI Stage) करें। इसके बाद यूरिया की पहली किश्त दें। यदि बारिश का अनुमान हो तो सिंचाई टालें।
           </p>
         </div>
@@ -1333,18 +1378,28 @@
       if (irs.length > 0) {
         irs.forEach(item => {
           const div = document.createElement("div");
-          const colorClass = item.severity === "alert"
-            ? "border-red-400 bg-red-50 text-red-950"
-            : (item.severity === "warning" ? "border-amber-400 bg-amber-50 text-amber-950" : "border-sky-400 bg-sky-50 text-sky-950");
-          
-          div.className = `p-3.5 rounded-xl border-2 ${colorClass} space-y-1 shadow-sm text-xs`;
+          const isAlert = item.severity === "alert";
+          const isWarning = item.severity === "warning";
+
+          const colorClass = isAlert
+            ? "border-red-400 bg-red-50/95 text-red-950 shadow-md shadow-red-500/10"
+            : (isWarning ? "border-amber-400 bg-amber-50/95 text-amber-950 shadow-md shadow-amber-500/10" : "border-sky-400 bg-sky-50/95 text-sky-950 shadow-md shadow-sky-500/10");
+
+          const beaconPing = isAlert
+            ? `<span class="relative flex h-3 w-3 mr-2 shrink-0"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span></span>`
+            : (isWarning ? `<span class="relative flex h-3 w-3 mr-2 shrink-0"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-amber-600"></span></span>` : `<span class="mr-2">💧</span>`);
+
+          div.className = `p-4 rounded-2xl border-2 ${colorClass} space-y-2 shadow-sm text-xs animate-fade-in-up tactile-card`;
           div.innerHTML = `
-            <div class="font-bold flex items-center justify-between text-sm">
-              <span>${isHi ? item.title_hi : item.title_en}</span>
-              <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full ${item.severity === 'alert' ? 'bg-red-200 text-red-900' : 'bg-amber-200 text-amber-900'}">${item.severity}</span>
+            <div class="font-black flex items-center justify-between text-sm sm:text-base">
+              <span class="flex items-center">${beaconPing} ${isHi ? item.title_hi : item.title_en}</span>
+              <span class="text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full ${isAlert ? 'bg-red-200 text-red-950 border border-red-300' : 'bg-amber-200 text-amber-950 border border-amber-300'}">${item.severity}</span>
             </div>
-            <p class="font-medium">${isHi ? item.message_hi : item.message_en}</p>
-            <p class="font-bold pt-1 border-t border-slate-200/50">💡 ${isHi ? item.action_hi : item.action_en}</p>
+            <p class="font-semibold text-slate-800 leading-relaxed text-xs sm:text-sm">${isHi ? item.message_hi : item.message_en}</p>
+            <div class="pt-2 border-t border-slate-300/60 flex items-start gap-2">
+              <span class="font-black text-[11px] px-2.5 py-0.5 rounded-md ${isAlert ? 'bg-red-700 text-white' : 'bg-amber-700 text-white'} shrink-0 tracking-wide">${isHi ? 'तुरंत सलाह' : 'ACTION'}</span>
+              <span class="font-extrabold text-slate-950 text-xs sm:text-sm leading-snug">${isHi ? item.action_hi : item.action_en}</span>
+            </div>
           `;
           irregContainer.appendChild(div);
         });
