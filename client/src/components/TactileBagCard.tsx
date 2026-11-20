@@ -21,6 +21,9 @@ export const TactileBagCard: React.FC<TactileBagCardProps> = ({
   timingNote,
   creditNote,
 }) => {
+  const safeBags = typeof bags === 'number' && !isNaN(bags) ? bags : 0;
+  const safeBagSize = bagSizeKg || 50;
+
   const themeStyles = {
     emerald: {
       border: 'border-emerald-600',
@@ -51,7 +54,7 @@ export const TactileBagCard: React.FC<TactileBagCardProps> = ({
           {icon}
         </span>
         <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${themeStyles.badge}`}>
-          {bagSizeKg} kg बोरी
+          {safeBagSize} kg बोरी
         </span>
       </div>
 
@@ -63,12 +66,12 @@ export const TactileBagCard: React.FC<TactileBagCardProps> = ({
       <div className="pt-2 border-t border-slate-100 flex items-baseline justify-between">
         <div>
           <span className={`text-4xl font-black ${themeStyles.counter}`}>
-            {bags.toFixed(1)}
+            {safeBags.toFixed(1)}
           </span>
           <span className="text-xs font-bold text-slate-600 ml-1.5">बोरी (Bags)</span>
         </div>
         <span className="text-[11px] text-slate-500 font-semibold">
-          ≈ {Math.round(bags * bagSizeKg)} कि.ग्रा.
+          ≈ {Math.round(safeBags * safeBagSize)} कि.ग्रा.
         </span>
       </div>
 

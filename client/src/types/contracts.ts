@@ -1,5 +1,5 @@
 // KhetSathi 360 TypeScript Contracts
-// In 100% parity with app/contracts.py
+// In 100% parity with app/contracts.py & defensive backward compatibility
 
 export type CropId = 'wheat' | 'rice' | 'maize' | 'mustard' | 'gram' | 'sugarcane';
 export type SoilTexture = 'clay_loam' | 'sandy_loam' | 'loam' | 'alluvial' | 'black';
@@ -28,15 +28,20 @@ export interface AdvisoryRequest {
   lat?: number;
   lon?: number;
   language?: 'hi' | 'en';
+  et0_mm_day?: number;
+  rain_prob_48h_pct?: number;
 }
 
 export interface ProductPlan {
+  dap_kg?: number;
   dap_bags_50kg: number;
+  urea_kg?: number;
   urea_bags_45kg: number;
+  mop_kg?: number;
   mop_bags_50kg: number;
-  zinc_sulphate_kg: number;
-  timing: string;
-  dap_nitrogen_credit_kg: number;
+  n_credit_from_dap_kg?: number;
+  // Backward compatibility alias
+  dap_nitrogen_credit_kg?: number;
 }
 
 export interface IrrigationStage {
@@ -56,53 +61,64 @@ export interface IrrigationSchedule {
 
 export interface WeatherIrregularity {
   code: string;
-  severity: 'low' | 'moderate' | 'high' | 'critical';
-  title_hi: string;
+  severity: string;
   title_en: string;
-  desc_hi: string;
-  desc_en: string;
-  action_hi: string;
+  title_hi: string;
+  message_en: string;
+  message_hi: string;
   action_en: string;
+  action_hi: string;
+  desc_en?: string;
+  desc_hi?: string;
 }
 
 export interface WeatherForecastResponse {
-  status: string;
+  status: 'ok' | 'fallback';
   lat: number;
   lon: number;
-  temp_c: number;
-  relative_humidity_pct: number;
+  timezone: string;
+  current_temp_c?: number;
+  temp_c?: number; // alias
+  relative_humidity_pct?: number;
+  wind_speed_kmh?: number;
+  weather_code: number;
+  weather_condition: string;
   et0_fao_mm_day: number;
   rain_prob_48h_pct: number;
   precipitation_sum_mm: number;
-  wind_speed_kmh: number;
-  weather_code: number;
+  rain_guardrail_hold_urea: boolean;
+  hold_urea_action?: boolean; // alias
+  heat_stress_alert?: boolean;
+  high_et0_alert?: boolean;
+  high_humidity_alert?: boolean;
   irregularities: WeatherIrregularity[];
-  hold_urea_action: boolean;
+  source: string;
 }
 
 export interface SatelliteVegetationIndex {
-  source: string;
   ndvi: number;
   ndre: number;
-  vegetation_vigor_status: string;
-  soil_texture_profile: {
-    clay_pct: number;
-    sand_pct: number;
-    bulk_density_g_cm3: number;
-    cation_exchange_capacity_cmol_kg: number;
-  };
-  resolution_meters: number;
-  satellite_constellation: string;
+  crop_vigor_status: string;
+  crop_vigor_status_hi: string;
+  satellite_name?: string;
+  resolution_meters?: number;
+  soilgrids_clay_pct?: number;
+  soilgrids_bulk_density_g_cm3?: number;
+  soilgrids_cec_mmol_kg?: number;
+  remote_sensing_action_en: string;
+  remote_sensing_action_hi: string;
 }
 
 export interface OrganicInputPlan {
-  crop: CropId;
-  area_ha: number;
   vermicompost_tonnes: number;
-  liquid_bio_npk_litres: number;
+  vermicompost_bags_50kg: number;
+  bio_npk_consortia_litres: number;
   jeevamrut_litres: number;
   neem_cake_kg: number;
-  application_schedule: string[];
+  neem_cake_bags_50kg: number;
+  bio_control_agent: string;
+  application_guidelines_hi: string[];
+  application_guidelines_en: string[];
 }
 
 export interface OrganicEconomics {
@@ -121,49 +137,60 @@ export interface OrganicEconomics {
 }
 
 export interface OrganicSupplierRoute {
-  channel_name_hi: string;
-  channel_name_en: string;
-  description_hi: string;
-  description_en: string;
-  contact_url: string;
-  badge: string;
+  channel_name: string;
+  channel_type: string;
+  url: string;
+  contact_info: string;
+  benefit_description_hi: string;
+  benefit_description_en: string;
+  channel_name_hi?: string;
+  channel_name_en?: string;
+  description_hi?: string;
+  description_en?: string;
+  contact_url?: string;
 }
 
 export interface OrganicAdvisoryResponse {
-  status: string;
-  crop: string;
-  area_ha: number;
-  bio_inputs: OrganicInputPlan;
+  input_plan: OrganicInputPlan;
+  bio_inputs?: OrganicInputPlan; // defensive alias
   economics: OrganicEconomics;
   supplier_routes: OrganicSupplierRoute[];
-  motivation_summary_hi: string;
-  motivation_summary_en: string;
+  conversion_timeline: string[];
+  motivation_summary_hi?: string;
+  motivation_summary_en?: string;
 }
 
 export interface AdvisoryResponse {
-  engine_version: string;
-  confidence_mode: 'high_confidence' | 'baseline_estimate' | 'deterministic';
-  hybrid_ml_active: boolean;
-  npk_recommended_kg_ha: {
-    n: number;
-    p: number;
-    k: number;
-  };
+  model_version: string;
+  serving_mode: string;
+  confidence_mode: string;
+  uncertainty_pct: number;
+  rain_guardrail_hold_urea: boolean;
+  recommended_variety: string;
+  elemental_target_kg: Record<string, number>;
+  ml_residual_delta_n_kg_ha: number;
+  ml_confidence_band_kg_ha: number[];
   product_plan: ProductPlan;
-  irrigation_schedule?: IrrigationSchedule;
-  weather_context?: WeatherForecastResponse;
-  satellite_vegetation?: SatelliteVegetationIndex;
-  variety_recommended?: string;
+  peak_etc_mm_day: number;
+  soil_alerts: string[];
+  farmer_summary: string;
+  sources: string[];
+  live_weather?: WeatherForecastResponse | null;
+  satellite?: SatelliteVegetationIndex | null;
   summary_hi?: string;
   summary_en?: string;
-  hold_urea_advisory?: boolean;
+  irrigation_schedule?: IrrigationSchedule;
 }
 
 export interface LocationSearchResult {
-  display_name: string;
-  district: string;
-  state: string;
+  name: string;
+  admin1?: string | null; // State
+  admin2?: string | null; // District
   lat: number;
   lon: number;
-  confidence: number;
+  country?: string;
+  match_type?: string;
+  display_name?: string;
+  district?: string;
+  state?: string;
 }

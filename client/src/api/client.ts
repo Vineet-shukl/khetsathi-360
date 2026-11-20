@@ -37,10 +37,17 @@ export async function fetchOrganicAdvisory(
 
 export async function searchLocations(query: string): Promise<LocationSearchResult[]> {
   if (!query || query.trim().length < 2) return [];
-  const res = await fetch(`${BASE_URL}/api/v1/location/search?query=${encodeURIComponent(query.trim())}`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.results || [];
+  try {
+    const res = await fetch(`${BASE_URL}/api/v1/location/search?query=${encodeURIComponent(query.trim())}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.results)) return data.results;
+    return [];
+  } catch (err) {
+    console.warn('[searchLocations] network error:', err);
+    return [];
+  }
 }
 
 export async function fetchWeather(lat: number, lon: number, lang: 'hi' | 'en' = 'hi'): Promise<WeatherForecastResponse> {

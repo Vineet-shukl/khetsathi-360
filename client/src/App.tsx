@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { fetchAdvisory, fetchOrganicAdvisory, fetchWeather } from './api/client';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { fetchAdvisory, fetchOrganicAdvisory, fetchWeather, searchLocations } from './api/client';
 import { AudioWaveformPlayer } from './components/AudioWaveformPlayer';
 import { IrrigationTimeline } from './components/IrrigationTimeline';
 import { OrganicEconomicsCard } from './components/OrganicEconomicsCard';
@@ -8,6 +8,7 @@ import { WeatherAlertBanner } from './components/WeatherAlertBanner';
 import type {
   AdvisoryResponse,
   CropId,
+  LocationSearchResult,
   OrganicAdvisoryResponse,
   WeatherForecastResponse,
 } from './types/contracts';
@@ -26,9 +27,15 @@ export const App: React.FC = () => {
   const [selectedCrop, setSelectedCrop] = useState<CropId>('wheat');
   const [areaVal, setAreaVal] = useState<number>(1);
   const [areaUnit, setAreaUnit] = useState<'bigha_p' | 'bigha_k' | 'acre' | 'ha'>('ha');
-  const [lat] = useState<number>(25.5928);
-  const [lon] = useState<number>(83.577);
-  const [locationName] = useState<string>('गाज़ीपुर, उत्तर प्रदेश (Ghazipur, UP)');
+  const [lat, setLat] = useState<number>(25.5928);
+  const [lon, setLon] = useState<number>(83.577);
+  const [locationName, setLocationName] = useState<string>('गाज़ीपुर, उत्तर प्रदेश (Ghazipur, UP)');
+
+  // Pinpoint Location Autocomplete Search (Blinkit/Swiggy style)
+  const [locQuery, setLocQuery] = useState<string>('');
+  const [locSuggestions, setLocSuggestions] = useState<LocationSearchResult[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const searchTimeoutRef = useRef<number | null>(null);
 
   const [weather, setWeather] = useState<WeatherForecastResponse | undefined>();
   const [advisory, setAdvisory] = useState<AdvisoryResponse | undefined>();
@@ -70,11 +77,27 @@ export const App: React.FC = () => {
       setAdvisory(advData);
       if (orgData) setOrganic(orgData);
     } catch (err) {
-      console.error('Failed to load advisory:', err);
+      console.error('[KhetSathi] Failed to load advisory:', err);
     } finally {
       setLoading(false);
     }
   }, [selectedCrop, areaHa, lang, lat, lon]);
+
+  const triggerLocationSearch = (query: string) => {
+    if (searchTimeoutRef.current) {
+      window.clearTimeout(searchTimeoutRef.current);
+    }
+    if (!query || query.trim().length < 2) {
+      setLocSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    searchTimeoutRef.current = window.setTimeout(async () => {
+      const results = await searchLocations(query);
+      setLocSuggestions(results);
+      setShowSuggestions(results.length > 0);
+    }, 250);
+  };
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -93,6 +116,9 @@ export const App: React.FC = () => {
 
   const currentCropObj = CROPS.find((c) => c.id === selectedCrop);
   const cropDisplayName = isHi ? currentCropObj?.name_hi || selectedCrop : currentCropObj?.name_en || selectedCrop;
+
+  const dapCreditKg = advisory?.product_plan?.n_credit_from_dap_kg ?? advisory?.product_plan?.dap_nitrogen_credit_kg ?? 23.5;
+  const audioText = advisory?.farmer_summary || advisory?.summary_hi || advisory?.summary_en || '';
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f4f7f4] text-[#0f1f17]">
@@ -116,13 +142,22 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setLang(isHi ? 'en' : 'hi')}
-            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 border border-white/20 text-white transition flex items-center gap-1 cursor-pointer"
-          >
-            <span>🌐</span> <span>{isHi ? 'हिन्दी / EN' : 'English / HI'}</span>
-          </button>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <a
+              href="/legacy"
+              className="text-xs font-semibold text-emerald-300 hover:text-white px-2 py-1 rounded border border-emerald-700 hover:border-emerald-500 transition hidden sm:inline-block"
+              title={isHi ? 'क्लासिक तालिका दृश्य खोलें' : 'Open classic tabular view'}
+            >
+              📋 {isHi ? 'क्लासिक मोड' : 'Classic Mode'}
+            </a>
+            <button
+              type="button"
+              onClick={() => setLang(isHi ? 'en' : 'hi')}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 border border-white/20 text-white transition flex items-center gap-1 cursor-pointer"
+            >
+              <span>🌐</span> <span>{isHi ? 'हिन्दी / EN' : 'English / HI'}</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -132,7 +167,7 @@ export const App: React.FC = () => {
           <span className="w-2.5 h-2.5 rounded-full bg-amber-950 animate-ping" />
           <span>
             {isHi
-              ? '🌾 ऑफलाइन फील्ड मोड सक्रिय (Offline Mode) — कैश्ड डेटा व स्थानीय मॉडल सक्रिय हैं।'
+              ? '🌾 ऑफलाइन फील्ड मोड सक्रिय (Offline Mode) — स्थानीय मॉडल सक्रिय हैं।'
               : '🌾 Offline Field Mode Active — Operating using cached local agronomic models.'}
           </span>
         </aside>
@@ -145,56 +180,113 @@ export const App: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
             <div>
               <h3 className="text-base font-bold text-slate-900">
-                {isHi ? 'कदम 1: खेत का स्थान व फसल चयन' : 'Step 1: Farm Location & Crop Selection'}
+                {isHi ? 'कदम 1: खेत का सटीक स्थान व फसल चयन' : 'Step 1: Farm Pinpoint Location & Crop Selection'}
               </h3>
               <p className="text-xs text-slate-500">
                 📍 {locationName}
               </p>
             </div>
-            <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+            <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 self-start sm:self-auto">
               {isHi ? 'ICAR पैकेज ऑफ प्रैक्टिसेज' : 'ICAR Package of Practices'}
             </span>
           </div>
 
+          {/* Location Autocomplete (Blinkit/Swiggy style) */}
+          <div className="relative">
+            <label className="text-xs font-bold text-slate-700 block mb-1">
+              {isHi ? 'गाँव / तहसील / ब्लॉक / जिला खोजें (सटीक मौसम व मिट्टी हेतु):' : 'Search Pinpoint Locality / Tehsil / Block / District:'}
+            </label>
+            <div className="relative flex items-center">
+              <span className="absolute left-3 text-slate-400 text-sm">🔍</span>
+              <input
+                type="text"
+                value={locQuery}
+                onChange={(e) => {
+                  setLocQuery(e.target.value);
+                  triggerLocationSearch(e.target.value);
+                }}
+                onFocus={() => {
+                  if (locSuggestions.length > 0) setShowSuggestions(true);
+                }}
+                placeholder={isHi ? 'उदा. Ghazipur, Karnal, Ludhiana, Varanasi...' : 'e.g. Ghazipur, Karnal, Ludhiana, Varanasi...'}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+
+            {/* Suggestions Dropdown */}
+            {showSuggestions && locSuggestions.length > 0 && (
+              <div className="absolute z-20 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-56 overflow-y-auto divide-y divide-slate-100">
+                {locSuggestions.map((item, idx) => {
+                  const disp = item.name + (item.admin2 ? `, ${item.admin2}` : '') + (item.admin1 ? `, ${item.admin1}` : '');
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setLocationName(disp);
+                        setLat(item.lat);
+                        setLon(item.lon);
+                        setLocQuery(disp);
+                        setShowSuggestions(false);
+                      }}
+                      className="w-full text-left px-3 py-2.5 text-xs hover:bg-emerald-50 transition flex items-center justify-between cursor-pointer"
+                    >
+                      <div>
+                        <span className="font-bold text-slate-800 block">{item.name}</span>
+                        <span className="text-[10px] text-slate-500">
+                          {item.admin2 ? `${item.admin2}, ` : ''}{item.admin1 || 'India'}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        📍 {item.lat.toFixed(2)}, {item.lon.toFixed(2)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {loading && (
             <div className="text-xs text-emerald-800 font-bold bg-emerald-50/80 px-3 py-1.5 rounded-lg border border-emerald-200 inline-flex items-center gap-2 animate-pulse">
-              <span>⏳</span>
-              <span>{isHi ? 'सलाह की गणना जारी है...' : 'Calculating agronomic advisory...'}</span>
+              <span>⏳</span> {isHi ? 'सटीक सलाह और मौसम डेटा लोड हो रहा है...' : 'Calculating scientific advisory and fetching microclimate data...'}
             </div>
           )}
 
-          {/* Crop Selector Chips */}
-          <div className="space-y-2">
+          {/* Crop Chips */}
+          <div className="space-y-1.5">
             <label className="text-xs font-bold text-slate-700 block">
-              {isHi ? 'फसल चुनें (Select Target Crop):' : 'Select Target Crop:'}
+              {isHi ? 'फसल चुनें:' : 'Select Crop:'}
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-              {CROPS.map((c) => {
-                const active = selectedCrop === c.id;
+              {CROPS.map((crop) => {
+                const active = crop.id === selectedCrop;
                 return (
                   <button
-                    key={c.id}
+                    key={crop.id}
                     type="button"
-                    onClick={() => setSelectedCrop(c.id)}
-                    className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center gap-1.5 transition cursor-pointer ${
+                    onClick={() => setSelectedCrop(crop.id)}
+                    className={`p-3 rounded-xl border text-center transition flex flex-col items-center gap-1.5 cursor-pointer ${
                       active
-                        ? 'border-emerald-600 bg-emerald-50 text-emerald-950 shadow-xs ring-2 ring-emerald-500'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                        ? 'border-emerald-600 bg-emerald-50 text-emerald-950 font-bold shadow-xs'
+                        : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'
                     }`}
                   >
-                    <span className="text-2xl">{c.icon}</span>
-                    <span>{isHi ? c.name_hi : c.name_en}</span>
+                    <span className="text-2xl">{crop.icon}</span>
+                    <span className="text-xs">
+                      {isHi ? crop.name_hi : crop.name_en}
+                    </span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Area & Unit Selector */}
+          {/* Farm Size & Units */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">
-                {isHi ? 'खेत का रकबा (Land Size Number):' : 'Land Area:'}
+                {isHi ? 'खेत का क्षेत्रफल / रकबा:' : 'Farm Area / Size:'}
               </label>
               <input
                 type="number"
@@ -249,13 +341,15 @@ export const App: React.FC = () => {
               </div>
 
               {/* Neural TTS Voice Player */}
-              <div className="w-full sm:w-80">
-                <AudioWaveformPlayer
-                  text={isHi ? advisory.summary_hi || '' : advisory.summary_en || ''}
-                  lang={lang}
-                  isHi={isHi}
-                />
-              </div>
+              {audioText && (
+                <div className="w-full sm:w-80">
+                  <AudioWaveformPlayer
+                    text={audioText}
+                    lang={lang}
+                    isHi={isHi}
+                  />
+                </div>
+              )}
             </div>
 
             {/* 3 Tactile Bags */}
@@ -263,7 +357,7 @@ export const App: React.FC = () => {
               <TactileBagCard
                 title={isHi ? 'बुवाई पर डीएपी (DAP 18-46-0)' : 'DAP (18-46-0) — Basal'}
                 subtitle={isHi ? 'फास्फोरस व प्रारंभिक नाइट्रोजन' : 'Phosphorus & Starter N'}
-                bags={advisory.product_plan.dap_bags_50kg}
+                bags={advisory.product_plan?.dap_bags_50kg ?? 0}
                 bagSizeKg={50}
                 colorTheme="amber"
                 icon="🌾"
@@ -276,7 +370,7 @@ export const App: React.FC = () => {
               <TactileBagCard
                 title={isHi ? 'यूरिया (Urea 46% N) — किश्तों में' : 'Urea (46% N) — Split Doses'}
                 subtitle={isHi ? 'डीएपी की नाइट्रोजन काटकर शुद्ध' : 'Net Nitrogen after DAP credit'}
-                bags={advisory.product_plan.urea_bags_45kg}
+                bags={advisory.product_plan?.urea_bags_45kg ?? 0}
                 bagSizeKg={45}
                 colorTheme="emerald"
                 icon="🧪"
@@ -287,14 +381,14 @@ export const App: React.FC = () => {
                 }
                 creditNote={
                   isHi
-                    ? `डीएपी से मिली ${advisory.product_plan.dap_nitrogen_credit_kg.toFixed(1)} किलो नाइट्रोजन यूरिया में से घटा दी गई है।`
-                    : `${advisory.product_plan.dap_nitrogen_credit_kg.toFixed(1)} kg N from DAP was deducted to avoid over-application.`
+                    ? `डीएपी से मिली ${dapCreditKg.toFixed(1)} किलो नाइट्रोजन यूरिया में से घटा दी गई है।`
+                    : `${dapCreditKg.toFixed(1)} kg N from DAP was deducted to avoid over-application.`
                 }
               />
               <TactileBagCard
                 title={isHi ? 'पोटाश (MOP 60% K₂O)' : 'Potash (MOP 60% K₂O)'}
                 subtitle={isHi ? 'दाने का वजन, चमक व सूखा रक्षा' : 'Grain weight, shine & drought resistance'}
-                bags={advisory.product_plan.mop_bags_50kg}
+                bags={advisory.product_plan?.mop_bags_50kg ?? 0}
                 bagSizeKg={50}
                 colorTheme="blue"
                 icon="💎"
@@ -329,7 +423,12 @@ export const App: React.FC = () => {
         <p className="font-bold text-slate-700">
           KhetSathi 360 · National Digital Agri Decision Platform · Grounded in ICAR PoP, FAO-56 & DAC&FW Standards
         </p>
-        <p>WCAG 2.2 Level AA Compliant · Bilingual Hindi / English · React 19 Client</p>
+        <p>
+          WCAG 2.2 Level AA Compliant · Bilingual Hindi / English · React 19 Client ·{' '}
+          <a href="/legacy" className="underline text-emerald-700 hover:text-emerald-900">
+            {isHi ? 'क्लासिक तालिका दृश्य' : 'Classic View'}
+          </a>
+        </p>
       </footer>
     </div>
   );

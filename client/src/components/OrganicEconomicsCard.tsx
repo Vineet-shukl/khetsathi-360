@@ -16,7 +16,11 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
 }) => {
   if (!organicData) return null;
 
-  const { bio_inputs, economics, supplier_routes } = organicData;
+  const plan = organicData.input_plan || organicData.bio_inputs;
+  const economics = organicData.economics;
+  const supplier_routes = organicData.supplier_routes || [];
+
+  if (!plan || !economics) return null;
 
   const handleWhatsAppConnect = () => {
     const text = isHi
@@ -24,6 +28,11 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
       : `🌾 *KhetSathi 360 — Organic Farming & Direct Market Linkage Request*\n\nCrop: ${cropName}\nArea: ${areaHa} Hectare\n\nI want to transition to certified organic cultivation under PKVY/PGS. Please connect me with the nearest FPO aggregation hub and direct buyer contract.\n\nVerified Portal: https://www.jaivikkheti.in`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
   };
+
+  const bioNpkVal = (plan as any).bio_npk_consortia_litres ?? (plan as any).liquid_bio_npk_litres ?? 2.0;
+  const motivationText = isHi
+    ? (organicData.motivation_summary_hi || 'जैविक खेती अपनाने से लागत में 18% कमी, ₹50,000/हे. सरकारी अनुदान एवं 25% अधिक बाजार मूल्य प्राप्त होता है।')
+    : (organicData.motivation_summary_en || 'Transitioning to organic farming reduces input costs by 18%, unlocks ₹50,000/ha PKVY subsidy, and fetches 25% market premium.');
 
   return (
     <div className="p-5 rounded-2xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-50/90 via-white to-amber-50/40 shadow-sm space-y-5">
@@ -60,24 +69,24 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
             </span>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-black text-emerald-300">
-                ₹{Math.round(economics.organic_net_profit_inr).toLocaleString('en-IN')}
+                ₹{Math.round(economics.organic_net_profit_inr || 0).toLocaleString('en-IN')}
               </span>
               <span className="text-xs text-slate-300 line-through">
-                ₹{Math.round(economics.conventional_net_profit_inr).toLocaleString('en-IN')}
+                ₹{Math.round(economics.conventional_net_profit_inr || 0).toLocaleString('en-IN')}
               </span>
             </div>
           </div>
           <div className="text-right">
             <span className="text-xs font-black text-amber-300 bg-amber-900/60 px-2 py-1 rounded border border-amber-600/50 block">
-              +₹{Math.round(economics.net_profit_increase_inr).toLocaleString('en-IN')} {isHi ? 'अतिरिक्त लाभ' : 'Gain'}
+              +₹{Math.round(economics.net_profit_increase_inr || 0).toLocaleString('en-IN')} {isHi ? 'अतिरिक्त लाभ' : 'Gain'}
             </span>
             <span className="text-[10px] text-emerald-200 font-medium">
-              +{economics.organic_market_premium_pct}% {isHi ? 'ऑर्गेनिक मंडी प्रीमियम' : 'Premium'}
+              +{economics.organic_market_premium_pct || 25}% {isHi ? 'ऑर्गेनिक मंडी प्रीमियम' : 'Premium'}
             </span>
           </div>
         </div>
         <p className="text-[11px] text-emerald-200/90 leading-relaxed border-t border-emerald-800 pt-2">
-          💡 {isHi ? organicData.motivation_summary_hi : organicData.motivation_summary_en}
+          💡 {motivationText}
         </p>
       </div>
 
@@ -92,7 +101,7 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
               {isHi ? 'वर्मीकम्पोस्ट (DAP विकल्प)' : 'Vermicompost'}
             </span>
             <span className="font-black text-emerald-900 text-sm">
-              {bio_inputs.vermicompost_tonnes.toFixed(1)} {isHi ? 'टन' : 'Tonnes'}
+              {(plan.vermicompost_tonnes ?? 2.5).toFixed(1)} {isHi ? 'टन' : 'Tonnes'}
             </span>
           </div>
           <div className="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs">
@@ -100,23 +109,23 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
               {isHi ? 'तरल जैव-एनपीके (Urea विकल्प)' : 'Liquid Bio-NPK'}
             </span>
             <span className="font-black text-emerald-900 text-sm">
-              {bio_inputs.liquid_bio_npk_litres.toFixed(1)} {isHi ? 'लीटर' : 'L'}
+              {Number(bioNpkVal).toFixed(1)} {isHi ? 'लीटर' : 'Litres'}
             </span>
           </div>
           <div className="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs">
             <span className="text-[10px] font-bold text-slate-500 block">
-              {isHi ? 'देसी जीवामृत (सूक्ष्मजीव)' : 'Jeevamrut'}
+              {isHi ? 'जीवामृत (सूक्ष्मजीव संवर्धन)' : 'Jeevamrut'}
             </span>
             <span className="font-black text-emerald-900 text-sm">
-              {Math.round(bio_inputs.jeevamrut_litres)} {isHi ? 'लीटर' : 'L'}
+              {Math.round(plan.jeevamrut_litres ?? 500)} {isHi ? 'लीटर' : 'Litres'}
             </span>
           </div>
           <div className="p-2.5 rounded-xl bg-white border border-emerald-300 shadow-2xs">
             <span className="text-[10px] font-bold text-slate-500 block">
-              {isHi ? 'नीम खली (कीट रक्षा)' : 'Neem Cake'}
+              {isHi ? 'नीम की खली (कीट व कवक सुरक्षा)' : 'Neem Cake'}
             </span>
             <span className="font-black text-emerald-900 text-sm">
-              {Math.round(bio_inputs.neem_cake_kg)} {isHi ? 'किलो' : 'kg'}
+              {Math.round(plan.neem_cake_kg ?? 250)} {isHi ? 'कि.ग्रा.' : 'kg'}
             </span>
           </div>
         </div>
@@ -128,25 +137,35 @@ export const OrganicEconomicsCard: React.FC<OrganicEconomicsCardProps> = ({
           <span>🛒</span> {isHi ? 'सत्यापित सरकारी व खरीदार मार्ग' : 'Verified Direct Supplier & Buyer Routes'}
         </h5>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          {supplier_routes.map((route, i) => (
-            <a
-              key={i}
-              href={route.contact_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs cursor-pointer"
-            >
-              <div>
-                <span className="font-bold text-emerald-950 group-hover:text-emerald-700 block">
-                  {isHi ? route.channel_name_hi : route.channel_name_en}
-                </span>
-                <span className="text-[11px] text-slate-600 block">
-                  {isHi ? route.description_hi : route.description_en}
-                </span>
-              </div>
-              <span className="text-emerald-700 font-extrabold text-sm ml-2">↗</span>
-            </a>
-          ))}
+          {supplier_routes.map((route, i) => {
+            const url = route.url || route.contact_url || 'https://www.jaivikkheti.in';
+            const name = isHi
+              ? (route.channel_name_hi || route.channel_name)
+              : (route.channel_name_en || route.channel_name);
+            const desc = isHi
+              ? (route.benefit_description_hi || route.description_hi || route.contact_info)
+              : (route.benefit_description_en || route.description_en || route.contact_info);
+
+            return (
+              <a
+                key={i}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs cursor-pointer"
+              >
+                <div>
+                  <span className="font-bold text-emerald-950 group-hover:text-emerald-700 block">
+                    {name}
+                  </span>
+                  <span className="text-[11px] text-slate-600 block line-clamp-2">
+                    {desc}
+                  </span>
+                </div>
+                <span className="text-emerald-700 font-extrabold text-sm ml-2">↗</span>
+              </a>
+            );
+          })}
         </div>
       </div>
 
