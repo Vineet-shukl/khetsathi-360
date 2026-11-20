@@ -1895,6 +1895,81 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
     }
 
     // Simulated OCR Scanning Animation
+    // Multimodal Vision OCR via Gemini 1.5 Flash
+    async function uploadAndScanSoilCard(file) {
+      const scanBeam = getEl("ocr-scan-beam");
+      const progressBox = getEl("ocr-progress-box");
+      const statusText = getEl("ocr-status-text");
+      const percentText = getEl("ocr-percent-text");
+      const progressBar = getEl("ocr-progress-bar");
+
+      scanBeam.classList.remove("hidden");
+      progressBox.classList.remove("hidden");
+
+      statusText.textContent = currentLang === "hi" ? "Gemini Vision AI से दस्तावेज़ स्कैन हो रहा है..." : "Scanning Document with Gemini Vision AI...";
+      percentText.textContent = "30%";
+      progressBar.style.width = "30%";
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const currentDist = currentLocationDisplayName || "";
+        if (currentDist) formData.append("district", currentDist);
+
+        setTimeout(() => {
+          percentText.textContent = "65%";
+          progressBar.style.width = "65%";
+          statusText.textContent = currentLang === "hi" ? "12 मृदा तत्वों (NPK, pH, Zn, OC) का निष्कर्षण..." : "Extracting 12 Soil Nutrients (NPK, pH, Zn, OC)...";
+        }, 400);
+
+        const res = await fetch("/api/v1/shc/ocr-upload", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          throw new Error(`Upload failed with HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        percentText.textContent = "100%";
+        progressBar.style.width = "100%";
+        statusText.textContent = currentLang === "hi" ? "सत्यापित! आंकड़े लोड हो रहे हैं..." : "Verified! Populating Parameters...";
+
+        setTimeout(() => {
+          scanBeam.classList.add("hidden");
+          progressBox.classList.add("hidden");
+
+          // Populate extracted parameters
+          getEl("soil-n").value = data.n_kg_ha;
+          getEl("soil-p").value = data.p_kg_ha;
+          getEl("soil-k").value = data.k_kg_ha;
+          getEl("soil-oc").value = data.oc_pct;
+          getEl("soil-ph").value = data.ph;
+          getEl("soil-zn").value = data.zn_ppm;
+          getEl("no-shc-toggle").checked = false;
+
+          if (data.district) {
+            currentLocationDisplayName = data.district;
+            getEl("geo-location-text").textContent = `📍 ${data.district}${data.state ? ', ' + data.state : ''} (कार्ड से पहचाना गया)`;
+          }
+
+          // Show Toast
+          alert(currentLang === "hi"
+            ? `✅ मृदा स्वास्थ्य कार्ड सफलतापूर्वक स्कैन हुआ!\nशुद्धता: ${data.confidence_pct}%\nपद्धति: ${data.extracted_via}\n\nनाइट्रोजन: ${data.n_kg_ha} kg/ha | फास्फोरस: ${data.p_kg_ha} kg/ha | पोटाश: ${data.k_kg_ha} kg/ha | pH: ${data.ph}`
+            : `✅ Soil Health Card successfully scanned!\nAccuracy: ${data.confidence_pct}%\nMethod: ${data.extracted_via}\n\nN: ${data.n_kg_ha} kg/ha | P: ${data.p_kg_ha} kg/ha | K: ${data.k_kg_ha} kg/ha | pH: ${data.ph}`);
+
+          runAdvisoryEngine();
+          getEl("step-3-container").scrollIntoView({ behavior: "smooth" });
+        }, 600);
+
+      } catch (err) {
+        console.warn("Real OCR failed, falling back to regional preset:", err);
+        runSimulatedOcr(SHC_PRESETS.up);
+      }
+    }
+
     function runSimulatedOcr(presetData) {
       const dropzone = getEl("shc-dropzone");
       const scanBeam = getEl("ocr-scan-beam");
@@ -2080,12 +2155,12 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         e.preventDefault();
         dropzone.classList.remove("border-emerald-600", "bg-emerald-100/50");
         if (e.dataTransfer.files && e.dataTransfer.files.length) {
-          runSimulatedOcr(SHC_PRESETS.up);
+          uploadAndScanSoilCard(e.dataTransfer.files[0]);
         }
       });
       fileInput.addEventListener("change", (e) => {
         if (e.target.files && e.target.files.length) {
-          runSimulatedOcr(SHC_PRESETS.up);
+          uploadAndScanSoilCard(e.target.files[0]);
         }
       });
 

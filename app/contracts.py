@@ -82,6 +82,22 @@ class SHCParseResponse(BaseModel):
     amendment_flags: List[str]
 
 
+class SHCOCRResponse(BaseModel):
+    n_kg_ha: float
+    p_kg_ha: float
+    k_kg_ha: float
+    oc_pct: float
+    ph: float
+    zn_ppm: float
+    s_ppm: float = 12.0
+    ec_dsm: float = 0.5
+    district: Optional[str] = None
+    state: Optional[str] = None
+    confidence_pct: float = 95.0
+    extracted_via: str = "gemini_vision"
+    raw_summary: Optional[str] = None
+
+
 class WeatherIrregularity(BaseModel):
     code: Literal["heavy_rain", "heat_stress", "high_et0", "high_humidity"]
     severity: Literal["warning", "alert", "info"] = "warning"

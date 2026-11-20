@@ -8,7 +8,7 @@ Set ENABLE_ML_RESIDUAL=false to disable ML overlay and use pure deterministic ru
 import os
 from pathlib import Path
 from typing import List, Optional
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -22,6 +22,7 @@ from app.contracts import (
     ROIEstimate,
     ROIEstimateRequest,
     SHCClassification,
+    SHCOCRResponse,
     SHCParseRequest,
     SHCParseResponse,
     StateCoverageSummary,
@@ -217,6 +218,35 @@ def parse_shc(req: SHCParseRequest):
     ]
     flags = evaluate_soil_alerts({"ph": req.ph, "zn": req.zn_ppm})
     return SHCParseResponse(classifications=classifications, amendment_flags=flags)
+
+
+@app.post("/api/v1/shc/ocr-upload", response_model=SHCOCRResponse)
+async def ocr_upload_shc(
+    file: UploadFile = File(..., description="Soil Health Card image (JPEG, PNG, WEBP) or PDF scan"),
+    district: Optional[str] = Query(None, description="Optional target district context for boundary validation")
+):
+    """
+    Multimodal Vision OCR endpoint for Soil Health Cards (मृदा स्वास्थ्य कार्ड).
+    Uses Gemini Vision to parse physical card photos and extract 12 numerical soil health parameters.
+    """
+    from app.shc_vision_service import extract_shc_from_image
+
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=422, detail="Uploaded file is empty.")
+
+    mime = file.content_type or "image/jpeg"
+    try:
+        result = await extract_shc_from_image(
+            image_bytes=content,
+            mime_type=mime,
+            preferred_district=district
+        )
+        return result
+    except ValueError as ve:
+        raise HTTPException(status_code=422, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Soil Health Card extraction error: {e}")
 
 
 # ---------------------------------------------------------------------------
