@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0e2d1f" />
+  <meta name="description" content="KhetSathi 360 — भावी पीढ़ियों के लिए अमृत माटी व प्राकृतिक खेती मिशन। रासायनिक खाद मुक्त, उच्च मुनाफा और सजीव उपजाऊ खेत।" />
+  <title>KhetSathi 360 — भावी पीढ़ियों के लिए अमृत माटी व जैविक खेती मिशन</title>
+
+  <link rel="manifest" href="/static/manifest.json" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+  <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <style>
+    :root {
+      --color-primary: #0e2d1f;
+      --color-primary-light: #184c35;
+      --color-gold: #d97706;
+      --color-emerald: #059669;
+    }
+    body {
+      font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, sans-serif;
+      background-color: #f7faf7;
+      color: #1e293b;
+      -webkit-font-smoothing: antialiased;
+    }
+    .tactile-card {
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .tactile-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(14, 45, 31, 0.08), 0 8px 10px -6px rgba(14, 45, 31, 0.04);
+    }
+    .tab-active {
+      background-color: #0e2d1f !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(14, 45, 31, 0.2);
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      background: #059669;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .gradient-soil {
+      background: linear-gradient(135deg, #0e2d1f 0%, #164e33 60%, #1c5e3d 100%);
+    }
+    .badge-glow {
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- TOP ANNOUNCEMENT & RETURN LINK -->
+  <aside class="bg-emerald-950 text-emerald-200 text-xs py-2 px-4 border-b border-emerald-800/80">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-block px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-extrabold text-[10px] tracking-wide uppercase">
+          New Vision 2026
+        </span>
+        <span id="banner-announcement" class="font-medium">
+          🌱 भावी पीढ़ियों के लिए उपजाऊ मिट्टी संरक्षण व पूर्ण जैविक खेती विजन
+        </span>
+      </div>
+      <div class="flex items-center gap-3 font-semibold text-[11px]">
+        <a href="/" class="text-amber-400 hover:text-amber-300 underline underline-offset-2 flex items-center gap-1">
+          <span>⬅️</span> <span id="banner-return-link">मुख्य किसान सलाहकार पर जाएं (Working Version)</span>
+        </a>
+        <span class="text-emerald-700">|</span>
+        <a href="/portal" class="text-emerald-300 hover:text-white">FPO &amp; Investor Portal</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HEADER -->
+  <header class="bg-[#0e2d1f] text-white sticky top-0 z-40 shadow-lg border-b border-emerald-900">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/future" class="flex items-center gap-2.5 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-amber-500 flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition">
+            🌾
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-black text-lg sm:text-xl tracking-tight text-white">KhetSathi <span class="text-amber-400">360</span></span>
+              <span class="text-[10px] bg-emerald-800 text-emerald-300 px-1.5 py-0.5 rounded font-black tracking-wider uppercase">Future</span>
+            </div>
+            <p id="hdr-sub" class="text-[11px] text-emerald-300 font-medium hidden sm:block">भावी पीढ़ियों के लिए उपजाऊ मिट्टी, आज के किसान के लिए समृद्ध जीवन</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Quick Nav to Working Engine -->
+        <a href="/" class="hidden md:inline-flex items-center gap-1.5 text-xs bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 px-3 py-1.5 rounded-lg border border-emerald-700 transition">
+          <span>🌾</span> <span id="hdr-standard-link">पारंपरिक मोड</span>
+        </a>
+
+        <!-- Language Switcher -->
+        <button id="lang-btn" onclick="toggleLanguage()" class="flex items-center gap-1.5 text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-lg shadow-sm transition active:scale-95" aria-label="Toggle Language">
+          <span>🌐</span> <span id="lang-btn-text">English / हिन्दी</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION: INTERGENERATIONAL MISSION -->
+  <main class="flex-grow">
+    <section class="gradient-soil text-white py-10 px-4 relative overflow-hidden">
+      <!-- Decorative background glow -->
+      <div class="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-6xl mx-auto relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-8 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/80 border border-emerald-600 text-emerald-300 text-xs font-black uppercase tracking-wider">
+              <span>🌱</span> <span id="hero-pill">अमृत माटी महा-अभियान 2026–2050</span>
+            </div>
+            
+            <h1 id="hero-title" class="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+              भावी पीढ़ियों के लिए उपजाऊ मिट्टी,<br/>
+              <span class="text-amber-400">आज के अन्नदाता का सच्चा सम्मान।</span>
+            </h1>
+
+            <p id="hero-desc" class="text-sm sm:text-base text-emerald-100/90 leading-relaxed max-w-2xl">
+              रासायनिक खादों के अत्यधिक उपयोग से हमारी मिट्टी की जान निकल रही है। KhetSathi 360 का यह विजन भारतीय किसान को 100% देशी जैविक तकनीकों, शून्य लागत खाद नुस्खों, और 35% अधिक शुद्ध मुनाफे के साथ भावी पीढ़ी के लिए उपजाऊ खेत की सौगात देने के लिए समर्पित है।
+            </p>
+
+            <!-- Quick Action Badges -->
+            <div class="pt-2 flex flex-wrap gap-2.5">
+              <a href="#simulator-section" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-md transition active:scale-95">
+                <span>📊</span> <span id="btn-hero-sim">मृदा भविष्य सिमुलेटर देखें</span>
+              </a>
+              <a href="#recipes-section" class="inline-flex items-center gap-2 bg-emerald-800/90 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-emerald-600 transition active:scale-95">
+                <span>🧪</span> <span id="btn-hero-recipes">देशी खाद नुस्खे (जीवामृत)</span>
+              </a>
+              <a href="#certification-section" class="inline-flex items-center gap-2 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-200 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-emerald-700 transition">
+                <span>📜</span> <span id="btn-hero-cert">जैविक भारत प्रमाणन मार्ग</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Impact Metrics Card -->
+          <div class="lg:col-span-4 bg-emerald-900/60 backdrop-blur-md p-5 rounded-2xl border border-emerald-700/60 shadow-xl space-y-4">
+            <div class="flex items-center justify-between border-b border-emerald-700/60 pb-3">
+              <span id="stat-hdr" class="text-xs font-black uppercase tracking-wider text-emerald-300">राष्ट्रीय किसान व मृदा संकल्प</span>
+              <span class="text-lg">🇮🇳</span>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span id="stat-1-lbl" class="text-xs text-emerald-200">यूरिया अति-उपयोग बचत</span>
+                <span class="text-sm font-black text-amber-300">-18% प्रति हेक्टेयर</span>
+              </div>
+              <div class="w-full bg-emerald-950 rounded-full h-2">
+                <div class="bg-amber-400 h-2 rounded-full" style="width: 78%"></div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span id="stat-2-lbl" class="text-xs text-emerald-200">सजीव कार्बन (SOC) वृद्धि लक्ष्य</span>
+                <span class="text-sm font-black text-emerald-300">0.35% ➔ 0.85%</span>
+              </div>
+              <div class="w-full bg-emerald-950 rounded-full h-2">
+                <div class="bg-emerald-400 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span id="stat-3-lbl" class="text-xs text-emerald-200">किसान अतिरिक्त शुद्ध आय</span>
+                <span class="text-sm font-black text-emerald-300">+₹36,700 /हेक्टेयर</span>
+              </div>
+              <div class="w-full bg-emerald-950 rounded-full h-2">
+                <div class="bg-emerald-300 h-2 rounded-full" style="width: 92%"></div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-emerald-950/80 rounded-xl text-[11px] text-emerald-200/90 leading-relaxed border border-emerald-800">
+              <span class="font-bold text-amber-300">💡 संकल्प:</span> <span id="stat-quote">"यदि हम आज मिट्टी को नहीं बचाएंगे, तो हमारी अगली पीढ़ी को खेती छोड़ने पर मजबूर होना पड़ेगा। प्राकृतिक खेती ही भावी भारत का आधार है।"</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT TABS NAVIGATION -->
+    <div class="bg-white border-b border-slate-200 sticky top-14 z-30 shadow-2xs">
+      <div class="max-w-6xl mx-auto px-4 flex overflow-x-auto no-scrollbar gap-2 py-2">
+        <button onclick="switchTab('sim')" id="tab-sim-btn" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-black transition whitespace-nowrap tab-active">
+          <span>⏳</span> <span id="t-tab-sim">पीढ़ी दर पीढ़ी मृदा सिमुलेटर</span>
+        </button>
+        <button onclick="switchTab('recipes')" id="tab-recipes-btn" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+          <span>🧪</span> <span id="t-tab-recipes">देशी जैविक खाद व कीटनाशक</span>
+        </button>
+        <button onclick="switchTab('economics')" id="tab-eco-btn" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+          <span>💰</span> <span id="t-tab-eco">जैविक मुनाफा व बचत कैलकुलेटर</span>
+        </button>
+        <button onclick="switchTab('cert')" id="tab-cert-btn" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+          <span>📜</span> <span id="t-tab-cert">प्रमाणन व सरकारी बाजार (PGS)</span>
+        </button>
+        <button onclick="switchTab('community')" id="tab-com-btn" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-100 transition whitespace-nowrap">
+          <span>🤝</span> <span id="t-tab-com">साथी किसान व व्हाट्सएप शेयर</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN BODY CONTAINER -->
+    <div class="max-w-6xl mx-auto px-4 py-8 space-y-10">
+
+      <!-- ========================================================================= -->
+      <!-- SECTION 1: INTERGENERATIONAL SOIL HEALTH SIMULATOR                        -->
+      <!-- ========================================================================= -->
+      <section id="simulator-section" class="tab-panel space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block mb-1">
+              Interactive Soil Timeline
+            </span>
+            <h2 id="sim-head" class="text-xl sm:text-2xl font-black text-slate-900">
+              भावी पीढ़ियों के लिए मिट्टी की स्थिति: 5 से 30 वर्ष का सिमुलेटर
+            </h2>
+            <p id="sim-sub" class="text-xs sm:text-sm text-slate-600">
+              नीचे दिए गए स्लाइडर को आगे बढ़ाकर देखें कि रासायनिक खेती जारी रखने पर आपकी आने वाली पीढ़ी को कैसी जमीन मिलेगी, और जैविक अपनाने पर क्या बदलाव आएगा।
+            </p>
+          </div>
+          <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl text-amber-900 text-xs font-bold">
+            <span>⏱️</span> <span id="sim-timeline-badge">समय सीमा: <span id="slider-years-text" class="font-extrabold text-amber-700">10 वर्ष बाद (2036)</span></span>
+          </div>
+        </div>
+
+        <!-- Slider Control Card -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div class="flex justify-between items-center text-xs font-extrabold text-slate-700">
+            <span>आज (वर्ष 1)</span>
+            <span>5 वर्ष बाद</span>
+            <span class="text-emerald-700 font-black">10 वर्ष बाद</span>
+            <span>20 वर्ष बाद</span>
+            <span class="text-purple-700 font-black">30 वर्ष (अगली पीढ़ी)</span>
+          </div>
+          <input type="range" id="years-slider" min="1" max="30" value="10" step="1" oninput="updateSoilSimulator(this.value)" class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+          <div class="flex justify-between text-[11px] text-slate-500">
+            <span>शुरुआत</span>
+            <span>मिट्टी सुधार चरण</span>
+            <span>सजीव व उपजाऊ विरासत</span>
+          </div>
+        </div>
+
+        <!-- Comparative Dual Visual Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Left Column: Chemical Trajectory (Negative Legacy) -->
+          <div class="bg-gradient-to-br from-red-50/80 via-white to-amber-50/40 p-5 rounded-2xl border-2 border-red-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-red-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">⚠️</span>
+                <div>
+                  <h3 id="chem-path-title" class="font-black text-red-950 text-base">पारंपरिक रासायनिक रास्ता</h3>
+                  <span id="chem-path-sub" class="text-xs text-red-700 font-medium">यूरिया, डीएपी व रासायनिक कीटनाशकों की मार</span>
+                </div>
+              </div>
+              <span class="text-xs font-black text-red-700 bg-red-100 px-2 py-0.5 rounded-full">बंजर होती जमीन</span>
+            </div>
+
+            <!-- Parameters Grid -->
+            <div class="space-y-3 text-xs">
+              <div class="p-3 rounded-xl bg-white border border-red-100 space-y-1">
+                <div class="flex justify-between font-bold">
+                  <span id="chem-soc-lbl" class="text-slate-700">जैविक कार्बन (Soil Organic Carbon):</span>
+                  <span id="chem-soc-val" class="text-red-700 font-extrabold">0.24% (गंभीर रूप से कम)</span>
+                </div>
+                <div class="w-full bg-red-100 rounded-full h-1.5">
+                  <div id="chem-soc-bar" class="bg-red-500 h-1.5 rounded-full" style="width: 25%"></div>
+                </div>
+                <p id="chem-soc-note" class="text-[10px] text-slate-500">मिट्टी की पोषक तत्व सोखने की क्षमता खत्म हो जाती है।</p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-white border border-red-100 space-y-1">
+                <div class="flex justify-between font-bold">
+                  <span id="chem-worm-lbl" class="text-slate-700">सक्रिय केंचुए (किसान के सच्चे मित्र):</span>
+                  <span id="chem-worm-val" class="text-red-700 font-extrabold">0 प्रति वर्ग मीटर (विलुप्त)</span>
+                </div>
+                <p id="chem-worm-note" class="text-[10px] text-slate-500">रासायनिक जहर से मिट्टी के सूक्ष्मजीव व केंचुए मर चुके हैं।</p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-white border border-red-100 space-y-1">
+                <div class="flex justify-between font-bold">
+                  <span id="chem-cost-lbl" class="text-slate-700">खाद खरीद लागत भार:</span>
+                  <span id="chem-cost-val" class="text-red-700 font-extrabold">+85% अतिरिक्त खर्च</span>
+                </div>
+                <p id="chem-cost-note" class="text-[10px] text-slate-500">वही पैदावार पाने के लिए हर साल खाद की मात्रा बढ़ानी पड़ती है।</p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-white border border-red-100 space-y-1">
+                <div class="flex justify-between font-bold">
+                  <span id="chem-water-lbl" class="text-slate-700">जल धारण क्षमता (सूखा सहनशक्ति):</span>
+                  <span id="chem-water-val" class="text-red-700 font-extrabold">-40% कमजोर</span>
+                </div>
+                <p id="chem-water-note" class="text-[10px] text-slate-500">जमीन कड़ी हो जाने से पानी बह जाता है और सूखा जल्दी पड़ता है।</p>
+              </div>
+            </div>
+
+            <div class="p-3 bg-red-950 text-red-200 rounded-xl text-xs space-y-1">
+              <span class="font-extrabold text-amber-300 block">🛑 भावी पीढ़ी पर असर:</span>
+              <p id="chem-verdict" class="text-[11px] leading-relaxed">
+                आने वाली संतान को कर्जे का बोझ और पथरीली बंजर जमीन विरासत में मिलेगी, जिस पर बिना भारी रसायनों के कुछ नहीं उपजेगा।
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Column: Organic Regenerative Path (Living Legacy) -->
+          <div class="bg-gradient-to-br from-emerald-50/90 via-white to-green-50/50 p-5 rounded-2xl border-2 border-emerald-500 shadow-md space-y-4">
+            <div class="flex items-center justify-between border-b border-emerald-200 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">🌱</span>
+                <div>
+                  <h3 id="org-path-title" class="font-black text-emerald-950 text-base">प्राकृतिक व अमृत माटी रास्ता</h3>
+                  <span id="org-path-sub" class="text-xs text-emerald-700 font-medium">जीवामृत, बीजामृत, हरी खाद व केंचुआ संवर्धन</span>
+                </div>
+              </div>
+              <span class="text-xs font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">सजीव व उपजाऊ विरासत</span>
+            </div>
+
+            <!-- Parameters Grid -->
+            <div class="space-y-3 text-xs">
+              <div class="p-3 rounded-xl bg-white border border-emerald-200 space-y-1 shadow-2xs">
+                <div class="flex justify-between font-bold">
+                  <span id="org-soc-lbl" class="text-slate-700">जैविक कार्बन (Soil Organic Carbon):</span>
+                  <span id="org-soc-val" class="text-emerald-700 font-extrabold">0.82% (उत्कृष्ट व उपजाऊ)</span>
+                </div>
+                <div class="w-full bg-emerald-100 rounded-full h-1.5">
+                  <div id="org-soc-bar" class="bg-emerald-600 h-1.5 rounded-full" style="width: 82%"></div>
+                </div>
+                <p id="org-soc-note" class="text-[10px] text-slate-500">मिट्टी मक्खन जैसी मुलायम और जीवाणुओं से भरपूर हो जाती है।</p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-white border border-emerald-200 space-y-1 shadow-2xs">
+                <div class="flex justify-between font-bold">
+                  <span id="org-worm-lbl" class="text-slate-700">सक्रिय केंचुए (किसान के सच्चे मित्र):</span>
+                  <span id="org-worm-val" class="text-emerald-700 font-extrabold">18-24 प्रति वर्ग मीटर (सक्रिय)</span>
+                </div>
+                <p id="org-worm-note" class="text-[10px] text-slate-500">केंचुए दिन-रात जमीन को जोतकर देशी खाद बनाते हैं।</p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-white border border-emerald-200 space-y-1 shadow-2xs">
+                <div class="flex justify-between font-bold">
+                  <span id="org-cost-lbl" class="text-slate-700">खाद खरीद लागत भार:</span>
+                  <span id="org-cost-val" class="text-emerald-700 font-extrabold">शून्य बाजार निर्भरता (₹0)</span>
+                </div>
+                <p id="org-cost-note" class="text-[10px] text-slate-500">घर पर देशी गाय के गोबर-गोमूत्र से खाद बनने से बाजार का खर्च खत्म।</p>
+              </div>
+
+              <div class="p-3 rounded-xl bg-white border border-emerald-200 space-y-1 shadow-2xs">
+                <div class="flex justify-between font-bold">
+                  <span id="org-water-lbl" class="text-slate-700">जल धारण क्षमता (सूखा सहनशक्ति):</span>
+                  <span id="org-water-val" class="text-emerald-700 font-extrabold">+35% अधिक नमी संरक्षण</span>
+                </div>
+                <p id="org-water-note" class="text-[10px] text-slate-500">1 सिंचाई की बचत होती है और फसल सूखे में भी हरी रहती है।</p>
+              </div>
+            </div>
+
+            <div class="p-3 bg-emerald-950 text-emerald-200 rounded-xl text-xs space-y-1">
+              <span class="font-extrabold text-amber-300 block">🏆 भावी पीढ़ी को सौगात:</span>
+              <p id="org-verdict" class="text-[11px] leading-relaxed">
+                आपकी आने वाली पीढ़ी को एक कर्जमुक्त, सजीव व अमृत जैसी उपजाऊ जमीन मिलेगी, जो हर वर्ष बिना जहरीले रसायनों के बंपर लाभ देगी।
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- SECTION 2: DIY BIO-INPUT APOTHECARY (जीवामृत, बीजामृत, नीमास्त्र)         -->
+      <!-- ========================================================================= -->
+      <section id="recipes-section" class="tab-panel space-y-6 hidden">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block mb-1">
+              Zero-Budget Bio-Input Kitchen
+            </span>
+            <h2 id="rec-head" class="text-xl sm:text-2xl font-black text-slate-900">
+              घर पर बनाएं देशी जैविक खाद व कीटनाशक (100% शून्य खर्च)
+            </h2>
+            <p id="rec-sub" class="text-xs sm:text-sm text-slate-600">
+              देशी गाय के गोबर, गोमूत्र और प्राकृतिक तत्वों से तैयार अचूक नुस्खे। अपने खेत का रकबा दर्ज करें, सामग्री की मात्रा तुरंत बदल जाएगी।
+            </p>
+          </div>
+
+          <!-- Dynamic Land Size Selector -->
+          <div class="flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 shadow-2xs">
+            <span id="rec-area-label" class="text-xs font-bold text-slate-700">खेत का रकबा:</span>
+            <input type="number" id="recipe-area-input" value="1.0" min="0.1" max="100" step="0.25" onchange="recalculateRecipes()" class="w-16 px-2 py-1 text-xs font-black border border-slate-300 rounded text-center" />
+            <select id="recipe-area-unit" onchange="recalculateRecipes()" class="text-xs font-bold border border-slate-300 rounded px-2 py-1 bg-slate-50">
+              <option value="ha">हेक्टेयर (Hectare)</option>
+              <option value="acre">एकड़ (Acre)</option>
+              <option value="bigha">बीघा (Bigha)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Recipe Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <!-- 1. JEEVAMRIT (जीवामृत) -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-emerald-500 shadow-sm space-y-4 flex flex-col justify-between tactile-card">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🧪</span>
+                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                  सजीव सूक्ष्मजीव टॉनिक
+                </span>
+              </div>
+              <h3 id="rcp-jeev-title" class="text-lg font-black text-emerald-950">जीवामृत (Jeevamrit)</h3>
+              <p id="rcp-jeev-desc" class="text-xs text-slate-600 leading-relaxed">
+                करोड़ों सजीव जीवाणुओं का संवर्धन। यूरिया और डीएपी का सर्वोत्तम देशी विकल्प जो सिंचाई जल के साथ सीधे जड़ों तक पहुंचता है।
+              </p>
+
+              <!-- Dynamic Ingredients Table -->
+              <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-200 space-y-1.5 text-xs">
+                <span class="font-extrabold text-emerald-900 block text-[11px]">आवश्यक सामग्री (<span id="jeev-area-badge">1.0 हेक्टेयर</span> हेतु):</span>
+                <ul class="space-y-1 text-slate-700 text-[11px]">
+                  <li>• देशी गाय का ताजा गोबर: <b id="jeev-dung" class="text-emerald-800 font-extrabold">20 किलो</b></li>
+                  <li>• देशी गाय का गोमूत्र: <b id="jeev-urine" class="text-emerald-800 font-extrabold">20 लीटर</b></li>
+                  <li>• पुराना गुड़ (बिना केमिकल): <b id="jeev-jaggery" class="text-emerald-800 font-extrabold">4 किलो</b></li>
+                  <li>• दालों का बेसन (चना/मूंग): <b id="jeev-flour" class="text-emerald-800 font-extrabold">4 किलो</b></li>
+                  <li>• मेड़/पीपल नीचे की सजीव मिट्टी: <b class="text-emerald-800 font-extrabold">मुट्ठी भर (200 ग्रा.)</b></li>
+                  <li>• स्वच्छ जल: <b id="jeev-water" class="text-emerald-800 font-extrabold">400 लीटर</b></li>
+                </ul>
+              </div>
+
+              <!-- Preparation Steps -->
+              <div class="text-[11px] text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                <span class="font-bold text-slate-800 block">🥣 बनाने की विधि:</span>
+                <p>1. 200 लीटर प्लास्टिक ड्रम में सभी सामग्री अच्छी तरह घोलें।</p>
+                <p>2. छायादार जगह पर रखें और बोरी से ढकें।</p>
+                <p>3. सुबह-शाम लकड़ी के डंडे से घड़ी की दिशा (क्लॉकवाइज) में 2 मिनट घुमाएं।</p>
+                <p>4. <b>48 से 72 घंटे</b> में जीवामृत पूर्ण तैयार हो जाता है। 7 दिन के भीतर उपयोग करें।</p>
+              </div>
+            </div>
+
+            <button onclick="shareRecipeWhatsApp('Jeevamrit')" class="w-full text-xs font-black py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95">
+              <span>📲</span> <span id="btn-share-jeev">जीवामृत नुस्खा व्हाट्सएप पर भेजें</span>
+            </button>
+          </div>
+
+          <!-- 2. BEEJAMRIT (बीजामृत) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between tactile-card">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🌱</span>
+                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-blue-100 text-blue-800">
+                  बीजोपचार रक्षा कवच
+                </span>
+              </div>
+              <h3 id="rcp-beej-title" class="text-lg font-black text-slate-900">बीजामृत (Beejamrit)</h3>
+              <p id="rcp-beej-desc" class="text-xs text-slate-600 leading-relaxed">
+                बुवाई से पूर्व बीजों का सुरक्षा चक्र। उकठा (Wilt), जड़ सड़न और फफूंद जनित रोगों से बीज को 100% प्राकृतिक सुरक्षा देता है।
+              </p>
+
+              <!-- Dynamic Ingredients Table -->
+              <div class="bg-blue-50/60 p-3 rounded-xl border border-blue-200 space-y-1.5 text-xs">
+                <span class="font-extrabold text-blue-900 block text-[11px]">आवश्यक सामग्री (<span id="beej-area-badge">1.0 हेक्टेयर</span> के बीज हेतु):</span>
+                <ul class="space-y-1 text-slate-700 text-[11px]">
+                  <li>• देशी गाय का गोबर: <b id="beej-dung" class="text-blue-800 font-extrabold">5 किलो</b></li>
+                  <li>• देशी गोमूत्र: <b id="beej-urine" class="text-blue-800 font-extrabold">5 लीटर</b></li>
+                  <li>• देशी गाय का दूध: <b id="beej-milk" class="text-blue-800 font-extrabold">1 लीटर</b></li>
+                  <li>• खाने का चूना: <b class="text-blue-800 font-extrabold">50 ग्राम</b></li>
+                  <li>• स्वच्छ जल: <b id="beej-water" class="text-blue-800 font-extrabold">20 लीटर</b></li>
+                </ul>
+              </div>
+
+              <!-- Preparation Steps -->
+              <div class="text-[11px] text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                <span class="font-bold text-slate-800 block">🥣 बीजोपचार विधि:</span>
+                <p>1. गोबर को कपड़े में बांधकर पानी में 12 घंटे लटकाएं।</p>
+                <p>2. चूने का पानी और गोमूत्र मिलाकर 24 घंटे रखें।</p>
+                <p>3. बुवाई से 2 घंटे पूर्व बीजों पर हल्के हाथ से मलें व छाया में सुखाएं।</p>
+              </div>
+            </div>
+
+            <button onclick="shareRecipeWhatsApp('Beejamrit')" class="w-full text-xs font-black py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95">
+              <span>📲</span> <span id="btn-share-beej">बीजामृत नुस्खा व्हाट्सएप पर भेजें</span>
+            </button>
+          </div>
+
+          <!-- 3. NEEMASTRA & DASHPARNI ARK (नीमास्त्र व दशपर्णी) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between tactile-card">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">🛡️</span>
+                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                  प्राकृतिक कीट नियंत्रक
+                </span>
+              </div>
+              <h3 id="rcp-neem-title" class="text-lg font-black text-slate-900">नीमास्त्र व दशपर्णी अर्क</h3>
+              <p id="rcp-neem-desc" class="text-xs text-slate-600 leading-relaxed">
+                महंगे रासायनिक कीटनाशकों से मुक्ति। रस चूसक कीट, माहू, सफेद मक्खी, सुंडी और इल्लियों का पूर्ण खात्मा करने वाला हर्बल कवच।
+              </p>
+
+              <!-- Dynamic Ingredients Table -->
+              <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200 space-y-1.5 text-xs">
+                <span class="font-extrabold text-amber-900 block text-[11px]">नीमास्त्र सामग्री (<span id="neem-area-badge">1.0 हेक्टेयर</span> छिड़काव हेतु):</span>
+                <ul class="space-y-1 text-slate-700 text-[11px]">
+                  <li>• नीम की पत्तियां/निंबोली चटनी: <b id="neem-leaves" class="text-amber-800 font-extrabold">10 किलो</b></li>
+                  <li>• देशी गोमूत्र: <b id="neem-urine" class="text-amber-800 font-extrabold">10 लीटर</b></li>
+                  <li>• देशी गाय का ताजा गोबर: <b id="neem-dung" class="text-amber-800 font-extrabold">2 किलो</b></li>
+                  <li>• पानी: <b id="neem-water" class="text-amber-800 font-extrabold">200 लीटर</b></li>
+                </ul>
+              </div>
+
+              <!-- Preparation Steps -->
+              <div class="text-[11px] text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                <span class="font-bold text-slate-800 block">🥣 छिड़काव विधि:</span>
+                <p>1. सभी तत्वों को ड्रम में 48 घंटे छाया में रखें और रोज चलाएं।</p>
+                <p>2. कपड़े से छानकर सीधे फसल पर छिड़काव करें।</p>
+                <p>3. रस चूसक कीटों और सुंडी के अंडों को तुरंत नष्ट करता है।</p>
+              </div>
+            </div>
+
+            <button onclick="shareRecipeWhatsApp('Neemastra')" class="w-full text-xs font-black py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition active:scale-95">
+              <span>📲</span> <span id="btn-share-neem">कीटनाशक नुस्खा व्हाट्सएप पर भेजें</span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- SECTION 3: TRANSITION ECONOMICS CALCULATOR                                -->
+      <!-- ========================================================================= -->
+      <section id="economics-section" class="tab-panel space-y-6 hidden">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block mb-1">
+              Economics &amp; Net Farmer Margin
+            </span>
+            <h2 id="eco-head" class="text-xl sm:text-2xl font-black text-slate-900">
+              पारंपरिक बनाम जैविक खेती: शुद्ध लाभ व लागत तुलना
+            </h2>
+            <p id="eco-sub" class="text-xs sm:text-sm text-slate-600">
+              रासायनिक खाद की बढ़ती कीमतों और जैविक उपज के प्रीमियम बाजार भाव के आधार पर प्रमाणित वित्तीय विश्लेषण।
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-bold text-slate-700">फसल चुनें:</label>
+            <select id="eco-crop-select" onchange="fetchLiveOrganicEconomics()" class="text-xs font-extrabold border border-slate-300 rounded-lg px-3 py-1.5 bg-white shadow-2xs">
+              <option value="wheat">गेहूं (Wheat)</option>
+              <option value="mustard">सरसों (Mustard)</option>
+              <option value="rice">धान (Rice / Paddy)</option>
+              <option value="gram">चना (Gram / Chickpea)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Comparative Comparison Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          <!-- Left Card: Chemical Cost Burden -->
+          <div class="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-4">
+            <div class="border-b border-red-100 pb-3 flex justify-between items-center">
+              <div>
+                <h4 class="font-black text-red-950 text-base">रासायनिक खेती लागत</h4>
+                <span class="text-[11px] text-red-700">यूरिया, डीएपी, पोटाश व स्प्रे खर्च</span>
+              </div>
+              <span class="text-xl">💸</span>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between">
+                <span class="text-slate-600">रासायनिक खाद खर्च:</span>
+                <span id="eco-chem-fert" class="font-extrabold text-slate-900">₹14,500</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-600">कीटनाशक व फफूंदनाशक:</span>
+                <span id="eco-chem-pest" class="font-extrabold text-slate-900">₹6,800</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-600">सिंचाई व डीजल (अतिरिक्त):</span>
+                <span id="eco-chem-irr" class="font-extrabold text-slate-900">₹5,200</span>
+              </div>
+              <div class="border-t border-slate-100 pt-2 flex justify-between font-black text-sm">
+                <span class="text-slate-900">कुल इनपुट लागत:</span>
+                <span id="eco-chem-total-cost" class="text-red-700 font-extrabold">₹26,500 /हे.</span>
+              </div>
+              <div class="flex justify-between font-bold text-slate-700">
+                <span>सामान्य मंडी भाव:</span>
+                <span id="eco-chem-mandi">₹2,275 /क्विंटल</span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-red-50 rounded-xl border border-red-200 text-xs text-red-900">
+              <span>शुद्ध किसान मुनाफा: </span>
+              <b id="eco-chem-net" class="text-sm font-black text-red-700 block mt-0.5">₹42,000 / हेक्टेयर</b>
+            </div>
+          </div>
+
+          <!-- Middle Card: Organic Economics & Savings -->
+          <div class="bg-gradient-to-br from-emerald-50 via-white to-green-50/60 p-5 rounded-2xl border-2 border-emerald-500 shadow-md space-y-4">
+            <div class="border-b border-emerald-200 pb-3 flex justify-between items-center">
+              <div>
+                <h4 class="font-black text-emerald-950 text-base">प्राकृतिक / जैविक खेती मॉडल</h4>
+                <span class="text-[11px] text-emerald-700">देशी खाद, जीवामृत व शून्य जहर</span>
+              </div>
+              <span class="text-xl">🌱</span>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between">
+                <span class="text-slate-600">देशी खाद व जैव उर्वरक:</span>
+                <span id="eco-org-fert" class="font-extrabold text-emerald-900">₹8,650</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-600">नीमास्त्र व हर्बल कीट स्प्रे:</span>
+                <span id="eco-org-pest" class="font-extrabold text-emerald-900">₹1,200 (घर का बना)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-600">सिंचाई जल बचत लाभ:</span>
+                <span id="eco-org-irr" class="font-extrabold text-emerald-900">₹2,100 बचत</span>
+              </div>
+              <div class="border-t border-emerald-200 pt-2 flex justify-between font-black text-sm">
+                <span class="text-slate-900">कुल इनपुट लागत:</span>
+                <span id="eco-org-total-cost" class="text-emerald-700 font-extrabold">₹9,850 /हे.</span>
+              </div>
+              <div class="flex justify-between font-bold text-emerald-800">
+                <span>प्रमाणित जैविक भाव (+25%):</span>
+                <span id="eco-org-mandi" class="font-black">₹2,844 /क्विंटल</span>
+              </div>
+            </div>
+
+            <div class="p-3 bg-emerald-100/80 rounded-xl border border-emerald-300 text-xs text-emerald-950">
+              <span>कुल शुद्ध किसान मुनाफा: </span>
+              <b id="eco-org-net" class="text-base font-black text-emerald-900 block mt-0.5">₹78,700 / हेक्टेयर</b>
+            </div>
+          </div>
+
+          <!-- Right Card: Government Support & PKVY Incentives -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+                <div>
+                  <h4 class="font-black text-slate-900 text-base">सरकारी अनुदान व सहायता</h4>
+                  <span class="text-[11px] text-blue-700">परम्परागत कृषि विकास योजना (PKVY)</span>
+                </div>
+                <span class="text-xl">🏛️</span>
+              </div>
+
+              <div class="space-y-2.5 text-xs text-slate-700">
+                <div class="p-2.5 bg-blue-50/60 rounded-xl border border-blue-200">
+                  <span class="font-bold text-blue-900 block">3 वर्ष में कुल सहायता:</span>
+                  <span class="text-sm font-black text-blue-800">₹50,000 / हेक्टेयर</span>
+                  <p class="text-[10px] text-slate-500 mt-0.5">जिसमें ₹31,000 सीधे किसान के खाते में जैविक खाद व बीजों हेतु DBT द्वारा मिलते हैं।</p>
+                </div>
+
+                <div class="p-2.5 bg-amber-50/60 rounded-xl border border-amber-200">
+                  <span class="font-bold text-amber-900 block">निःशुल्क समूह प्रमाणन (PGS):</span>
+                  <span class="text-xs font-extrabold text-amber-800">₹0 किसान खर्च</span>
+                  <p class="text-[10px] text-slate-500 mt-0.5">20-50 किसानों के क्लस्टर को सरकार द्वारा मुफ्त प्रमाणन व जांच किट उपलब्ध कराई जाती है।</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-slate-900 text-white rounded-xl text-xs space-y-1">
+              <span class="text-amber-400 font-extrabold block">📈 कुल अतिरिक्त किसान लाभ:</span>
+              <span id="eco-extra-gain" class="text-lg font-black text-emerald-300 block">+₹36,700 / हेक्टेयर</span>
+              <span class="text-[10px] text-slate-400 block">(इनपुट बचत + प्रीमियम भाव + सरकारी सहयोग)</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- SECTION 4: 3-YEAR CERTIFICATION ROADMAP (PGS-INDIA & JAIVIK BHARAT)     -->
+      <!-- ========================================================================= -->
+      <section id="certification-section" class="tab-panel space-y-6 hidden">
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block mb-1">
+            Government Certification Pathways
+          </span>
+          <h2 id="cert-head" class="text-xl sm:text-2xl font-black text-slate-900">
+            जैविक भारत प्रमाणन: 3 चरणों में सरकारी मान्यता व प्रीमियम बाजार
+          </h2>
+          <p id="cert-sub" class="text-xs sm:text-sm text-slate-600">
+            महंगी प्राइवेट कंपनियों के चक्कर छोड़ें। भारत सरकार की सहभागिता प्रत्यायन प्रणाली (PGS-India) के जरिए निःशुल्क जैविक प्रमाणन प्राप्त करें।
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+          <!-- Year 1 -->
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-amber-500 border-x border-b border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-700 uppercase tracking-wider bg-amber-100 px-2 py-0.5 rounded">
+                वर्ष 1 (C-1 रूपांतरण)
+              </span>
+              <span class="text-xl">🌱</span>
+            </div>
+            <h3 class="font-black text-slate-900 text-base">जमीन की विषमुक्ति व क्लस्टर पंजीकरण</h3>
+            <ul class="text-xs text-slate-600 space-y-2">
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>रासायनिक यूरिया व डीएपी में तत्काल 50% कटौती करें।</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>गर्मी में हरी खाद (ढैंचा या सनई) बोकर खेत में पलटें।</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>स्थानीय KVK या कृषि अधिकारी के जरिए <b>PGS-India</b> पर 20 किसानों का समूह दर्ज कराएं।</span>
+              </li>
+            </ul>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-[11px] text-slate-500">
+              <b>दस्तावेज़:</b> खतौनी, आधार कार्ड, बैंक पासबुक।
+            </div>
+          </div>
+
+          <!-- Year 2 -->
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-blue-500 border-x border-b border-slate-200 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-blue-700 uppercase tracking-wider bg-blue-100 px-2 py-0.5 rounded">
+                वर्ष 2 (C-2 स्थिरीकरण)
+              </span>
+              <span class="text-xl">🌿</span>
+            </div>
+            <h3 class="font-black text-slate-900 text-base">रसायन मुक्त खेत व सजीव सूक्ष्मजीव</h3>
+            <ul class="text-xs text-slate-600 space-y-2">
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>रासायनिक खाद और जहरीले कीटनाशक पूरी तरह 100% बंद।</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>हर सिंचाई में 200 लीटर जीवामृत और बीजामृत से बीज संस्कार।</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>पीयर रिव्यू (सहपाठी किसानों द्वारा खेत का निरीक्षण) दर्ज करें।</span>
+              </li>
+            </ul>
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-[11px] text-slate-500">
+              <b>पहचान:</b> 'PGS-Green' प्रमाणपत्र जारी होता है।
+            </div>
+          </div>
+
+          <!-- Year 3 -->
+          <div class="bg-white p-5 rounded-2xl border-t-4 border-emerald-600 border-x border-b border-slate-200 shadow-md space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-800 uppercase tracking-wider bg-emerald-100 px-2 py-0.5 rounded">
+                वर्ष 3 (पूर्ण जैविक भारत)
+              </span>
+              <span class="text-xl">🏆</span>
+            </div>
+            <h3 class="font-black text-emerald-950 text-base">आधिकारिक 'जैविक भारत' लोगो व प्रीमियम बिक्री</h3>
+            <ul class="text-xs text-slate-600 space-y-2">
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>मिट्टी शून्य केमिकल अवशेष (Zero Residue) परीक्षण पास करती है।</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>पैकेटों पर लगाने हेतु <b>Jaivik Bharat</b> आधिकारिक सील प्राप्त होती है।</span>
+              </li>
+              <li class="flex items-start gap-1.5">
+                <span class="text-emerald-600 font-bold">✓</span>
+                <span>सरकारी ई-मंच (jaivikkheti.in) और निर्यातकों को सीधे 25-40% अधिक मूल्य पर बिक्री।</span>
+              </li>
+            </ul>
+            <div class="p-2.5 bg-emerald-50 rounded-lg border border-emerald-300 text-[11px] text-emerald-900 font-bold">
+              <b>सफलता:</b> फसल अब 100% पूर्ण प्रमाणित जैविक अन्न है।
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Official Links Action Bar -->
+        <div class="bg-emerald-950 text-white p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+          <div class="space-y-1">
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-400">आधिकारिक सरकारी पोर्टल</span>
+            <p class="text-xs text-emerald-100">जैविक भारत ई-मंच पर सीधे अपना किसान प्रोफाइल बनाएं या समूह पंजीकरण स्थिति देखें।</p>
+          </div>
+          <div class="flex flex-wrap gap-2.5">
+            <a href="https://www.jaivikkheti.in" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-xl transition shadow">
+              जैविक खेती पोर्टल (jaivikkheti.in) ↗
+            </a>
+            <a href="https://pgsindia-ncof.gov.in" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl border border-emerald-600 transition">
+              PGS-India पोर्टल ↗
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================================= -->
+      <!-- SECTION 5: FARMER EMPOWERMENT & WHATSAPP PEER SHARING                     -->
+      <!-- ========================================================================= -->
+      <section id="community-section" class="tab-panel space-y-6 hidden">
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block mb-1">
+            Farmer Network &amp; Social Voice
+          </span>
+          <h2 id="com-head" class="text-xl sm:text-2xl font-black text-slate-900">
+            स्थानीय प्राकृतिक किसान साथी व सीधा व्हाट्सएप प्रसार
+          </h2>
+          <p id="com-sub" class="text-xs sm:text-sm text-slate-600">
+            ज्ञान बांटने से ही क्रांति आएगी। एक क्लिक में अपने गांव और किसान समूहों में वैज्ञानिक जैविक नुस्खे साझा करें।
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- WhatsApp Custom Share Card -->
+          <div class="bg-white p-5 rounded-2xl border-2 border-emerald-500 shadow-sm space-y-4">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+              <span class="text-3xl text-emerald-600">📲</span>
+              <div>
+                <h3 class="font-black text-slate-900 text-base">व्हाट्सएप पर जैविक नुस्खा भेजें</h3>
+                <span class="text-xs text-slate-500">गांव के किसान ग्रुप या परिवार संग साझा करें</span>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-600 leading-relaxed">
+              नीचे दिया गया बटन दबाते ही आपके द्वारा चुने गए रकबे के अनुसार जीवामृत और बीजामृत की सही मात्रा का संदेश तैयार होकर व्हाट्सएप पर खुल जाएगा।
+            </p>
+
+            <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-slate-700 space-y-1">
+              <span class="font-extrabold text-emerald-950 block">संदेश का नमूना:</span>
+              <p class="text-[11px] italic text-slate-600">
+                "🌾 किसान भाई! मैंने KhetSathi 360 पर 1 हेक्टेयर हेतु देशी जीवामृत का नुस्खा निकाला है। यूरिया-डीएपी से मिट्टी कड़ी हो रही है, आइए मिलकर अपनी माटी को जीवित करें..."
+              </p>
+            </div>
+
+            <button onclick="shareFullAdvisoryWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm rounded-xl flex items-center justify-center gap-2 shadow-md transition active:scale-95">
+              <span>💬</span> <span>व्हाट्सएप पर अभी शेयर करें</span>
+            </button>
+          </div>
+
+          <!-- Krishi Vigyan Kendra & Expert Directory -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+              <span class="text-3xl text-amber-600">🏛️</span>
+              <div>
+                <h3 class="font-black text-slate-900 text-base">कृषि विज्ञान केंद्र (KVK) व विशेषज्ञ सहायता</h3>
+                <span class="text-xs text-slate-500">सरकारी वैज्ञानिक मार्गदर्शन व देशी केंचुआ खाद स्रोत</span>
+              </div>
+            </div>
+
+            <ul class="text-xs space-y-3">
+              <li class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
+                <div>
+                  <span class="font-black text-slate-900 block">KVK गाजीपुर (उ.प्र.) मृदा परीक्षण व प्रशिक्षण</span>
+                  <span class="text-[11px] text-slate-500">गाजीपुर, उत्तर प्रदेश • टोल-फ्री किसान कॉल सेंटर: 1800-180-1551</span>
+                </div>
+                <a href="tel:18001801551" class="text-xs font-bold px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg border border-emerald-300">
+                  कॉल करें 📞
+                </a>
+              </li>
+
+              <li class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
+                <div>
+                  <span class="font-black text-slate-900 block">राष्ट्रीय जैविक एवं प्राकृतिक खेती केंद्र (NCONF)</span>
+                  <span class="text-[11px] text-slate-500">कृषि मंत्रालय, भारत सरकार • गाजियाबाद मुख्यालय</span>
+                </div>
+                <a href="https://ncof.dacnet.nic.in" target="_blank" rel="noopener noreferrer" class="text-xs font-bold px-3 py-1 bg-blue-100 text-blue-800 rounded-lg border border-blue-300">
+                  पोर्टल ↗
+                </a>
+              </li>
+
+              <li class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex justify-between items-center">
+                <div>
+                  <span class="font-black text-slate-900 block">स्थानीय FPO बायो-रिसोर्स सेंटर</span>
+                  <span class="text-[11px] text-slate-500">केंचुआ खाद, ट्राइकोडर्मा व तरल बायो-NPK कंसोर्शियम उपलब्धता</span>
+                </div>
+                <a href="/portal" class="text-xs font-bold px-3 py-1 bg-amber-100 text-amber-800 rounded-lg border border-amber-300">
+                  FPO केंद्र 🌾
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-emerald-950 text-white border-t border-emerald-900 py-8 px-4 text-xs mt-12">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div>
+        <div class="flex items-center justify-center sm:justify-start gap-2">
+          <span class="text-lg">🌾</span>
+          <span class="font-black text-sm text-white">KhetSathi 360 — भावी पीढ़ियों के लिए समर्पित</span>
+        </div>
+        <p class="text-[11px] text-emerald-400 mt-1">
+          Indian Council of Agricultural Research (ICAR) एवं NCOF प्राकृतिक खेती दिशानिर्देशों पर आधारित पारदर्शी निर्णय प्रणाली।
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] text-emerald-300">
+        <a href="/" class="hover:text-white underline underline-offset-2">पारंपरिक किसान सलाहकार (Working Root)</a>
+        <span>•</span>
+        <a href="/portal" class="hover:text-white">FPO &amp; Investor Portal</a>
+        <span>•</span>
+        <a href="/docs" class="hover:text-white">API Documentation</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT: STRICT BILINGUAL SWITCHER & LOGIC ENGINE                      -->
+  <!-- ========================================================================= -->
+  <script>
+    // 1. Language State Management
+    let currentLang = localStorage.getItem("khetsathi_future_lang") || "hi";
+
+    // 2. Comprehensive Bilingual Dictionary
+    const I18N = {
+      hi: {
+        bannerAnnouncement: "🌱 भावी पीढ़ियों के लिए उपजाऊ मिट्टी संरक्षण व पूर्ण जैविक खेती विजन",
+        bannerReturn: "मुख्य किसान सलाहकार पर जाएं (Working Version)",
+        hdrSub: "भावी पीढ़ियों के लिए उपजाऊ मिट्टी, आज के किसान के लिए समृद्ध जीवन",
+        hdrStandard: "पारंपरिक मोड",
+        heroPill: "अमृत माटी महा-अभियान 2026–2050",
+        heroTitle: "भावी पीढ़ियों के लिए उपजाऊ मिट्टी,<br/><span class=\"text-amber-400\">आज के अन्नदाता का सच्चा सम्मान।</span>",
+        heroDesc: "रासायनिक खादों के अत्यधिक उपयोग से हमारी मिट्टी की जान निकल रही है। KhetSathi 360 का यह विजन भारतीय किसान को 100% देशी जैविक तकनीकों, शून्य लागत खाद नुस्खों, और 35% अधिक शुद्ध मुनाफे के साथ भावी पीढ़ी के लिए उपजाऊ खेत की सौगात देने के लिए समर्पित है।",
+        btnHeroSim: "मृदा भविष्य सिमुलेटर देखें",
+        btnHeroRecipes: "देशी खाद नुस्खे (जीवामृत)",
+        btnHeroCert: "जैविक भारत प्रमाणन मार्ग",
+        statHdr: "राष्ट्रीय किसान व मृदा संकल्प",
+        stat1: "यूरिया अति-उपयोग बचत",
+        stat2: "सजीव कार्बन (SOC) वृद्धि लक्ष्य",
+        stat3: "किसान अतिरिक्त शुद्ध आय",
+        statQuote: "\"यदि हम आज मिट्टी को नहीं बचाएंगे, तो हमारी अगली पीढ़ी को खेती छोड़ने पर मजबूर होना पड़ेगा। प्राकृतिक खेती ही भावी भारत का आधार है।\"",
+        tabSim: "पीढ़ी दर पीढ़ी मृदा सिमुलेटर",
+        tabRecipes: "देशी जैविक खाद व कीटनाशक",
+        tabEco: "जैविक मुनाफा व बचत कैलकुलेटर",
+        tabCert: "प्रमाणन व सरकारी बाजार (PGS)",
+        tabCom: "साथी किसान व व्हाट्सएप शेयर",
+        simHead: "भावी पीढ़ियों के लिए मिट्टी की स्थिति: 5 से 30 वर्ष का सिमुलेटर",
+        simSub: "नीचे दिए गए स्लाइडर को आगे बढ़ाकर देखें कि रासायनिक खेती जारी रखने पर आपकी आने वाली पीढ़ी को कैसी जमीन मिलेगी, और जैविक अपनाने पर क्या बदलाव आएगा।",
+        recHead: "घर पर बनाएं देशी जैविक खाद व कीटनाशक (100% शून्य खर्च)",
+        recSub: "देशी गाय के गोबर, गोमूत्र और प्राकृतिक तत्वों से तैयार अचूक नुस्खे। अपने खेत का रकबा दर्ज करें, सामग्री की मात्रा तुरंत बदल जाएगी।",
+        ecoHead: "पारंपरिक बनाम जैविक खेती: शुद्ध लाभ व लागत तुलना",
+        ecoSub: "रासायनिक खाद की बढ़ती कीमतों और जैविक उपज के प्रीमियम बाजार भाव के आधार पर प्रमाणित वित्तीय विश्लेषण।",
+        certHead: "जैविक भारत प्रमाणन: 3 चरणों में सरकारी मान्यता व प्रीमियम बाजार",
+        certSub: "महंगी प्राइवेट कंपनियों के चक्कर छोड़ें। भारत सरकार की सहभागिता प्रत्यायन प्रणाली (PGS-India) के जरिए निःशुल्क जैविक प्रमाणन प्राप्त करें।",
+        comHead: "स्थानीय प्राकृतिक किसान साथी व सीधा व्हाट्सएप प्रसार",
+        comSub: "ज्ञान बांटने से ही क्रांति आएगी। एक क्लिक में अपने गांव और किसान समूहों में वैज्ञानिक जैविक नुस्खे साझा करें।"
+      },
+      en: {
+        bannerAnnouncement: "🌱 Intergenerational Soil Conservation & 100% Organic Farming Vision",
+        bannerReturn: "Return to Main Advisory (Working Version)",
+        hdrSub: "Living Fertile Soil for Future Generations, Prosperity for Today's Farmers",
+        hdrStandard: "Standard Engine",
+        heroPill: "Living Soil Mission 2026–2050",
+        heroTitle: "Fertile Soil for Future Generations,<br/><span class=\"text-amber-400\">True Dignity for Today's Farmers.</span>",
+        heroDesc: "Excessive chemical fertilizers are exhausting our soil. KhetSathi 360 is dedicated to equipping Indian farmers with 100% indigenous natural methods, zero-cost farm-made inputs, and +35% higher net margins while passing on thriving, living soil to their children.",
+        btnHeroSim: "Explore Soil Simulator",
+        btnHeroRecipes: "DIY Organic Recipes",
+        btnHeroCert: "Jaivik Bharat Certification",
+        statHdr: "National Farmer & Soil Mission",
+        stat1: "Urea Excess Elimination",
+        stat2: "Soil Organic Carbon (SOC) Target",
+        stat3: "Extra Net Farmer Income",
+        statQuote: "\"If we do not heal our soil today, our next generation will be forced off the land. Natural regenerative farming is the bedrock of India's future.\"",
+        tabSim: "Intergenerational Soil Simulator",
+        tabRecipes: "DIY Bio-Inputs & Pesticides",
+        tabEco: "Organic Economics & Savings",
+        tabCert: "Certification & Govt Markets",
+        tabCom: "Farmer Network & WhatsApp Share",
+        simHead: "Soil Health Horizon: 5 to 30-Year Intergenerational Simulator",
+        simSub: "Adjust the timeline slider below to contrast the degrading chemical trajectory against the regenerative organic trajectory for your children.",
+        recHead: "Farm-Made Bio-Inputs & Botanical Pesticides (Zero Input Cost)",
+        recSub: "Authentic formulations using indigenous cow dung, urine, and botanical extracts. Adjust field acreage to automatically scale recipe quantities.",
+        ecoHead: "Conventional vs Organic Farming: Certified Margin & Savings",
+        ecoSub: "Verified financial analysis accounting for rising chemical fertilizer prices and certified organic mandi price premiums.",
+        certHead: "Jaivik Bharat Certification: 3-Step Free Government Accreditation",
+        certSub: "Avoid expensive third-party agencies. Obtain free certified organic accreditation through the Govt of India's PGS-India framework.",
+        comHead: "Local Natural Farmer Network & Direct WhatsApp Sharing",
+        comSub: "Knowledge multiplies when shared. Broadcast verified organic recipes and advisory directly to village WhatsApp groups with one click."
+      }
+    };
+
+    // 3. Tab Switching Logic
+    function switchTab(tabKey) {
+      document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('text-slate-700');
+      });
+
+      const map = {
+        'sim': { panel: 'simulator-section', btn: 'tab-sim-btn' },
+        'recipes': { panel: 'recipes-section', btn: 'tab-recipes-btn' },
+        'economics': { panel: 'economics-section', btn: 'tab-eco-btn' },
+        'cert': { panel: 'certification-section', btn: 'tab-cert-btn' },
+        'community': { panel: 'community-section', btn: 'tab-com-btn' }
+      };
+
+      const selected = map[tabKey] || map['sim'];
+      const targetPanel = document.getElementById(selected.panel);
+      const targetBtn = document.getElementById(selected.btn);
+
+      if (targetPanel) targetPanel.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.classList.add('tab-active');
+        targetBtn.classList.remove('text-slate-700');
+      }
+    }
+
+    // 4. Bilingual Toggle Function
+    function toggleLanguage() {
+      currentLang = currentLang === 'hi' ? 'en' : 'hi';
+      localStorage.setItem("khetsathi_future_lang", currentLang);
+      applyLanguage(currentLang);
+    }
+
+    function applyLanguage(lang) {
+      const dict = I18N[lang] || I18N.hi;
+      document.documentElement.lang = lang;
+      document.getElementById('lang-btn-text').textContent = lang === 'hi' ? 'English / हिन्दी' : 'हिन्दी / English';
+
+      // Update text in DOM
+      const textMap = {
+        'banner-announcement': dict.bannerAnnouncement,
+        'banner-return-link': dict.bannerReturn,
+        'hdr-sub': dict.hdrSub,
+        'hdr-standard-link': dict.hdrStandard,
+        'hero-pill': dict.heroPill,
+        'hero-desc': dict.heroDesc,
+        'btn-hero-sim': dict.btnHeroSim,
+        'btn-hero-recipes': dict.btnHeroRecipes,
+        'btn-hero-cert': dict.btnHeroCert,
+        'stat-hdr': dict.statHdr,
+        'stat-1-lbl': dict.stat1,
+        'stat-2-lbl': dict.stat2,
+        'stat-3-lbl': dict.stat3,
+        'stat-quote': dict.statQuote,
+        't-tab-sim': dict.tabSim,
+        't-tab-recipes': dict.tabRecipes,
+        't-tab-eco': dict.tabEco,
+        't-tab-cert': dict.tabCert,
+        't-tab-com': dict.tabCom,
+        'sim-head': dict.simHead,
+        'sim-sub': dict.simSub,
+        'rec-head': dict.recHead,
+        'rec-sub': dict.recSub,
+        'eco-head': dict.ecoHead,
+        'eco-sub': dict.ecoSub,
+        'cert-head': dict.certHead,
+        'cert-sub': dict.certSub,
+        'com-head': dict.comHead,
+        'com-sub': dict.comSub
+      };
+
+      for (const [id, val] of Object.entries(textMap)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      }
+
+      const heroTitleEl = document.getElementById('hero-title');
+      if (heroTitleEl) heroTitleEl.innerHTML = dict.heroTitle;
+
+      // Update dynamic slider text
+      const sliderVal = document.getElementById('years-slider').value;
+      updateSoilSimulator(sliderVal);
+      recalculateRecipes();
+    }
+
+    // 5. Dynamic Soil Health Simulator Math
+    function updateSoilSimulator(years) {
+      years = parseInt(years, 10);
+      const isHi = currentLang === 'hi';
+      const yearLabel = document.getElementById('slider-years-text');
+      const targetYear = 2026 + years;
+
+      yearLabel.textContent = isHi 
+        ? `${years} वर्ष बाद (${targetYear})${years >= 25 ? ' — भावी पीढ़ी' : ''}`
+        : `${years} Years Later (${targetYear})${years >= 25 ? ' — Next Generation' : ''}`;
+
+      // Chemical Degradation Calculations
+      const chemSoc = Math.max(0.12, (0.45 - (years * 0.015))).toFixed(2);
+      const chemSocBar = Math.max(10, Math.min(100, (chemSoc / 1.0) * 100));
+      const chemCostPct = Math.min(180, 15 + (years * 4.5));
+      const chemWaterPct = Math.min(65, 8 + (years * 2.2));
+
+      document.getElementById('chem-soc-val').textContent = `${chemSoc}% (${isHi ? 'गंभीर गिरावट' : 'Severely Depleted'})`;
+      document.getElementById('chem-soc-bar').style.width = `${chemSocBar}%`;
+      document.getElementById('chem-cost-val').textContent = `+${chemCostPct}% ${isHi ? 'अतिरिक्त खाद खर्च' : 'Excess Input Burden'}`;
+      document.getElementById('chem-water-val').textContent = `-${chemWaterPct}% ${isHi ? 'कमजोर नमी' : 'Weak Moisture Capacity'}`;
+
+      // Organic Regeneration Calculations
+      const orgSoc = Math.min(1.45, (0.45 + (years * 0.045))).toFixed(2);
+      const orgSocBar = Math.min(100, (orgSoc / 1.2) * 100);
+      const orgWorms = Math.min(35, Math.floor(4 + (years * 1.2)));
+      const orgWaterPct = Math.min(55, 12 + (years * 1.8));
+
+      document.getElementById('org-soc-val').textContent = `${orgSoc}% (${isHi ? 'सजीव व उपजाऊ' : 'Living Rich Humus'})`;
+      document.getElementById('org-soc-bar').style.width = `${orgSocBar}%`;
+      document.getElementById('org-worm-val').textContent = `${orgWorms} ${isHi ? 'प्रति वर्ग मीटर' : 'per sq. meter'}`;
+      document.getElementById('org-water-val').textContent = `+${orgWaterPct}% ${isHi ? 'अधिक नमी संरक्षण' : 'Water Retention Boost'}`;
+
+      // Verdict text update
+      if (years >= 20) {
+        document.getElementById('chem-verdict').textContent = isHi
+          ? "🛑 20+ वर्षों में जमीन पथरीली और बंजर हो जाएगी। अगली पीढ़ी को खेती छोड़कर शहरों की ओर पलायन करने पर मजबूर होना पड़ेगा।"
+          : "🛑 In 20+ years, soil becomes hardened and barren. The next generation will inherit debt and depleted earth.";
+        document.getElementById('org-verdict').textContent = isHi
+          ? "🏆 20+ वर्षों में यह खेत 'अमृत माटी' बन जाएगा। बिना एक पैसे के केमिकल के बंपर पैदावार देने वाला अमूल्य पारिवारिक खजाना!"
+          : "🏆 In 20+ years, this land becomes living 'Amrit Mati' — an ancestral goldmine producing high yields with zero chemical debt.";
+      }
+    }
+
+    // 6. Dynamic Bio-Input Recipe Scaler
+    function recalculateRecipes() {
+      const areaVal = parseFloat(document.getElementById('recipe-area-input').value) || 1.0;
+      const unit = document.getElementById('recipe-area-unit').value;
+      const isHi = currentLang === 'hi';
+
+      // Normalize to hectares
+      let ha = areaVal;
+      if (unit === 'acre') ha = areaVal * 0.4047;
+      if (unit === 'bigha') ha = areaVal * 0.25;
+
+      const badgeText = `${areaVal} ${unit.toUpperCase()}`;
+      document.getElementById('jeev-area-badge').textContent = badgeText;
+      document.getElementById('beej-area-badge').textContent = badgeText;
+      document.getElementById('neem-area-badge').textContent = badgeText;
+
+      // Jeevamrit scaled
+      document.getElementById('jeev-dung').textContent = `${(ha * 20).toFixed(1)} ${isHi ? 'किलो' : 'kg'}`;
+      document.getElementById('jeev-urine').textContent = `${(ha * 20).toFixed(1)} ${isHi ? 'लीटर' : 'L'}`;
+      document.getElementById('jeev-jaggery').textContent = `${(ha * 4).toFixed(1)} ${isHi ? 'किलो' : 'kg'}`;
+      document.getElementById('jeev-flour').textContent = `${(ha * 4).toFixed(1)} ${isHi ? 'किलो' : 'kg'}`;
+      document.getElementById('jeev-water').textContent = `${Math.round(ha * 400)} ${isHi ? 'लीटर' : 'L'}`;
+
+      // Beejamrit scaled
+      document.getElementById('beej-dung').textContent = `${(ha * 5).toFixed(1)} ${isHi ? 'किलो' : 'kg'}`;
+      document.getElementById('beej-urine').textContent = `${(ha * 5).toFixed(1)} ${isHi ? 'लीटर' : 'L'}`;
+      document.getElementById('beej-milk').textContent = `${(ha * 1).toFixed(1)} ${isHi ? 'लीटर' : 'L'}`;
+      document.getElementById('beej-water').textContent = `${Math.round(ha * 20)} ${isHi ? 'लीटर' : 'L'}`;
+
+      // Neemastra scaled
+      document.getElementById('neem-leaves').textContent = `${(ha * 10).toFixed(1)} ${isHi ? 'किलो' : 'kg'}`;
+      document.getElementById('neem-urine').textContent = `${(ha * 10).toFixed(1)} ${isHi ? 'लीटर' : 'L'}`;
+      document.getElementById('neem-dung').textContent = `${(ha * 2).toFixed(1)} ${isHi ? 'किलो' : 'kg'}`;
+      document.getElementById('neem-water').textContent = `${Math.round(ha * 200)} ${isHi ? 'लीटर' : 'L'}`;
+    }
+
+    // 7. Live Economics API Integration
+    async function fetchLiveOrganicEconomics() {
+      const crop = document.getElementById('eco-crop-select').value;
+      try {
+        const res = await fetch(`/api/v1/organic/advisory?crop=${crop}&area_ha=1.0`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.economics) {
+            const eco = data.economics;
+            document.getElementById('eco-chem-total-cost').textContent = `₹${Math.round(eco.conventional_input_cost_inr).toLocaleString()} /हे.`;
+            document.getElementById('eco-org-total-cost').textContent = `₹${Math.round(eco.organic_input_cost_inr).toLocaleString()} /हे.`;
+            document.getElementById('eco-org-mandi').textContent = `₹${Math.round(eco.expected_organic_price_per_q).toLocaleString()} /क्विंटल`;
+            document.getElementById('eco-org-net').textContent = `₹${Math.round(eco.expected_organic_profit_inr).toLocaleString()} /हेक्टेयर`;
+            document.getElementById('eco-extra-gain').textContent = `+₹${Math.round(eco.net_profit_difference_inr).toLocaleString()} /हेक्टेयर`;
+          }
+        }
+      } catch (err) {
+        console.warn('Organic API call non-fatal fallback:', err);
+      }
+    }
+
+    // 8. WhatsApp Sharing Functions
+    function shareRecipeWhatsApp(recipeName) {
+      const areaVal = document.getElementById('recipe-area-input').value;
+      const unit = document.getElementById('recipe-area-unit').value;
+      const isHi = currentLang === 'hi';
+
+      let msg = "";
+      if (recipeName === 'Jeevamrit') {
+        const dung = document.getElementById('jeev-dung').textContent;
+        const urine = document.getElementById('jeev-urine').textContent;
+        const jaggery = document.getElementById('jeev-jaggery').textContent;
+        const flour = document.getElementById('jeev-flour').textContent;
+        const water = document.getElementById('jeev-water').textContent;
+
+        msg = `🌾 *KhetSathi 360 — सजीव जीवामृत देशी नुस्खा* 🌾\n` +
+              `खेत का रकबा: ${areaVal} ${unit}\n\n` +
+              `🧪 *आवश्यक सामग्री:*\n` +
+              `• देशी गाय का गोबर: ${dung}\n` +
+              `• देशी गोमूत्र: ${urine}\n` +
+              `• पुराना गुड़: ${jaggery}\n` +
+              `• बेसन: ${flour}\n` +
+              `• पानी: ${water}\n` +
+              `• सजीव मेड़ की मिट्टी: 200 ग्राम\n\n` +
+              `🥣 *विधि:* ड्रम में 48 घंटे छाया में रखें, सुबह-शाम डंडे से क्लॉकवाइज घुमाएं। सिंचाई जल संग खेत में दें।\n\n` +
+              `भावी पीढ़ी के लिए उपजाऊ मिट्टी बनाएं! पूरा सिमुलेटर देखें: https://khetsathi-360.onrender.com/future`;
+      } else if (recipeName === 'Beejamrit') {
+        msg = `🌱 *KhetSathi 360 — बीजामृत बीजोपचार रक्षा कवच* 🌱\n` +
+              `रकबा: ${areaVal} ${unit}\n\n` +
+              `उकठा व जड़ सड़न से बीज को 100% प्राकृतिक सुरक्षा!\n` +
+              `सामग्री: गोबर, गोमूत्र, दूध और चूना। बुवाई से पूर्व बीजों पर मलकर छाया में सुखाएं।\n` +
+              `विस्तार से देखें: https://khetsathi-360.onrender.com/future`;
+      } else {
+        msg = `🛡️ *KhetSathi 360 — नीमास्त्र व हर्बल कीटनाशक नुस्खा* 🛡️\n` +
+              `रकबा: ${areaVal} ${unit}\n\n` +
+              `माहू, सफेद मक्खी व इल्लियों से मुक्ति बिना किसी जहरीले केमिकल के!\n` +
+              `सामग्री: नीम की चटनी (10 कि.), गोमूत्र (10 ली.), गोबर (2 कि.), पानी (200 ली.)।\n` +
+              `विस्तार से देखें: https://khetsathi-360.onrender.com/future`;
+      }
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    function shareFullAdvisoryWhatsApp() {
+      const isHi = currentLang === 'hi';
+      const msg = `🌾 *KhetSathi 360 — भावी पीढ़ियों के लिए अमृत माटी संकल्प* 🇮🇳\n\n` +
+                  `किसान भाइयों! अत्यधिक यूरिया-डीएपी से हमारी जमीन पथरीली और बेजान हो रही है।\n` +
+                  `मैंने KhetSathi 360 पर 5 से 30 वर्ष का मृदा भविष्य सिमुलेटर और शून्य लागत देशी नुस्खे (जीवामृत, बीजामृत) देखे हैं।\n\n` +
+                  `✅ खाद खर्च में 45% की बचत\n` +
+                  `✅ ₹36,700/हेक्टेयर अतिरिक्त शुद्ध मुनाफा\n` +
+                  `✅ बच्चों के लिए सजीव उपजाऊ खेत\n\n` +
+                  `अपने खेत का विश्लेषण अभी निःशुल्क देखें:\nhttps://khetsathi-360.onrender.com/future`;
+
+      const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    // 9. Initial Load
+    document.addEventListener("DOMContentLoaded", () => {
+      applyLanguage(currentLang);
+      fetchLiveOrganicEconomics();
+    });
+  </script>
+</body>
+</html>

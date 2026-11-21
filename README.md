@@ -33,6 +33,7 @@ KhetSathi 360 is continuously deployed on Render Cloud (Singapore region) with a
 | Environment / Service | Live URL | Modality & Description | Access & Auth |
 |:----------------------|:---------|:-----------------------|:--------------|
 | **🌾 Primary Farmer Advisory (PWA)** | [khetsathi-360.onrender.com/](https://khetsathi-360.onrender.com/) | High-speed, zero-compilation bilingual PWA (Hindi / EN) optimized for rural 3G/4G bandwidth. | **Public / Free** |
+| **🌱 भावी पीढ़ी व जैविक विजन (Amrit Mati)** | [khetsathi-360.onrender.com/future](https://khetsathi-360.onrender.com/future) | Intergenerational Soil Simulator, DIY Bio-Input recipes (Jeevamrit), and PGS-India organic pathway. | **Public / Free** |
 | **🧪 Soil Health Card Multimodal OCR** | [khetsathi-360.onrender.com/#step-2-container](https://khetsathi-360.onrender.com/#step-2-container) | Gemini 1.5 Flash Vision card scanner with strict pre-validation document guardrails. | **Public / Free** |
 | **💼 Enterprise & FPO Operations Portal** | [khetsathi-360.onrender.com/portal](https://khetsathi-360.onrender.com/portal) | Unit economics, FPO member coverage, fertilizer procurement aggregation, and market signals. | **Public Demo** |
 | **⚛️ React 19 Secondary Client** | [khetsathi-360.onrender.com/react](https://khetsathi-360.onrender.com/react) | Advanced interactive client with dynamic organic transition simulators and analytics charts. | **Public Demo** |

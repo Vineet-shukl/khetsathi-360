@@ -495,6 +495,15 @@ def serve_react_ui():
     return FileResponse(react_file, media_type="text/html")
 
 
+@app.get("/future", response_class=HTMLResponse)
+@app.get("/organic", response_class=HTMLResponse)
+def serve_future_organic_ui():
+    future_file = FRONTEND_DIR / "future.html"
+    if not future_file.exists():
+        future_file = FRONTEND_DIR / "index.html"
+    return FileResponse(future_file, media_type="text/html")
+
+
 @app.get("/favicon.ico")
 def serve_favicon():
     favicon_file = FRONTEND_DIR / "favicon.ico"
