@@ -248,11 +248,11 @@
             <!-- Collapsible Precise Coordinates Nudge Box -->
             <div id="coord-nudge-box" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs mt-2">
               <div>
-                <label for="coord-lat" class="block font-bold text-slate-700 mb-1">अक्षांश Latitude (°N)</label>
+                <label for="coord-lat" id="lbl-coord-lat" class="block font-bold text-slate-700 mb-1">अक्षांश Latitude (°N)</label>
                 <input id="coord-lat" type="number" step="0.0001" min="6.0" max="38.0" value="25.5928" class="w-full min-h-[38px] p-2 border rounded-lg bg-white font-mono font-bold text-slate-900" />
               </div>
               <div>
-                <label for="coord-lon" class="block font-bold text-slate-700 mb-1">देशांतर Longitude (°E)</label>
+                <label for="coord-lon" id="lbl-coord-lon" class="block font-bold text-slate-700 mb-1">देशांतर Longitude (°E)</label>
                 <input id="coord-lon" type="number" step="0.0001" min="68.0" max="98.0" value="83.5770" class="w-full min-h-[38px] p-2 border rounded-lg bg-white font-mono font-bold text-slate-900" />
               </div>
             </div>
@@ -383,22 +383,22 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <button type="button" data-preset="up" class="shc-preset-btn min-h-[42px] px-3 py-2 rounded-xl border border-slate-300 bg-white hover:border-emerald-600 hover:bg-emerald-50/50 text-left text-xs font-semibold text-slate-900 transition flex items-center justify-between">
                 <div>
-                  <span class="font-bold text-emerald-950">गाज़ीपुर, उप्र</span>
-                  <span class="block text-[11px] text-slate-600">जलोढ़ मैदान (N:210, P:14, K:165)</span>
+                  <span id="preset-up-title" class="font-bold text-emerald-950">गाज़ीपुर, उप्र</span>
+                  <span id="preset-up-desc" class="block text-[11px] text-slate-600">जलोढ़ मैदान (N:210, P:14, K:165)</span>
                 </div>
                 <span class="text-emerald-700 text-base">➔</span>
               </button>
               <button type="button" data-preset="mh" class="shc-preset-btn min-h-[42px] px-3 py-2 rounded-xl border border-slate-300 bg-white hover:border-emerald-600 hover:bg-emerald-50/50 text-left text-xs font-semibold text-slate-900 transition flex items-center justify-between">
                 <div>
-                  <span class="font-bold text-emerald-950">विदर्भ, महाराष्ट्र</span>
-                  <span class="block text-[11px] text-slate-600">काली कपास मिट्टी (N:175, P:9, K:295)</span>
+                  <span id="preset-mh-title" class="font-bold text-emerald-950">विदर्भ, महाराष्ट्र</span>
+                  <span id="preset-mh-desc" class="block text-[11px] text-slate-600">काली कपास मिट्टी (N:175, P:9, K:295)</span>
                 </div>
                 <span class="text-emerald-700 text-base">➔</span>
               </button>
               <button type="button" data-preset="pb" class="shc-preset-btn min-h-[42px] px-3 py-2 rounded-xl border border-slate-300 bg-white hover:border-emerald-600 hover:bg-emerald-50/50 text-left text-xs font-semibold text-slate-900 transition flex items-center justify-between">
                 <div>
-                  <span class="font-bold text-emerald-950">लुधियाना, पंजाब</span>
-                  <span class="block text-[11px] text-slate-600">सघन उपजाऊ (N:310, P:28, K:190)</span>
+                  <span id="preset-pb-title" class="font-bold text-emerald-950">लुधियाना, पंजाब</span>
+                  <span id="preset-pb-desc" class="block text-[11px] text-slate-600">सघन उपजाऊ (N:310, P:28, K:190)</span>
                 </div>
                 <span class="text-emerald-700 text-base">➔</span>
               </button>
@@ -462,9 +462,9 @@
           <!-- NDVI Progress Bar Meter -->
           <div class="space-y-1">
             <div class="flex justify-between text-[11px] font-bold text-slate-300">
-              <span>0.1 (कम वानस्पतिक घनत्व)</span>
+              <span id="lbl-sat-min">0.1 (कम वानस्पतिक घनत्व)</span>
               <span id="sat-ndvi-val-text" class="text-emerald-300 font-extrabold">NDVI सूचकांक: 0.62</span>
-              <span>0.9 (सघन फसल)</span>
+              <span id="lbl-sat-max">0.9 (सघन फसल)</span>
             </div>
             <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
               <div id="sat-ndvi-bar" class="bg-gradient-to-r from-amber-500 via-emerald-400 to-green-500 h-2.5 rounded-full transition-all duration-500" style="width: 62%"></div>
@@ -474,15 +474,15 @@
           <!-- SoilGrids 250m Physical Texture Row -->
           <div class="grid grid-cols-3 gap-2 pt-1 border-t border-slate-800 text-center text-[11px]">
             <div class="p-1.5 rounded-lg bg-slate-800/80">
-              <span class="text-slate-400 block">चिकनी मिट्टी (Clay)</span>
+              <span id="lbl-sat-clay" class="text-slate-400 block">चिकनी मिट्टी (Clay)</span>
               <span id="sat-clay-text" class="font-black text-emerald-300">24.5%</span>
             </div>
             <div class="p-1.5 rounded-lg bg-slate-800/80">
-              <span class="text-slate-400 block">मिट्टी घनत्व (Density)</span>
+              <span id="lbl-sat-density" class="text-slate-400 block">मिट्टी घनत्व (Density)</span>
               <span id="sat-density-text" class="font-black text-amber-300">1.38 g/cm³</span>
             </div>
             <div class="p-1.5 rounded-lg bg-slate-800/80">
-              <span class="text-slate-400 block">उर्वरक धारण (CEC)</span>
+              <span id="lbl-sat-cec" class="text-slate-400 block">उर्वरक धारण (CEC)</span>
               <span id="sat-cec-text" class="font-black text-cyan-300">18.5 mmol/kg</span>
             </div>
           </div>
@@ -534,7 +534,7 @@
               <span id="lbl-card-dap-title" class="text-xs font-black uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> बुवाई पर डीएपी (DAP 18-46-0)
               </span>
-              <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">50 kg बैग</span>
+              <span id="lbl-dap-badge" class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">50 kg बैग</span>
             </div>
             <div id="out-dap-bags" class="text-3xl sm:text-4xl font-black text-emerald-950 tracking-tight" aria-live="polite">2.5 बोरी</div>
             <p id="out-dap-sub" class="text-xs font-bold text-slate-800">50 किलो वाली मानक बोरी (कुल 125 kg)</p>
@@ -547,7 +547,7 @@
               <span id="lbl-card-urea-title" class="text-xs font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> यूरिया (Urea 46% N) — किश्तों में
               </span>
-              <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">45 kg बैग</span>
+              <span id="lbl-urea-badge" class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">45 kg बैग</span>
             </div>
             <div id="out-urea-bags" class="text-3xl sm:text-4xl font-black text-amber-950 tracking-tight" aria-live="polite">4.5 बोरी</div>
             <p id="out-urea-sub" class="text-xs font-bold text-slate-800">45 किलो वाली मानक बोरी (कुल 202.5 kg)</p>
@@ -560,7 +560,7 @@
               <span id="lbl-card-mop-title" class="text-xs font-black uppercase tracking-wider text-sky-950 flex items-center gap-1.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-sky-600"></span> पोटाश (MOP 60% K₂O)
               </span>
-              <span class="text-xs font-black px-2 py-0.5 rounded-full bg-sky-100 text-sky-900 border border-sky-300">50 kg बैग</span>
+              <span id="lbl-mop-badge" class="text-xs font-black px-2 py-0.5 rounded-full bg-sky-100 text-sky-900 border border-sky-300">50 kg बैग</span>
             </div>
             <div id="out-mop-bags" class="text-3xl sm:text-4xl font-black text-sky-950 tracking-tight" aria-live="polite">1.5 बोरी</div>
             <p id="out-mop-sub" class="text-xs font-bold text-slate-800">50 किलो वाली मानक बोरी (कुल 75 kg)</p>
@@ -572,7 +572,7 @@
         <div class="card tactile-card p-4 sm:p-5 border-l-8 border-l-cyan-600 bg-cyan-50/40 space-y-3 shadow-sm">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h4 id="lbl-irrigation-card-title" class="text-sm font-black text-cyan-950 flex items-center gap-2">
-              <span>💧</span> <span>सिंचाई कब करें (Irrigation Schedule)</span>
+              <span>💧</span> <span id="lbl-irr-title-text">सिंचाई कब करें (Irrigation Schedule)</span>
             </h4>
             <span id="irrigation-stage-pill" class="text-[11px] font-extrabold px-3 py-1 rounded-full bg-cyan-200 text-cyan-950 border border-cyan-300">
               आज पानी की जरूरत: 2.8 मिमी/दिन
@@ -582,19 +582,19 @@
           <!-- Visual 3-Stage Watering Timeline Bar -->
           <div class="grid grid-cols-3 gap-2.5 pt-1 pb-1">
             <div class="p-2.5 rounded-xl bg-white border border-cyan-200 text-center space-y-0.5 shadow-xs">
-              <span class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">1. पहली सिंचाई</span>
-              <div class="text-xs sm:text-sm font-black text-slate-900">20–25 दिन</div>
-              <div class="text-[10px] text-slate-600 font-semibold">CRI ताज जड़ अवस्था</div>
+              <span id="lbl-irr-s1-title" class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">1. पहली सिंचाई</span>
+              <div id="lbl-irr-s1-days" class="text-xs sm:text-sm font-black text-slate-900">20–25 दिन</div>
+              <div id="lbl-irr-s1-stage" class="text-[10px] text-slate-600 font-semibold">CRI ताज जड़ अवस्था</div>
             </div>
             <div class="p-2.5 rounded-xl bg-white border border-cyan-200 text-center space-y-0.5 shadow-xs">
-              <span class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">2. दूसरी सिंचाई</span>
-              <div class="text-xs sm:text-sm font-black text-slate-900">40–45 दिन</div>
-              <div class="text-[10px] text-slate-600 font-semibold">कल्ले फूटते समय</div>
+              <span id="lbl-irr-s2-title" class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">2. दूसरी सिंचाई</span>
+              <div id="lbl-irr-s2-days" class="text-xs sm:text-sm font-black text-slate-900">40–45 दिन</div>
+              <div id="lbl-irr-s2-stage" class="text-[10px] text-slate-600 font-semibold">कल्ले फूटते समय</div>
             </div>
             <div class="p-2.5 rounded-xl bg-white border border-cyan-200 text-center space-y-0.5 shadow-xs">
-              <span class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">3. तीसरी सिंचाई</span>
-              <div class="text-xs sm:text-sm font-black text-slate-900">65–70 दिन</div>
-              <div class="text-[10px] text-slate-600 font-semibold">फूल/बाली बनते समय</div>
+              <span id="lbl-irr-s3-title" class="inline-block text-[11px] font-black text-cyan-900 bg-cyan-100 px-2 py-0.5 rounded-full">3. तीसरी सिंचाई</span>
+              <div id="lbl-irr-s3-days" class="text-xs sm:text-sm font-black text-slate-900">65–70 दिन</div>
+              <div id="lbl-irr-s3-stage" class="text-[10px] text-slate-600 font-semibold">फूल/बाली बनते समय</div>
             </div>
           </div>
 
@@ -641,7 +641,7 @@
             <div class="flex items-center gap-2.5">
               <span class="text-2xl select-none" aria-hidden="true">🌿</span>
               <div>
-                <span class="text-[10px] sm:text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span id="lbl-org-tag" class="text-[10px] sm:text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
                   PKVY व प्राकृतिक खेती मिशन आधारित
                 </span>
                 <h4 id="lbl-organic-title" class="text-sm sm:text-base font-black text-emerald-950">
@@ -650,7 +650,7 @@
               </div>
             </div>
             <div class="text-right">
-              <span class="text-xs font-bold text-slate-600 block">कुल अतिरिक्त किसान लाभ</span>
+              <span id="lbl-org-gain-title" class="text-xs font-bold text-slate-600 block">कुल अतिरिक्त किसान लाभ</span>
               <span id="org-net-gain-badge" class="text-base sm:text-lg font-black text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-lg border border-emerald-300">
                 +₹42,500 / हेक्टेयर
               </span>
@@ -660,47 +660,47 @@
           <!-- Profit & Savings Breakdown Grid -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div class="p-3 rounded-xl bg-white border border-emerald-200 shadow-2xs space-y-0.5">
-              <span class="text-[11px] font-bold text-slate-600 block">💰 इनपुट खाद बचत</span>
+              <span id="lbl-org-savings-title" class="text-[11px] font-bold text-slate-600 block">💰 इनपुट खाद बचत</span>
               <span id="org-savings-val" class="text-base font-black text-emerald-700">₹5,850</span>
-              <p class="text-[10px] text-slate-500 font-medium">यूरिया/डीएपी खर्च में 18% कमी</p>
+              <p id="lbl-org-savings-sub" class="text-[10px] text-slate-500 font-medium">यूरिया/डीएपी खर्च में 18% कमी</p>
             </div>
             <div class="p-3 rounded-xl bg-white border border-emerald-200 shadow-2xs space-y-0.5">
-              <span class="text-[11px] font-bold text-slate-600 block">📈 जैविक प्रीमियम भाव</span>
+              <span id="lbl-org-prem-title" class="text-[11px] font-bold text-slate-600 block">📈 जैविक प्रीमियम भाव</span>
               <span id="org-premium-val" class="text-base font-black text-amber-700">+25% प्रीमियम</span>
-              <p class="text-[10px] text-slate-500 font-medium">₹2,844/क्विंटल तक थोक दर</p>
+              <p id="lbl-org-prem-sub" class="text-[10px] text-slate-500 font-medium">₹2,844/क्विंटल तक थोक दर</p>
             </div>
             <div class="p-3 rounded-xl bg-white border border-emerald-200 shadow-2xs space-y-0.5">
-              <span class="text-[11px] font-bold text-slate-600 block">🏛️ PKVY सरकारी सहायता</span>
+              <span id="lbl-org-sub-title" class="text-[11px] font-bold text-slate-600 block">🏛️ PKVY सरकारी सहायता</span>
               <span id="org-subsidy-val" class="text-base font-black text-blue-700">₹16,666 /वर्ष</span>
-              <p class="text-[10px] text-slate-500 font-medium">3 साल में कुल ₹50,000/हेक्टेयर</p>
+              <p id="lbl-org-sub-sub" class="text-[10px] text-slate-500 font-medium">3 साल में कुल ₹50,000/हेक्टेयर</p>
             </div>
             <div class="p-3 rounded-xl bg-white border border-emerald-200 shadow-2xs space-y-0.5">
-              <span class="text-[11px] font-bold text-slate-600 block">🌱 कुल शुद्ध लाभ</span>
+              <span id="lbl-org-net-title" class="text-[11px] font-bold text-slate-600 block">🌱 कुल शुद्ध लाभ</span>
               <span id="org-profit-val" class="text-base font-black text-emerald-900">₹83,850</span>
-              <p class="text-[10px] text-slate-500 font-medium">पारंपरिक से ₹36,700 अधिक</p>
+              <p id="lbl-org-net-sub" class="text-[10px] text-slate-500 font-medium">पारंपरिक से ₹36,700 अधिक</p>
             </div>
           </div>
 
           <!-- Recommended Bio-Inputs Replacement Package -->
           <div class="p-3.5 rounded-xl bg-emerald-950 text-white space-y-2">
-            <h5 class="text-xs font-extrabold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+            <h5 id="lbl-org-pkg-head" class="text-xs font-extrabold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
               <span>🧪</span> रासायनिक खाद के सुरक्षित जैविक विकल्प (Bio-Input Package)
             </h5>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               <div class="p-2 rounded-lg bg-emerald-900/80 border border-emerald-700">
-                <span class="text-emerald-300 block text-[11px]">वर्मीकम्पोस्ट (केंचुआ खाद)</span>
+                <span id="lbl-bio1-name" class="text-emerald-300 block text-[11px]">वर्मीकम्पोस्ट (केंचुआ खाद)</span>
                 <span id="org-vc-bags" class="font-black text-white text-sm">50 बोरी (2.5 टन)</span>
               </div>
               <div class="p-2 rounded-lg bg-emerald-900/80 border border-emerald-700">
-                <span class="text-emerald-300 block text-[11px]">तरल बायो-NPK कंसोर्शियम</span>
+                <span id="lbl-bio2-name" class="text-emerald-300 block text-[11px]">तरल बायो-NPK कंसोर्शियम</span>
                 <span id="org-bio-npk" class="font-black text-white text-sm">2.0 लीटर (बीज उपचार)</span>
               </div>
               <div class="p-2 rounded-lg bg-emerald-900/80 border border-emerald-700">
-                <span class="text-emerald-300 block text-[11px]">जीवामृत (सिंचाई संग)</span>
+                <span id="lbl-bio3-name" class="text-emerald-300 block text-[11px]">जीवामृत (सिंचाई संग)</span>
                 <span id="org-jeevamrut" class="font-black text-white text-sm">500 लीटर (किश्तों में)</span>
               </div>
               <div class="p-2 rounded-lg bg-emerald-900/80 border border-emerald-700">
-                <span class="text-emerald-300 block text-[11px]">नीम खली (कीट/दीमक रक्षा)</span>
+                <span id="lbl-bio4-name" class="text-emerald-300 block text-[11px]">नीम खली (कीट/दीमक रक्षा)</span>
                 <span id="org-neem-cake" class="font-black text-white text-sm">250 किलो (5 बोरी)</span>
               </div>
             </div>
@@ -708,35 +708,35 @@
 
           <!-- Direct Supplier & Buyer Links -->
           <div class="space-y-2 pt-1">
-            <h5 class="text-xs font-black text-emerald-950 uppercase tracking-wider flex items-center gap-1.5">
+            <h5 id="lbl-org-routes-head" class="text-xs font-black text-emerald-950 uppercase tracking-wider flex items-center gap-1.5">
               <span>🛒</span> सत्यापित सरकारी व संस्थागत खरीदार मार्ग (Direct Buyer &amp; Supplier Routes)
             </h5>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               <a href="https://www.jaivikkheti.in" target="_blank" rel="noopener noreferrer" class="p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs">
                 <div>
-                  <span class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🏛️ जैविक खेती राष्ट्रीय ई-मंच (Jaivik Kheti)</span>
-                  <span class="text-[11px] text-slate-600 block">कृषि मंत्रालय का सीधा ई-बाजार (बिना बिचौलिए 0% कमीशन)</span>
+                  <span id="lbl-route1-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🏛️ जैविक खेती राष्ट्रीय ई-मंच (Jaivik Kheti)</span>
+                  <span id="lbl-route1-desc" class="text-[11px] text-slate-600 block">कृषि मंत्रालय का सीधा ई-बाजार (बिना बिचौलिए 0% कमीशन)</span>
                 </div>
                 <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
               <a href="https://pgsindia-ncof.gov.in" target="_blank" rel="noopener noreferrer" class="p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs">
                 <div>
-                  <span class="font-bold text-emerald-950 group-hover:text-emerald-700 block">📜 PGS-India निःशुल्क जैविक प्रमाणीकरण</span>
-                  <span class="text-[11px] text-slate-600 block">5 किसानों का समूह बनाकर फ्री में 'Green' व 'Organic' सील पाएं</span>
+                  <span id="lbl-route2-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">📜 PGS-India निःशुल्क जैविक प्रमाणीकरण</span>
+                  <span id="lbl-route2-desc" class="text-[11px] text-slate-600 block">5 किसानों का समूह बनाकर फ्री में 'Green' व 'Organic' सील पाएं</span>
                 </div>
                 <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
               <a href="https://sfacindia.com" target="_blank" rel="noopener noreferrer" class="p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs">
                 <div>
-                  <span class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🤝 FPO जैविक एकत्रीकरण हब (SFAC / NABARD)</span>
-                  <span class="text-[11px] text-slate-600 block">24 Mantra, Organic Mandya व बिगबास्केट को अनुबंध आपूर्ति</span>
+                  <span id="lbl-route3-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🤝 FPO जैविक एकत्रीकरण हब (SFAC / NABARD)</span>
+                  <span id="lbl-route3-desc" class="text-[11px] text-slate-600 block">24 Mantra, Organic Mandya व बिगबास्केट को अनुबंध आपूर्ति</span>
                 </div>
                 <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
               <a href="https://apeda.gov.in" target="_blank" rel="noopener noreferrer" class="p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs">
                 <div>
-                  <span class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🌐 APEDA अंतरराष्ट्रीय जैविक निर्यात</span>
-                  <span class="text-[11px] text-slate-600 block">बासमती, सरसों व दालों के लिए 40% तक निर्यात प्रीमियम</span>
+                  <span id="lbl-route4-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🌐 APEDA अंतरराष्ट्रीय जैविक निर्यात</span>
+                  <span id="lbl-route4-desc" class="text-[11px] text-slate-600 block">बासमती, सरसों व दालों के लिए 40% तक निर्यात प्रीमियम</span>
                 </div>
                 <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
@@ -775,16 +775,16 @@
               </div>
             </div>
             <button id="btn-close-sci-console" type="button" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-800">
-              ✕ बंद करें
+              <span id="lbl-sci-close">✕ बंद करें</span>
             </button>
           </div>
 
           <!-- Mathematical Equations Callout -->
           <div class="p-4 rounded-xl bg-white border border-emerald-200 space-y-2">
-            <p class="font-bold text-emerald-950 text-xs">रासायनिक खाद रूपांतरण समीकरण (Official FCO / ICAR Formulas):</p>
+            <p id="lbl-sci-eq-head" class="font-bold text-emerald-950 text-xs">रासायनिक खाद रूपांतरण समीकरण (Official FCO / ICAR Formulas):</p>
             <div class="font-mono text-[11px] text-slate-800 space-y-1 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
               <div>1. DAP (18-46-0) kg = Target P₂O₅ (kg) ÷ 0.46</div>
-              <div>2. N-Credit from DAP (kg) = DAP (kg) × 0.18  <span class="text-emerald-700 font-bold">[यूरिया बचत]</span></div>
+              <div>2. N-Credit from DAP (kg) = DAP (kg) × 0.18  <span id="lbl-sci-dap-credit" class="text-emerald-700 font-bold">[यूरिया बचत]</span></div>
               <div>3. Remaining N (kg) = Target N (kg) - N-Credit from DAP</div>
               <div>4. Urea (46% N) kg = Remaining N (kg) ÷ 0.46</div>
               <div>5. MOP (60% K₂O) kg = Target K₂O (kg) ÷ 0.60</div>
@@ -793,7 +793,7 @@
 
           <!-- Soil Nutrient Sliders for Fine-Tuning -->
           <div>
-            <p class="font-bold text-slate-900 mb-2">मृदा तत्व परीक्षण मान (Soil Test Parameters):</p>
+            <p id="lbl-sci-params-head" class="font-bold text-slate-900 mb-2">मृदा तत्व परीक्षण मान (Soil Test Parameters):</p>
             <div id="shc-inputs-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
               <div class="p-2.5 rounded-xl border border-slate-200 bg-white">
                 <label for="soil-n" class="block text-[11px] font-bold text-slate-700">Available N (kg/ha)</label>
@@ -825,13 +825,13 @@
           <!-- Charts Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="p-4 border border-slate-200 rounded-xl bg-white shadow-sm">
-              <p class="font-bold text-slate-900 mb-2">तत्वीय आवश्यकता बनाम व्यावसायिक खाद (NPK vs Commercial Bags):</p>
+              <p id="lbl-sci-npk-head" class="font-bold text-slate-900 mb-2">तत्वीय आवश्यकता बनाम व्यावसायिक खाद (NPK vs Commercial Bags):</p>
               <div class="h-56">
                 <canvas id="npkChart"></canvas>
               </div>
             </div>
             <div class="p-4 border border-slate-200 rounded-xl bg-white shadow-sm">
-              <p class="font-bold text-slate-900 mb-2">फसल जल मांग वक्र (FAO-56 Crop Water ETc Curve):</p>
+              <p id="lbl-sci-water-head" class="font-bold text-slate-900 mb-2">फसल जल मांग वक्र (FAO-56 Crop Water ETc Curve):</p>
               <div class="h-56">
                 <canvas id="kcChart"></canvas>
               </div>
@@ -840,7 +840,7 @@
 
           <!-- Mathematical Audit Trail Box -->
           <div>
-            <p class="font-bold text-slate-900 mb-1">गाणितिक गणना ऑडिट ट्रेल (Formula Audit Trail):</p>
+            <p id="lbl-sci-audit-head" class="font-bold text-slate-900 mb-1">गाणितिक गणना ऑडिट ट्रेल (Formula Audit Trail):</p>
             <pre id="audit-trail" class="p-4 rounded-xl bg-slate-900 text-emerald-300 font-mono text-[11px] overflow-x-auto whitespace-pre leading-relaxed border border-slate-800"></pre>
           </div>
         </div>
@@ -1172,7 +1172,93 @@
         offlineBanner: "🌾 ऑफलाइन फील्ड मोड सक्रिय (Offline Field Mode) — इंटरनेट न होने पर भी सुरक्षित स्थानीय कृषि मॉडल सक्रिय हैं।",
         orgWaTitle: "जैविक समूह व FPO खरीदार संपर्क (WhatsApp Direct Link)",
         orgWaSub: "अपनी चयनित फसल व रकबे का विवरण सीधे जैविक क्लस्टर / FPO को साझा करें",
-        orgWaBtn: "व्हाट्सएप पर संपर्क करें"
+        orgWaBtn: "व्हाट्सएप पर संपर्क करें",
+// Precision Coordinates & Presets
+        coordLatLabel: "अक्षांश Latitude (°N)",
+        coordLonLabel: "देशांतर Longitude (°E)",
+        presetUpTitle: "गाज़ीपुर, उप्र",
+        presetUpDesc: "जलोढ़ मैदान (N:210, P:14, K:165)",
+        presetMhTitle: "विदर्भ, महाराष्ट्र",
+        presetMhDesc: "काली कपास मिट्टी (N:175, P:9, K:295)",
+        presetPbTitle: "लुधियाना, पंजाब",
+        presetPbDesc: "सघन उपजाऊ (N:310, P:28, K:190)",
+
+        // Satellite & Soil Texture Indicators
+        satMinLabel: "0.1 (कम वानस्पतिक घनत्व)",
+        satMaxLabel: "0.9 (सघन फसल)",
+        satClayLabel: "चिकनी मिट्टी (Clay)",
+        satDensityLabel: "मिट्टी घनत्व (Density)",
+        satCecLabel: "उर्वरक धारण (CEC)",
+
+        // Fertilizer Bag Badges
+        dapBadge: "50 kg बैग",
+        ureaBadge: "45 kg बैग",
+        mopBadge: "50 kg बैग",
+
+        // Irrigation 3-Stage Visual Timeline
+        irrS1Title: "1. पहली सिंचाई",
+        irrS1Days: "20–25 दिन",
+        irrS1Stage: "CRI ताज जड़ अवस्था",
+        irrS2Title: "2. दूसरी सिंचाई",
+        irrS2Days: "40–45 दिन",
+        irrS2Stage: "कल्ले फूटते समय",
+        irrS3Title: "3. तीसरी सिंचाई",
+        irrS3Days: "65–70 दिन",
+        irrS3Stage: "फूल/बाली बनते समय",
+        irrigationCardDesc: "पहली सिंचाई बुवाई के 21 दिन बाद (ताज जड़ निकलते समय - CRI Stage) करें। इसके बाद यूरिया की पहली किश्त दें। यदि बारिश का अनुमान हो तो सिंचाई टालें।",
+
+        // Organic Advisory Card & Breakdown
+        orgTag: "PKVY व प्राकृतिक खेती मिशन आधारित",
+        orgTitle: "जैविक खेती अपनाएं — रासायनिक खाद मुक्त व 35% अधिक शुद्ध मुनाफा",
+        orgGainTitle: "कुल अतिरिक्त किसान लाभ",
+        orgSavingsTitle: "💰 इनपुट खाद बचत",
+        orgSavingsSub: "यूरिया/डीएपी खर्च में 18% कमी",
+        orgPremTitle: "📈 जैविक प्रीमियम भाव",
+        orgPremSub: "₹2,844/क्विंटल तक थोक दर",
+        orgSubTitle: "🏛️ PKVY सरकारी सहायता",
+        orgSubSub: "3 साल में कुल ₹50,000/हेक्टेयर",
+        orgNetTitle: "🌱 कुल शुद्ध लाभ",
+        orgNetSub: "पारंपरिक से ₹36,700 अधिक",
+        orgPkgHead: "🧪 रासायनिक खाद के सुरक्षित जैविक विकल्प (Bio-Input Package)",
+        bio1Name: "वर्मीकम्पोस्ट (केंचुआ खाद)",
+        bio2Name: "तरल बायो-NPK कंसोर्शियम",
+        bio3Name: "जीवामृत (सिंचाई संग)",
+        bio4Name: "नीम खली (कीट/दीमक रक्षा)",
+        orgRoutesHead: "🛒 सत्यापित सरकारी व संस्थागत खरीदार मार्ग (Direct Buyer & Supplier Routes)",
+        route1Title: "🏛️ जैविक खेती राष्ट्रीय ई-मंच (Jaivik Kheti)",
+        route1Desc: "कृषि मंत्रालय का सीधा ई-बाजार (बिना बिचौलिए 0% कमीशन)",
+        route2Title: "📜 PGS-India निःशुल्क जैविक प्रमाणीकरण",
+        route2Desc: "5 किसानों का समूह बनाकर फ्री में 'Green' व 'Organic' सील पाएं",
+        route3Title: "🤝 FPO जैविक एकत्रीकरण हब (SFAC / NABARD)",
+        route3Desc: "24 Mantra, Organic Mandya व बिगबास्केट को अनुबंध आपूर्ति",
+        route4Title: "🌐 APEDA अंतरराष्ट्रीय जैविक निर्यात",
+        route4Desc: "बासमती, सरसों व दालों के लिए 40% तक निर्यात प्रीमियम",
+
+        // Scientific Console
+        sciClose: "✕ बंद करें",
+        sciEqHead: "रासायनिक खाद रूपांतरण समीकरण (Official FCO / ICAR Formulas):",
+        sciDapCredit: "[यूरिया बचत]",
+        sciParamsHead: "मृदा तत्व परीक्षण मान (Soil Test Parameters):",
+        sciNpkHead: "तत्वीय आवश्यकता बनाम व्यावसायिक खाद (NPK vs Commercial Bags):",
+        sciWaterHead: "फसल जल मांग वक्र (FAO-56 Crop Water ETc Curve):",
+        sciAuditHead: "गाणितिक गणना ऑडिट ट्रेल (Formula Audit Trail):",
+
+        // Module 2 Table Headers & Assimilation
+        thShcParam: "तत्व (Parameter)",
+        thShcVal: "मात्रा (Value)",
+        thShcUnit: "इकाई (Unit)",
+        thShcThresh: "सरकारी मानक सीमाएं (Threshold Range)",
+        thShcStatus: "स्थिति (Status)",
+        thFpoZone: "कृषि-जलवायु क्षेत्र (Zone)",
+        thFpoMin: "न्यूनतम मूल्य (Min ₹/q)",
+        thFpoModal: "अपेक्षित औसत (Modal ₹/q)",
+        thFpoMax: "अधिकतम मूल्य (Max ₹/q)",
+        lblAssimEvent: "खेत में घटित घटना (Event):",
+        optEvRain: "भारी अनपेक्षित वर्षा (>25 मिमी) — बारिश चेतावनी",
+        optEvYellow: "पत्तियों में पीलापन (नाइट्रोजन/जिंक की कमी)",
+        optEvDry: "10 दिन का सूखा / नहरी पानी की कमी",
+        lblAssimNote: "अतिरिक्त विवरण / टिप्पणी:",
+        assimResultDefault: "मध्य-सत्र घटना दर्ज होने पर यहाँ वास्तविक समायोजन दिखाई देगा।",
       },
       en: {
         brandBadge: "VERIFIED AGRI DECISION PLATFORM",
@@ -1253,7 +1339,93 @@
         offlineBanner: "🌾 Offline Field Mode Active — Operating seamlessly without internet using local cached agronomic baselines.",
         orgWaTitle: "Organic Cluster & FPO Buyer Connect (WhatsApp Direct Link)",
         orgWaSub: "Share your selected crop and area details directly with regional organic clusters and buyers",
-        orgWaBtn: "Connect via WhatsApp"
+        orgWaBtn: "Connect via WhatsApp",
+// Precision Coordinates & Presets
+        coordLatLabel: "Latitude (°N)",
+        coordLonLabel: "Longitude (°E)",
+        presetUpTitle: "Ghazipur, UP",
+        presetUpDesc: "Alluvial Plains (N:210, P:14, K:165)",
+        presetMhTitle: "Vidarbha, Maharashtra",
+        presetMhDesc: "Black Cotton Soil (N:175, P:9, K:295)",
+        presetPbTitle: "Ludhiana, Punjab",
+        presetPbDesc: "Intensive Fertile (N:310, P:28, K:190)",
+
+        // Satellite & Soil Texture Indicators
+        satMinLabel: "0.1 (Low Biomass / Canopy)",
+        satMaxLabel: "0.9 (Dense Crop Growth)",
+        satClayLabel: "Clay Content",
+        satDensityLabel: "Bulk Density",
+        satCecLabel: "Cation Exchange (CEC)",
+
+        // Fertilizer Bag Badges
+        dapBadge: "50 kg Bag",
+        ureaBadge: "45 kg Bag",
+        mopBadge: "50 kg Bag",
+
+        // Irrigation 3-Stage Visual Timeline
+        irrS1Title: "1. First Irrigation",
+        irrS1Days: "20–25 days",
+        irrS1Stage: "Crown Root (CRI) Stage",
+        irrS2Title: "2. Second Irrigation",
+        irrS2Days: "40–45 days",
+        irrS2Stage: "Tillering Stage",
+        irrS3Title: "3. Third Irrigation",
+        irrS3Days: "65–70 days",
+        irrS3Stage: "Flowering / Heading Stage",
+        irrigationCardDesc: "Apply 1st irrigation 21 days after sowing (Crown Root Initiation - CRI stage), followed by 1st Urea top-dressing. Defer irrigation if rain is imminent.",
+
+        // Organic Advisory Card & Breakdown
+        orgTag: "PKVY & Natural Farming Mission Aligned",
+        orgTitle: "Adopt Organic Farming — Zero Chemical Fertilizer & 35% Higher Net Profit",
+        orgGainTitle: "Total Extra Farmer Profit",
+        orgSavingsTitle: "💰 Fertilizer Input Savings",
+        orgSavingsSub: "18% reduction in Urea/DAP expense",
+        orgPremTitle: "📈 Organic Market Premium",
+        orgPremSub: "Up to ₹2,844/q wholesale rate",
+        orgSubTitle: "🏛️ PKVY Govt Support",
+        orgSubSub: "₹50,000/ha total over 3 years",
+        orgNetTitle: "🌱 Total Net Profit",
+        orgNetSub: "₹36,700 higher than conventional",
+        orgPkgHead: "🧪 Safe Organic Alternatives to Chemical Fertilizers (Bio-Input Package)",
+        bio1Name: "Vermicompost (Earthworm Compost)",
+        bio2Name: "Liquid Bio-NPK Consortium",
+        bio3Name: "Jeevamrit (With Irrigation)",
+        bio4Name: "Neem Cake (Pest/Termite Defense)",
+        orgRoutesHead: "🛒 Verified Govt & Institutional Buyer Routes",
+        route1Title: "🏛️ National Organic E-Market (Jaivik Kheti)",
+        route1Desc: "Ministry of Agriculture direct marketplace (0% commission, no middlemen)",
+        route2Title: "📜 Free PGS-India Organic Certification",
+        route2Desc: "Form a 5-farmer group and receive free 'Green' and 'Organic' seals",
+        route3Title: "🤝 FPO Organic Aggregation Hub (SFAC / NABARD)",
+        route3Desc: "Direct contract supply to 24 Mantra, Organic Mandya & BigBasket",
+        route4Title: "🌐 APEDA International Organic Export",
+        route4Desc: "Up to 40% export premium for Basmati, Mustard, and Pulses",
+
+        // Scientific Console
+        sciClose: "✕ Close",
+        sciEqHead: "Chemical Fertilizer Conversion Equations (Official FCO / ICAR Formulas):",
+        sciDapCredit: "[Urea Savings]",
+        sciParamsHead: "Soil Nutrient Test Parameters:",
+        sciNpkHead: "Elemental Target vs Commercial Fertilizer Bags:",
+        sciWaterHead: "Crop Water Demand Curve (FAO-56 Crop Water ETc Curve):",
+        sciAuditHead: "Mathematical Formula Audit Trail:",
+
+        // Module 2 Table Headers & Assimilation
+        thShcParam: "Nutrient (Parameter)",
+        thShcVal: "Measured Value",
+        thShcUnit: "Unit",
+        thShcThresh: "Standard Benchmark (Threshold Range)",
+        thShcStatus: "Evaluation Status",
+        thFpoZone: "Agro-Climatic Zone",
+        thFpoMin: "Min Price (₹/q)",
+        thFpoModal: "Modal Price (₹/q)",
+        thFpoMax: "Max Price (₹/q)",
+        lblAssimEvent: "In-Season Field Event:",
+        optEvRain: "Unseasonal Heavy Rain (>25mm) — Nitrogen Leaching Risk",
+        optEvYellow: "Leaf Yellowing (Nitrogen/Zinc Deficiency Signs)",
+        optEvDry: "10-Day Dry Spell / Canal Supply Delay",
+        lblAssimNote: "Field Notes / Observations:",
+        assimResultDefault: "Dynamic adjustment rationale will appear here upon logging.",
       }
     };
 
@@ -1291,6 +1463,10 @@
       currentLang = lang;
       localStorage.setItem("khetsathi_lang", lang);
       document.documentElement.lang = lang;
+      document.title = lang === "hi"
+        ? "KhetSathi 360 — राष्ट्रीय डिजिटल कृषि निर्णय प्रणाली"
+        : "KhetSathi 360 — National Digital Agriculture Decision Platform";
+
       const dict = I18N[lang] || I18N.hi;
 
       // Update text in all target DOM elements
@@ -1350,6 +1526,7 @@
         "out-urea-note": dict.outUreaNote,
         "out-mop-note": dict.outMopNote,
         "lbl-irrigation-card-title": dict.irrigationCardTitle,
+        "lbl-irr-title-text": dict.irrigationCardTitle,
         "lbl-action-cards-head": dict.actionCardsHead,
         "lbl-btn-whatsapp": dict.btnWhatsapp,
         "lbl-btn-print": dict.btnPrint,
@@ -1373,7 +1550,79 @@
         "lbl-org-wa-title": dict.orgWaTitle,
         "lbl-org-wa-sub": dict.orgWaSub,
         "lbl-org-wa-btn": dict.orgWaBtn,
-        "offline-banner-text": dict.offlineBanner
+        "offline-banner-text": dict.offlineBanner,
+"lbl-coord-lat": dict.coordLatLabel,
+        "lbl-coord-lon": dict.coordLonLabel,
+        "preset-up-title": dict.presetUpTitle,
+        "preset-up-desc": dict.presetUpDesc,
+        "preset-mh-title": dict.presetMhTitle,
+        "preset-mh-desc": dict.presetMhDesc,
+        "preset-pb-title": dict.presetPbTitle,
+        "preset-pb-desc": dict.presetPbDesc,
+        "lbl-sat-min": dict.satMinLabel,
+        "lbl-sat-max": dict.satMaxLabel,
+        "lbl-sat-clay": dict.satClayLabel,
+        "lbl-sat-density": dict.satDensityLabel,
+        "lbl-sat-cec": dict.satCecLabel,
+        "lbl-dap-badge": dict.dapBadge,
+        "lbl-urea-badge": dict.ureaBadge,
+        "lbl-mop-badge": dict.mopBadge,
+        "lbl-irr-s1-title": dict.irrS1Title,
+        "lbl-irr-s1-days": dict.irrS1Days,
+        "lbl-irr-s1-stage": dict.irrS1Stage,
+        "lbl-irr-s2-title": dict.irrS2Title,
+        "lbl-irr-s2-days": dict.irrS2Days,
+        "lbl-irr-s2-stage": dict.irrS2Stage,
+        "lbl-irr-s3-title": dict.irrS3Title,
+        "lbl-irr-s3-days": dict.irrS3Days,
+        "lbl-irr-s3-stage": dict.irrS3Stage,
+        "irrigation-card-desc": dict.irrigationCardDesc,
+        "lbl-org-tag": dict.orgTag,
+        "lbl-organic-title": dict.orgTitle,
+        "lbl-org-gain-title": dict.orgGainTitle,
+        "lbl-org-savings-title": dict.orgSavingsTitle,
+        "lbl-org-savings-sub": dict.orgSavingsSub,
+        "lbl-org-prem-title": dict.orgPremTitle,
+        "lbl-org-prem-sub": dict.orgPremSub,
+        "lbl-org-sub-title": dict.orgSubTitle,
+        "lbl-org-sub-sub": dict.orgSubSub,
+        "lbl-org-net-title": dict.orgNetTitle,
+        "lbl-org-net-sub": dict.orgNetSub,
+        "lbl-org-pkg-head": dict.orgPkgHead,
+        "lbl-bio1-name": dict.bio1Name,
+        "lbl-bio2-name": dict.bio2Name,
+        "lbl-bio3-name": dict.bio3Name,
+        "lbl-bio4-name": dict.bio4Name,
+        "lbl-org-routes-head": dict.orgRoutesHead,
+        "lbl-route1-title": dict.route1Title,
+        "lbl-route1-desc": dict.route1Desc,
+        "lbl-route2-title": dict.route2Title,
+        "lbl-route2-desc": dict.route2Desc,
+        "lbl-route3-title": dict.route3Title,
+        "lbl-route3-desc": dict.route3Desc,
+        "lbl-route4-title": dict.route4Title,
+        "lbl-route4-desc": dict.route4Desc,
+        "lbl-sci-close": dict.sciClose,
+        "lbl-sci-eq-head": dict.sciEqHead,
+        "lbl-sci-dap-credit": dict.sciDapCredit,
+        "lbl-sci-params-head": dict.sciParamsHead,
+        "lbl-sci-npk-head": dict.sciNpkHead,
+        "lbl-sci-water-head": dict.sciWaterHead,
+        "lbl-sci-audit-head": dict.sciAuditHead,
+        "th-shc-param": dict.thShcParam,
+        "th-shc-val": dict.thShcVal,
+        "th-shc-unit": dict.thShcUnit,
+        "th-shc-thresh": dict.thShcThresh,
+        "th-shc-status": dict.thShcStatus,
+        "th-fpo-zone": dict.thFpoZone,
+        "th-fpo-min": dict.thFpoMin,
+        "th-fpo-modal": dict.thFpoModal,
+        "th-fpo-max": dict.thFpoMax,
+        "lbl-assim-event": dict.lblAssimEvent,
+        "opt-ev-rain": dict.optEvRain,
+        "opt-ev-yellow": dict.optEvYellow,
+        "opt-ev-dry": dict.optEvDry,
+        "lbl-assim-note": dict.lblAssimNote,
       };
 
       for (const [id, val] of Object.entries(idMap)) {
@@ -1771,16 +2020,24 @@
           if (profVal) profVal.textContent = `₹${Math.round(eco.organic_net_profit_inr).toLocaleString("en-IN")}`;
 
           const vcBagsEl = getEl("org-vc-bags");
-          if (vcBagsEl) vcBagsEl.textContent = `${inp.vermicompost_bags_50kg} बोरी (${inp.vermicompost_tonnes} टन)`;
+          if (vcBagsEl) vcBagsEl.textContent = isHi
+            ? `${inp.vermicompost_bags_50kg} बोरी (${inp.vermicompost_tonnes} टन)`
+            : `${inp.vermicompost_bags_50kg} bags (${inp.vermicompost_tonnes} tonnes)`;
 
           const bioNpkEl = getEl("org-bio-npk");
-          if (bioNpkEl) bioNpkEl.textContent = `${inp.bio_npk_consortia_litres} लीटर (बीज उपचार)`;
+          if (bioNpkEl) bioNpkEl.textContent = isHi
+            ? `${inp.bio_npk_consortia_litres} लीटर (बीज उपचार)`
+            : `${inp.bio_npk_consortia_litres} L (Seed Treatment)`;
 
           const jeevaEl = getEl("org-jeevamrut");
-          if (jeevaEl) jeevaEl.textContent = `${inp.jeevamrut_litres} लीटर (सिंचाई संग)`;
+          if (jeevaEl) jeevaEl.textContent = isHi
+            ? `${inp.jeevamrut_litres} लीटर (सिंचाई संग)`
+            : `${inp.jeevamrut_litres} L (With Irrigation)`;
 
           const neemEl = getEl("org-neem-cake");
-          if (neemEl) neemEl.textContent = `${inp.neem_cake_kg} किलो (${inp.neem_cake_bags_50kg} बोरी)`;
+          if (neemEl) neemEl.textContent = isHi
+            ? `${inp.neem_cake_kg} किलो (${inp.neem_cake_bags_50kg} बोरी)`
+            : `${inp.neem_cake_kg} kg (${inp.neem_cake_bags_50kg} bags)`;
         }
       } catch (e) {
         console.warn("Organic advisory live fetch error:", e);

@@ -1030,6 +1030,9 @@
     function applyLanguage(lang) {
       const dict = I18N[lang] || I18N.hi;
       document.documentElement.lang = lang;
+      document.title = lang === 'hi'
+        ? "KhetSathi 360 — भावी पीढ़ियों के लिए अमृत माटी व जैविक खेती मिशन"
+        : "KhetSathi 360 — Living Soil & Organic Farming Mission for Future Generations";
       document.getElementById('lang-btn-text').textContent = lang === 'hi' ? 'English / हिन्दी' : 'हिन्दी / English';
 
       // Update text in DOM
@@ -1077,6 +1080,7 @@
       const sliderVal = document.getElementById('years-slider').value;
       updateSoilSimulator(sliderVal);
       recalculateRecipes();
+      fetchLiveOrganicEconomics();
     }
 
     // 5. Dynamic Soil Health Simulator Math
@@ -1168,11 +1172,12 @@
           const data = await res.json();
           if (data && data.economics) {
             const eco = data.economics;
-            document.getElementById('eco-chem-total-cost').textContent = `₹${Math.round(eco.conventional_input_cost_inr).toLocaleString()} /हे.`;
-            document.getElementById('eco-org-total-cost').textContent = `₹${Math.round(eco.organic_input_cost_inr).toLocaleString()} /हे.`;
-            document.getElementById('eco-org-mandi').textContent = `₹${Math.round(eco.expected_organic_price_per_q).toLocaleString()} /क्विंटल`;
-            document.getElementById('eco-org-net').textContent = `₹${Math.round(eco.expected_organic_profit_inr).toLocaleString()} /हेक्टेयर`;
-            document.getElementById('eco-extra-gain').textContent = `+₹${Math.round(eco.net_profit_difference_inr).toLocaleString()} /हेक्टेयर`;
+            const isHi = currentLang === 'hi';
+            document.getElementById('eco-chem-total-cost').textContent = `₹${Math.round(eco.conventional_input_cost_inr).toLocaleString()} ${isHi ? '/हे.' : '/ha'}`;
+            document.getElementById('eco-org-total-cost').textContent = `₹${Math.round(eco.organic_input_cost_inr).toLocaleString()} ${isHi ? '/हे.' : '/ha'}`;
+            document.getElementById('eco-org-mandi').textContent = `₹${Math.round(eco.expected_organic_price_per_q).toLocaleString()} ${isHi ? '/क्विंटल' : '/quintal'}`;
+            document.getElementById('eco-org-net').textContent = `₹${Math.round(eco.expected_organic_profit_inr).toLocaleString()} ${isHi ? '/हेक्टेयर' : '/ha'}`;
+            document.getElementById('eco-extra-gain').textContent = `+₹${Math.round(eco.net_profit_difference_inr).toLocaleString()} ${isHi ? '/हेक्टेयर' : '/ha'}`;
           }
         }
       } catch (err) {
