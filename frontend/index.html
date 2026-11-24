@@ -12,6 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <style>
     body { font-family: 'Noto Sans Devanagari', 'Inter', system-ui, -apple-system, sans-serif; background-color: #f4f7f4; color: #0f1f17; }
     .card { background: #ffffff; border: 1px solid #d4dfd6; border-radius: 1rem; box-shadow: 0 2px 10px rgba(14, 45, 31, 0.05); }
@@ -239,6 +242,9 @@
                 <button id="btn-detect-gps-inline" type="button" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow flex items-center gap-1.5">
                   <span>📍</span> <span id="lbl-gps-inline">1-Click GPS</span>
                 </button>
+                <button id="btn-toggle-map" type="button" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow flex items-center gap-1.5 transition">
+                  <span>🗺️</span> <span id="lbl-map-toggle">नक्शे पर खेत चुनें</span>
+                </button>
                 <button id="btn-toggle-coord-nudge" type="button" class="min-h-[38px] px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 flex items-center gap-1">
                   <span>⚙️</span> <span id="lbl-coord-toggle">निर्देशांक</span>
                 </button>
@@ -254,6 +260,77 @@
               <div>
                 <label for="coord-lon" id="lbl-coord-lon" class="block font-bold text-slate-700 mb-1">देशांतर Longitude (°E)</label>
                 <input id="coord-lon" type="number" step="0.0001" min="68.0" max="98.0" value="83.5770" class="w-full min-h-[38px] p-2 border rounded-lg bg-white font-mono font-bold text-slate-900" />
+              </div>
+            </div>
+                        <!-- Interactive Farmland Map Pointer Container (Phase A) -->
+            <div id="map-pointer-container" class="hidden space-y-3 p-4 rounded-2xl bg-emerald-950/5 border-2 border-emerald-600/60 shadow-md transition-all mt-2">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-900/10 pb-3">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-2xl" aria-hidden="true">🗺️</span>
+                  <div>
+                    <h4 id="lbl-map-title" class="text-sm font-extrabold text-emerald-950">खेत का नक्शा व स्थिति (Interactive Farmland Map Pointer)</h4>
+                    <p id="lbl-map-sub" class="text-xs text-slate-600">नक्शे को ज़ूम करें और अपने खेत पर पिन रखें, या खेत के कोनों को छूकर रकबा नापें</p>
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button id="btn-map-layer-sat" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-800 text-white transition shadow-sm flex items-center gap-1.5">
+                    <span aria-hidden="true">🛰️</span> <span id="lbl-map-sat">सैटेलाइट</span>
+                  </button>
+                  <button id="btn-map-layer-std" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 transition flex items-center gap-1.5">
+                    <span aria-hidden="true">🗺️</span> <span id="lbl-map-std">मानक</span>
+                  </button>
+                  <button id="btn-map-measure" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow-sm flex items-center gap-1.5">
+                    <span aria-hidden="true">📐</span> <span id="lbl-map-measure">रकबा नापें</span>
+                  </button>
+                  <button id="btn-map-gps" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition flex items-center gap-1.5">
+                    <span aria-hidden="true">🎯</span> <span id="lbl-map-gps">खेत पर जाएं</span>
+                  </button>
+                  <button id="btn-map-close" type="button" class="min-h-[44px] min-w-[44px] px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-100 transition flex items-center justify-center" aria-label="नक्शा बंद करें">
+                    <span id="lbl-map-close-text">✖️ बंद</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Area Measurement Guidance Banner (visible when measure mode active) -->
+              <div id="map-measure-banner" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-300 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2 font-bold text-amber-950">
+                  <span class="text-base" aria-hidden="true">📐</span>
+                  <span id="map-measure-hint">खेत के 3 या 4 कोनों को नक्शे पर छूएं। रकबा स्वतः निकल जाएगा।</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="map-measured-val" class="font-extrabold text-amber-950 bg-white px-3 py-1.5 rounded-lg border border-amber-300 shadow-sm text-xs">0.00 बीघा</span>
+                  <button id="btn-apply-measured-area" type="button" class="min-h-[44px] px-3.5 py-2 bg-emerald-800 text-white font-bold rounded-xl hover:bg-emerald-700 transition flex items-center gap-1.5 shadow-sm">
+                    <span aria-hidden="true">📥</span> <span id="lbl-apply-area">रकबा दर्ज करें</span>
+                  </button>
+                  <button id="btn-clear-measure" type="button" class="min-h-[44px] px-3.5 py-2 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300 transition flex items-center gap-1.5">
+                    <span aria-hidden="true">🔄</span> <span id="lbl-clear-measure">रीसेट</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Map Canvas & Offline Fallback -->
+              <div class="relative w-full rounded-2xl overflow-hidden border-2 border-emerald-700/40 shadow-inner" style="height: 380px;">
+                <div id="farmland-map-canvas" class="w-full h-full z-10"></div>
+                
+                <!-- Floating Pin Coordinates & Confirmation Overlay -->
+                <div id="map-pin-overlay" class="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 z-20 p-3 rounded-xl bg-white/95 backdrop-blur-sm border border-emerald-700/40 shadow-xl flex items-center justify-between gap-3 text-xs">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl" aria-hidden="true">📍</span>
+                    <div>
+                      <div class="font-extrabold text-emerald-950" id="map-overlay-title">चयनित खेत स्थिति (Pinpoint)</div>
+                      <div class="font-mono text-xs font-bold text-slate-800" id="map-overlay-coords">25.5928°N, 83.5770°E</div>
+                    </div>
+                  </div>
+                  <button id="btn-lock-parcel" type="button" class="min-h-[44px] px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow transition flex items-center gap-1.5">
+                    <span aria-hidden="true">✅</span> <span id="lbl-lock-parcel">खेत लॉक करें</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+                  <button id="btn-lock-parcel" type="button" class="min-h-[34px] px-3 py-1 bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold rounded-lg shadow transition flex items-center gap-1">
+                    ✅ <span id="lbl-lock-parcel">खेत लॉक करें</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1114,6 +1191,24 @@
         locSearchPlaceholder: "उदा: Zamania, Mohammadabad, Ghazipur, Ludhiana, Akola, Vidarbha...",
         gpsInline: "1-Click GPS",
         coordToggle: "निर्देशांक",
+                        mapPointerBtn: "Pinpoint on Map",
+        mapTitle: "Interactive Farmland Map Pointer & Boundaries",
+        mapSub: "Pan/zoom and drop pin on your field parcel, or tap corners to measure acreage",
+        mapSatellite: "Satellite",
+        mapStandard: "Standard",
+        mapMeasureArea: "Measure Area",
+        mapMyGps: "My GPS",
+        mapClose: "Close Map",
+        mapLockParcel: "Lock Parcel",
+        mapMeasuredAreaBadge: "Measured Area",
+        mapApplyArea: "Apply Area",
+        mapMeasureHint: "Tap 3 or 4 corners of your field on the map to measure area.",
+        mapResetMeasure: "Reset",
+        mapOverlayTitle: "Selected Farm Position (Pinpoint)",
+        mapMeasureHint: "खेत के 3 या 4 कोनों को नक्शे पर छूएं। रकबा स्वतः निकल जाएगा।",
+        mapResetMeasure: "रीसेट",
+        mapOverlayTitle: "चयनित खेत स्थिति (Pinpoint)",
+
         cropCardsLabel: "फसल चुनें (Select Crop)",
         cropWheat: "गेहूं (Wheat)",
         cropRice: "धान (Rice)",
@@ -1281,6 +1376,24 @@
         locSearchPlaceholder: "e.g. Zamania, Mohammadabad, Ghazipur, Ludhiana, Akola, Vidarbha...",
         gpsInline: "1-Click GPS",
         coordToggle: "Coordinates",
+                        mapPointerBtn: "Pinpoint on Map",
+        mapTitle: "Interactive Farmland Map Pointer & Boundaries",
+        mapSub: "Pan/zoom and drop pin on your field parcel, or tap corners to measure acreage",
+        mapSatellite: "Satellite",
+        mapStandard: "Standard",
+        mapMeasureArea: "Measure Area",
+        mapMyGps: "My GPS",
+        mapClose: "Close Map",
+        mapLockParcel: "Lock Parcel",
+        mapMeasuredAreaBadge: "Measured Area",
+        mapApplyArea: "Apply Area",
+        mapMeasureHint: "Tap 3 or 4 corners of your field on the map to measure area.",
+        mapResetMeasure: "Reset",
+        mapOverlayTitle: "Selected Farm Position (Pinpoint)",
+        mapMeasureHint: "खेत के 3 या 4 कोनों को नक्शे पर छूएं। रकबा स्वतः निकल जाएगा।",
+        mapResetMeasure: "रीसेट",
+        mapOverlayTitle: "चयनित खेत स्थिति (Pinpoint)",
+
         cropCardsLabel: "Select Crop",
         cropWheat: "Wheat",
         cropRice: "Rice",
@@ -1491,6 +1604,20 @@
         "lbl-loc-search": dict.locSearchLabel,
         "lbl-gps-inline": dict.gpsInline,
         "lbl-coord-toggle": dict.coordToggle,
+                "lbl-map-toggle": dict.mapPointerBtn,
+        "lbl-map-title": dict.mapTitle,
+        "lbl-map-sub": dict.mapSub,
+        "lbl-map-sat": dict.mapSatellite,
+        "lbl-map-std": dict.mapStandard,
+        "lbl-map-measure": dict.mapMeasureArea,
+        "lbl-map-gps": dict.mapMyGps,
+        "lbl-map-close-text": dict.mapClose,
+        "lbl-lock-parcel": dict.mapLockParcel,
+        "lbl-apply-area": dict.mapApplyArea,
+        "map-measure-hint": dict.mapMeasureHint,
+        "lbl-clear-measure": dict.mapResetMeasure,
+        "map-overlay-title": dict.mapOverlayTitle,
+
         "lbl-crop-cards": dict.cropCardsLabel,
         "crop-name-wheat": dict.cropWheat,
         "crop-name-rice": dict.cropRice,
@@ -2619,6 +2746,109 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       getEl("btn-detect-gps").addEventListener("click", detectFieldGPS);
       getEl("btn-detect-gps-inline").addEventListener("click", detectFieldGPS);
 
+      // Phase A: Farmland Map Pointer Event Listeners
+      const btnToggleMap = getEl("btn-toggle-map");
+      if (btnToggleMap) btnToggleMap.addEventListener("click", toggleFarmlandMap);
+
+      const btnMapClose = getEl("btn-map-close");
+      if (btnMapClose) btnMapClose.addEventListener("click", () => {
+        getEl("map-pointer-container")?.classList.add("hidden");
+      });
+
+      const btnMapSat = getEl("btn-map-layer-sat");
+      const btnMapStd = getEl("btn-map-layer-std");
+      if (btnMapSat && btnMapStd) {
+        btnMapSat.addEventListener("click", () => {
+          if (leafletMapInstance && satTileLayer && osmTileLayer) {
+            leafletMapInstance.removeLayer(osmTileLayer);
+            satTileLayer.addTo(leafletMapInstance);
+            btnMapSat.className = "min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-800 text-white transition shadow-sm flex items-center gap-1.5";
+            btnMapStd.className = "min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 transition flex items-center gap-1.5";
+          }
+        });
+        btnMapStd.addEventListener("click", () => {
+          if (leafletMapInstance && satTileLayer && osmTileLayer) {
+            leafletMapInstance.removeLayer(satTileLayer);
+            osmTileLayer.addTo(leafletMapInstance);
+            btnMapStd.className = "min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-800 text-white transition shadow-sm flex items-center gap-1.5";
+            btnMapSat.className = "min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 transition flex items-center gap-1.5";
+          }
+        });
+      }
+
+      const btnMapMeasure = getEl("btn-map-measure");
+      const mapMeasureBanner = getEl("map-measure-banner");
+      if (btnMapMeasure && mapMeasureBanner) {
+        btnMapMeasure.addEventListener("click", () => {
+          isMeasureMode = !isMeasureMode;
+          if (isMeasureMode) {
+            mapMeasureBanner.classList.remove("hidden");
+            btnMapMeasure.classList.add("ring-4", "ring-amber-400");
+          } else {
+            mapMeasureBanner.classList.add("hidden");
+            btnMapMeasure.classList.remove("ring-4", "ring-amber-400");
+          }
+        });
+      }
+
+      const btnClearMeasure = getEl("btn-clear-measure");
+      if (btnClearMeasure) btnClearMeasure.addEventListener("click", clearMeasurements);
+
+      const btnApplyMeasuredArea = getEl("btn-apply-measured-area");
+      if (btnApplyMeasuredArea) {
+        btnApplyMeasuredArea.addEventListener("click", () => {
+          const MIN_PARCEL_HA = 0.01; // Minimum 100 m² (0.04 Bigha)
+          if (calculatedPolygonHa < MIN_PARCEL_HA) {
+            const isHi = currentLang === "hi";
+            const alertMsg = isHi
+              ? "⚠️ नापा गया रकबा बहुत छोटा है (न्यूनतम 0.01 हेक्टेयर आवश्यक)। कृपया खेत के वास्तविक कोनों को छूएं।"
+              : "⚠️ Marked parcel is too small (minimum 0.01 Ha required). Please mark field boundaries accurately.";
+            showToastNotification(alertMsg, "amber");
+            return;
+          }
+          const plotInput = getEl("plot-area");
+          const unitSelect = getEl("plot-unit");
+          if (plotInput && unitSelect) {
+            unitSelect.value = "ha";
+            plotInput.value = calculatedPolygonHa.toFixed(2);
+            unitSelect.dispatchEvent(new Event("change"));
+            runAdvisoryEngine();
+            const isHi = currentLang === "hi";
+            showToastNotification(
+              isHi ? `✅ नापा गया रकबा (${calculatedPolygonHa.toFixed(2)} हेक्टेयर) दर्ज कर दिया गया है!` : `✅ Measured area (${calculatedPolygonHa.toFixed(2)} Ha) applied!`,
+              "emerald"
+            );
+          }
+        });
+      }
+
+      const btnMapGps = getEl("btn-map-gps");
+      if (btnMapGps) {
+        btnMapGps.addEventListener("click", async () => {
+          btnMapGps.disabled = true;
+          const origText = btnMapGps.innerHTML;
+          btnMapGps.innerHTML = `<span>⏳</span> <span>${currentLang === "hi" ? "खोज रहे हैं..." : "Locating..."}</span>`;
+          await detectFieldGPS();
+          btnMapGps.innerHTML = origText;
+          btnMapGps.disabled = false;
+        });
+      }
+
+      const btnLockParcel = getEl("btn-lock-parcel");
+      if (btnLockParcel) {
+        btnLockParcel.addEventListener("click", () => {
+          const lat = parseFloat(getEl("coord-lat").value);
+          const lon = parseFloat(getEl("coord-lon").value);
+          const isHi = currentLang === "hi";
+          getEl("map-pointer-container")?.classList.add("hidden");
+          showToastNotification(
+            isHi ? `✅ खेत स्थिति सुरक्षित: (${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E)` : `✅ Farm parcel locked: (${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E)`,
+            "emerald"
+          );
+        });
+      }
+
+
       // Coordinate Nudge Toggle
       getEl("btn-toggle-coord-nudge").addEventListener("click", () => {
         const box = getEl("coord-nudge-box");
@@ -2945,11 +3175,194 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         });
       }
 
+      
+        // =========================================================================
+    // PHASE A: INTERACTIVE FARMLAND MAP POINTER & POLYGON ACREAGE ENGINE
+    // =========================================================================
+    let leafletMapInstance = null;
+    let mapMarker = null;
+    let satTileLayer = null;
+    let osmTileLayer = null;
+    let isMeasureMode = false;
+    let measurePolygon = null;
+    let measurePoints = [];
+    let measureMarkers = [];
+    let calculatedPolygonHa = 0.0;
+    let mapPinDebounceTimer = null;
+
+    function calculateGeodesicPolygonArea(coords) {
+      if (!coords || coords.length < 3) return 0.0;
+      const meanLat = coords.reduce((acc, c) => acc + c[0], 0) / coords.length;
+      const latRad = (meanLat * Math.PI) / 180.0;
+      const metersPerLat = 111139.0;
+      const metersPerLon = 111139.0 * Math.cos(latRad);
+      const xy = coords.map(c => [c[1] * metersPerLon, c[0] * metersPerLat]);
+      let area = 0.0;
+      const n = xy.length;
+      for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n;
+        area += xy[i][0] * xy[j][1];
+        area -= xy[j][0] * xy[i][1];
+      }
+      return Math.abs(area) / 2.0;
+    }
+
+    function initFarmlandMap() {
+      if (leafletMapInstance) {
+        leafletMapInstance.invalidateSize();
+        return;
+      }
+      if (typeof L === "undefined") {
+        console.warn("[KhetSathi] Leaflet library not loaded, using tactile coordinate nudge fallback.");
+        getEl("map-pointer-container")?.classList.add("hidden");
+        getEl("coord-nudge-box")?.classList.remove("hidden");
+        const msg = currentLang === "hi" 
+          ? "⚠️ ऑफलाइन मोड: नक्शा लोड नहीं हो सका। कृपया निर्देशांक का उपयोग करें।" 
+          : "⚠️ Offline Mode: Map failed to load. Please use manual coordinate controls.";
+        showToastNotification(msg, "amber");
+        return;
+      }
+
+      const initialLat = parseFloat(getEl("coord-lat")?.value) || 25.5928;
+      const initialLon = parseFloat(getEl("coord-lon")?.value) || 83.5770;
+
+      leafletMapInstance = L.map("farmland-map-canvas", {
+        center: [initialLat, initialLon],
+        zoom: 16,
+        zoomControl: true
+      });
+
+      satTileLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 19,
+        attribution: "Esri Satellite Imagery"
+      });
+
+      osmTileLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap contributors"
+      });
+
+      satTileLayer.addTo(leafletMapInstance);
+
+      // Custom high-contrast tactile harvest marker pin
+      const harvestIcon = L.divIcon({
+        className: "custom-harvest-pin",
+        html: `<div style="background-color:#10b981; border:3px solid #ffffff; width:36px; height:36px; border-radius:50%; box-shadow:0 0 14px rgba(16,185,129,0.9); display:flex; align-items:center; justify-content:center; font-size:20px; cursor:grab;">📍</div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 36]
+      });
+
+      mapMarker = L.marker([initialLat, initialLon], {
+        draggable: true,
+        icon: harvestIcon
+      }).addTo(leafletMapInstance);
+
+      function onPinPositionUpdated(lat, lon) {
+        getEl("coord-lat").value = lat.toFixed(4);
+        getEl("coord-lon").value = lon.toFixed(4);
+        const overlayCoords = getEl("map-overlay-coords");
+        if (overlayCoords) overlayCoords.textContent = `${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
+        clearTimeout(mapPinDebounceTimer);
+        mapPinDebounceTimer = setTimeout(() => {
+          fetchLocationAndWeather(lat, lon);
+        }, 250);
+      }
+
+      mapMarker.on("dragend", (e) => {
+        const pos = e.target.getLatLng();
+        onPinPositionUpdated(pos.lat, pos.lng);
+      });
+
+      leafletMapInstance.on("click", (e) => {
+        if (isMeasureMode) {
+          addMeasurePoint(e.latlng);
+        } else {
+          mapMarker.setLatLng(e.latlng);
+          onPinPositionUpdated(e.latlng.lat, e.latlng.lng);
+        }
+      });
+    }
+
+    function addMeasurePoint(latlng) {
+      // Immutable append pattern
+      measurePoints = [...measurePoints, [latlng.lat, latlng.lng]];
+      const pMarker = L.circleMarker(latlng, {
+        radius: 7,
+        color: "#f59e0b",
+        fillColor: "#ffffff",
+        fillOpacity: 1.0,
+        weight: 3
+      }).addTo(leafletMapInstance);
+      measureMarkers = [...measureMarkers, pMarker];
+
+      if (measurePolygon) leafletMapInstance.removeLayer(measurePolygon);
+      measurePolygon = L.polygon(measurePoints, {
+        color: "#10b981",
+        fillColor: "#10b981",
+        fillOpacity: 0.35,
+        weight: 3
+      }).addTo(leafletMapInstance);
+
+      if (measurePoints.length >= 3) {
+        const sqMeters = calculateGeodesicPolygonArea(measurePoints);
+        calculatedPolygonHa = sqMeters / 10000.0;
+        const bigha = sqMeters / 2500.0;
+        const acre = sqMeters / 4046.86;
+        const isHi = currentLang === "hi";
+        const valText = isHi
+          ? `${bigha.toFixed(2)} बीघा (${acre.toFixed(2)} एकड़)`
+          : `${bigha.toFixed(2)} Bigha (${acre.toFixed(2)} Acre)`;
+        getEl("map-measured-val").textContent = valText;
+      }
+    }
+
+    function clearMeasurements() {
+      measureMarkers.forEach(m => leafletMapInstance && leafletMapInstance.removeLayer(m));
+      measureMarkers = [];
+      measurePoints = [];
+      if (measurePolygon && leafletMapInstance) {
+        leafletMapInstance.removeLayer(measurePolygon);
+        measurePolygon = null;
+      }
+      calculatedPolygonHa = 0.0;
+      getEl("map-measured-val").textContent = currentLang === "hi" ? "0.00 बीघा" : "0.00 Bigha";
+    }
+
+    function toggleFarmlandMap() {
+      const container = getEl("map-pointer-container");
+      if (!container) return;
+      const isHidden = container.classList.contains("hidden");
+      if (isHidden) {
+        container.classList.remove("hidden");
+        setTimeout(() => {
+          initFarmlandMap();
+          if (leafletMapInstance) {
+            leafletMapInstance.invalidateSize();
+            const lat = parseFloat(getEl("coord-lat").value) || 25.5928;
+            const lon = parseFloat(getEl("coord-lon").value) || 83.5770;
+            leafletMapInstance.setView([lat, lon], 16);
+            if (mapMarker) mapMarker.setLatLng([lat, lon]);
+          }
+        }, 120);
+      } else {
+        container.classList.add("hidden");
+      }
+    }, 120);
+      } else {
+        container.classList.add("hidden");
+      }
+    }
+
       // Initial Execution
       setLanguage(currentLang);
       renderShcTable();
       fetchLocationAndWeather(25.5928, 83.5770);
     });
   </script>
+  <!-- Toast Notification Bar (Non-blocking) -->
+  <div id="toast-banner" role="status" aria-live="polite" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl shadow-2xl font-bold text-xs flex items-center gap-2 transition-all duration-300">
+    <span id="toast-icon">ℹ️</span>
+    <span id="toast-msg">Notification</span>
+  </div>
 </body>
 </html>
