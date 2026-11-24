@@ -5,6 +5,8 @@ app/seed_store_service.py — Certified seed catalog & Government Block Seed Sto
 3. Nearest Block Agriculture Seed Stores (राजकीय कृषि बीज भंडार), KVKs, and PACS directories.
 """
 
+import html
+import re
 from typing import Any, Dict, List
 
 
@@ -187,13 +189,17 @@ def get_certified_seed_varieties(crop: str, region: str = "Uttar Pradesh", langu
 def get_nearby_government_seed_stores(district: str = "Ghazipur", lat: float = 25.5928, lon: float = 83.5770, language: str = "hi") -> List[Dict[str, Any]]:
     """
     Returns verified Government Block Seed Stores, KVKs, and PACS nearby.
+    Sanitizes district input to prevent XSS reflection.
     """
     is_hi = language == "hi"
-    dist_name = district.split(",")[0].strip()
+    clean_dist = re.sub(r"[^\w\s,.\-\u0900-\u097F]", "", district).strip()
+    raw_sub = clean_dist.split(",")[0].strip() if clean_dist else ""
+    dist_name = html.escape(raw_sub) if raw_sub else "District"
+    dist_slug = re.sub(r"[^\w\-]", "_", dist_name.lower())
 
     return [
         {
-            "id": f"gov_store_{dist_name.lower()}_block",
+            "id": f"gov_store_{dist_slug}_block",
             "name": f"राजकीय कृषि बीज भंडार ({dist_name} ब्लॉक मुख्यालय)" if is_hi else f"Government Block Agriculture Seed Store ({dist_name} HQ)",
             "store_type": "राजकीय कृषि बीज भंडार" if is_hi else "Government Seed Store (Dept of Agriculture)",
             "address": f"तहसील परिसर, ब्लॉक कृषि विकास केंद्र, {dist_name}" if is_hi else f"Tehsil Campus, Block Agriculture Dev Center, {dist_name}",
@@ -204,7 +210,7 @@ def get_nearby_government_seed_stores(district: str = "Ghazipur", lat: float = 2
             "in_stock": True
         },
         {
-            "id": f"kvk_{dist_name.lower()}",
+            "id": f"kvk_{dist_slug}",
             "name": f"कृषि विज्ञान केंद्र (KVK / ICAR रिसर्च स्टेशन, {dist_name})" if is_hi else f"Krishi Vigyan Kendra (KVK / ICAR Center, {dist_name})",
             "store_type": "भारतीय कृषि अनुसंधान परिषद (ICAR-KVK)" if is_hi else "ICAR Research Farm & Seed Production Unit",
             "address": f"कृषि अनुसंधान फार्म, नेशनल हाईवे के पास, {dist_name}" if is_hi else f"ICAR Research Farm, Near National Highway, {dist_name}",
@@ -215,7 +221,7 @@ def get_nearby_government_seed_stores(district: str = "Ghazipur", lat: float = 2
             "in_stock": True
         },
         {
-            "id": f"pacs_{dist_name.lower()}",
+            "id": f"pacs_{dist_slug}",
             "name": f"प्राथमिक कृषि ऋण समिति (PACS बीज व खाद केंद्र)" if is_hi else f"Primary Agricultural Credit Society (PACS Co-op Outlet)",
             "store_type": "सहकारी समिति (PACS / IFFCO e-Bazar)" if is_hi else "Cooperative Society & IFFCO e-Bazar",
             "address": f"ग्राम पंचायत भवन के समीप, मुख्य बाजार" if is_hi else f"Near Gram Panchayat Office, Main Rural Market",

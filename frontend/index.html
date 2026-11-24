@@ -235,17 +235,17 @@
 
             <!-- Location Status Tag & Coordinate Controls -->
             <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-              <div id="geo-location-tag" role="status" aria-live="polite" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-950 font-bold text-xs border border-emerald-300 flex items-center gap-1.5 shadow-sm">
+              <div id="geo-location-tag" role="status" aria-live="polite" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-emerald-50 text-emerald-950 font-bold text-xs border border-emerald-300 flex items-center gap-1.5 shadow-sm">
                 <span>📍</span> <span id="geo-location-text">ग़ाज़ीपुर, उत्तर प्रदेश (25.59°N, 83.58°E)</span>
               </div>
               <div class="flex items-center gap-2">
-                <button id="btn-detect-gps-inline" type="button" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow flex items-center gap-1.5">
+                <button id="btn-detect-gps-inline" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow flex items-center gap-1.5">
                   <span>📍</span> <span id="lbl-gps-inline">1-Click GPS</span>
                 </button>
-                <button id="btn-toggle-map" type="button" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow flex items-center gap-1.5 transition">
+                <button id="btn-toggle-map" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow flex items-center gap-1.5 transition">
                   <span>🗺️</span> <span id="lbl-map-toggle">नक्शे पर खेत चुनें</span>
                 </button>
-                <button id="btn-toggle-coord-nudge" type="button" class="min-h-[38px] px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 flex items-center gap-1">
+                <button id="btn-toggle-coord-nudge" type="button" class="min-h-[44px] px-2.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 flex items-center gap-1">
                   <span>⚙️</span> <span id="lbl-coord-toggle">निर्देशांक</span>
                 </button>
               </div>
@@ -323,12 +323,6 @@
                   </div>
                   <button id="btn-lock-parcel" type="button" class="min-h-[44px] px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow transition flex items-center gap-1.5">
                     <span aria-hidden="true">✅</span> <span id="lbl-lock-parcel">खेत लॉक करें</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-                  <button id="btn-lock-parcel" type="button" class="min-h-[34px] px-3 py-1 bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold rounded-lg shadow transition flex items-center gap-1">
-                    ✅ <span id="lbl-lock-parcel">खेत लॉक करें</span>
                   </button>
                 </div>
               </div>
@@ -766,8 +760,8 @@
             <!-- Card 1: Vermicompost -->
             <div class="card tactile-card animate-fade-in-up p-5 border-l-8 border-l-emerald-600 bg-gradient-to-br from-emerald-50/70 to-white shadow-sm space-y-1.5">
               <div class="flex items-center justify-between">
-                <span id="lbl-org-vc-title" class="text-xs font-black uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> वर्मीकम्पोस्ट (केंचुआ खाद)
+                <span class="text-xs font-black uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> <span id="lbl-org-vc-title">वर्मीकम्पोस्ट (केंचुआ खाद)</span>
                 </span>
                 <span class="text-xs font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">50 kg बैग</span>
               </div>
@@ -779,8 +773,8 @@
             <!-- Card 2: Jeevamrut -->
             <div class="card tactile-card animate-fade-in-up p-5 border-l-8 border-l-amber-600 bg-gradient-to-br from-amber-50/70 to-white shadow-sm space-y-1.5">
               <div class="flex items-center justify-between">
-                <span id="lbl-org-jeeva-title" class="text-xs font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span> ताजा जीवामृत (सिंचाई संग)
+                <span class="text-xs font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span> <span id="lbl-org-jeeva-title">ताजा जीवामृत (सिंचाई संग)</span>
                 </span>
                 <span class="text-xs font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">200L ड्रम</span>
               </div>
@@ -792,8 +786,8 @@
             <!-- Card 3: Bio-NPK & Neem Cake -->
             <div class="card tactile-card animate-fade-in-up p-5 border-l-8 border-l-teal-600 bg-gradient-to-br from-teal-50/70 to-white shadow-sm space-y-1.5">
               <div class="flex items-center justify-between">
-                <span id="lbl-org-neem-title" class="text-xs font-black uppercase tracking-wider text-teal-950 flex items-center gap-1.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-teal-600"></span> तरल बायो-NPK व नीम खली
+                <span class="text-xs font-black uppercase tracking-wider text-teal-950 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-teal-600"></span> <span id="lbl-org-neem-title">तरल बायो-NPK व नीम खली</span>
                 </span>
                 <span class="text-xs font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-900 border border-teal-300">बीज + जड़</span>
               </div>
@@ -1503,6 +1497,13 @@
         soilBenefitWater: "जल संधारण क्षमता में 28% सुधार",
         soilBenefitCarbon: "जैविक कार्बन (SOC) संचय व विषमुक्ति",
         orgMandiTitle: "स्थानीय जैविक प्रीमियम दर व अतिरिक्त किसान कमाई",
+        soilBenefitsTitle: "जैविक खेती से आपकी मिट्टी को होने वाले 3 बड़े वैज्ञानिक लाभ",
+        orgVcTitle: "वर्मीकम्पोस्ट (केंचुआ खाद)",
+        orgJeevaTitle: "ताजा जीवामृत (सिंचाई संग)",
+        orgNeemTitle: "तरल बायो-NPK व नीम खली",
+        benefitBioDesc: "रासायनिक जहर रुकते ही मित्र केंचुए स्वतः ऊपर आने लगते हैं, जो जमीन में प्राकृतिक सुरंगें बनाकर हवा व जड़ों का फैलाव बढ़ाते हैं।",
+        benefitWaterDesc: "वर्मीकम्पोस्ट स्पंज की तरह पानी सोखती है। खेत लंबे समय तक नम रहता है, जिससे 1 से 2 सिंचाई की सीधी बचत होती है।",
+        benefitCarbonDesc: "3 वर्षों में मिट्टी का जैविक कार्बन 0.4% से बढ़कर 0.7%+ हो जाता है, जिससे जमीन कभी बंजर या उसर नहीं होती।",
 
 
         cropCardsLabel: "फसल चुनें (Select Crop)",
@@ -1721,6 +1722,13 @@
         soilBenefitWater: "28% Moisture Retention Capacity Improvement",
         soilBenefitCarbon: "Organic Carbon (SOC) Accumulation & Detoxification",
         orgMandiTitle: "Local Organic Premium Mandi Rates & Farmer Income Differential",
+        soilBenefitsTitle: "3 Major Agronomic Soil Regeneration Benefits of Organic Transition",
+        orgVcTitle: "Vermicompost (Earthworm Organic Manure)",
+        orgJeevaTitle: "Fresh Jeevamrut (With Irrigation)",
+        orgNeemTitle: "Liquid Bio-NPK & Neem Cake",
+        benefitBioDesc: "Stopping chemical inputs activates natural earthworms and microbes, aerating root zones and multiplying soil fauna 3.5-fold.",
+        benefitWaterDesc: "Vermicompost acts like a sponge, retaining moisture 28% longer and eliminating 1-2 entire irrigation cycles.",
+        benefitCarbonDesc: "Soil organic carbon (SOC) climbs from 0.4% to 0.7%+ over 3 seasons, protecting soil from salinity, compaction and barrenness.",
 
 
         cropCardsLabel: "Select Crop",
@@ -2035,6 +2043,16 @@
         "lbl-benefit-bio-head": dict.soilBenefitBio,
         "lbl-benefit-water-head": dict.soilBenefitWater,
         "lbl-benefit-carbon-head": dict.soilBenefitCarbon,
+        "lbl-alt-popup-title": dict.altPopupTitle,
+        "lbl-view-machinery": dict.altViewMachinery,
+        "lbl-apply-alt-crop": dict.altApplyCrop,
+        "lbl-soil-benefits-title": dict.soilBenefitsTitle,
+        "lbl-org-vc-title": dict.orgVcTitle,
+        "lbl-org-jeeva-title": dict.orgJeevaTitle,
+        "lbl-org-neem-title": dict.orgNeemTitle,
+        "lbl-benefit-bio-desc": dict.benefitBioDesc,
+        "lbl-benefit-water-desc": dict.benefitWaterDesc,
+        "lbl-benefit-carbon-desc": dict.benefitCarbonDesc,
         "lbl-action-cards-head": dict.actionCardsHead,
         "lbl-btn-whatsapp": dict.btnWhatsapp,
         "lbl-btn-print": dict.btnPrint,
@@ -3125,41 +3143,193 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       }
     }
 
-    // DOM Ready Event Listeners
-    document.addEventListener("DOMContentLoaded", () => {
-      checkBackendHealth();
+    // =========================================================================
+    // ESCAPE HTML UTILITY (XSS Prevention)
+    // =========================================================================
+    function escapeHtml(str) {
+      if (str == null) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
-      // Land Unit Conversion Listeners
-      getEl("plot-area-val").addEventListener("input", () => {
-        updateLandUnitConverter();
-        runAdvisoryEngine();
-      });
-      getEl("plot-area-unit").addEventListener("change", () => {
-        updateLandUnitConverter();
-        runAdvisoryEngine();
+    // =========================================================================
+    // PHASE A: INTERACTIVE FARMLAND MAP POINTER & POLYGON ACREAGE ENGINE
+    // =========================================================================
+    let leafletMapInstance = null;
+    let mapMarker = null;
+    let satTileLayer = null;
+    let osmTileLayer = null;
+    let isMeasureMode = false;
+    let measurePolygon = null;
+    let measurePoints = [];
+    let measureMarkers = [];
+    let calculatedPolygonHa = 0.0;
+    let mapPinDebounceTimer = null;
+
+    function calculateGeodesicPolygonArea(coords) {
+      if (!coords || coords.length < 3) return 0.0;
+      const meanLat = coords.reduce((acc, c) => acc + c[0], 0) / coords.length;
+      const latRad = (meanLat * Math.PI) / 180.0;
+      const metersPerLat = 111139.0;
+      const metersPerLon = 111139.0 * Math.cos(latRad);
+      const xy = coords.map(c => [c[1] * metersPerLon, c[0] * metersPerLat]);
+      let area = 0.0;
+      const n = xy.length;
+      for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n;
+        area += xy[i][0] * xy[j][1];
+        area -= xy[j][0] * xy[i][1];
+      }
+      return Math.abs(area) / 2.0;
+    }
+
+    function onPinPositionUpdated(lat, lon) {
+      const latEl = getEl("coord-lat");
+      const lonEl = getEl("coord-lon");
+      if (latEl) latEl.value = lat.toFixed(4);
+      if (lonEl) lonEl.value = lon.toFixed(4);
+      const overlayCoords = getEl("map-overlay-coords");
+      if (overlayCoords) overlayCoords.textContent = `${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
+      clearTimeout(mapPinDebounceTimer);
+      mapPinDebounceTimer = setTimeout(() => {
+        fetchLocationAndWeather(lat, lon);
+      }, 250);
+    }
+
+    function initFarmlandMap() {
+      if (leafletMapInstance) {
+        leafletMapInstance.invalidateSize();
+        return;
+      }
+      if (typeof L === "undefined") {
+        console.warn("[KhetSathi] Leaflet library not loaded, using tactile coordinate nudge fallback.");
+        getEl("map-pointer-container")?.classList.add("hidden");
+        getEl("coord-nudge-box")?.classList.remove("hidden");
+        const msg = currentLang === "hi" 
+          ? "⚠️ ऑफलाइन मोड: नक्शा लोड नहीं हो सका। कृपया निर्देशांक का उपयोग करें।" 
+          : "⚠️ Offline Mode: Map failed to load. Please use manual coordinate controls.";
+        showToastNotification(msg, "amber");
+        return;
+      }
+
+      const initialLat = parseFloat(getEl("coord-lat")?.value) || 25.5928;
+      const initialLon = parseFloat(getEl("coord-lon")?.value) || 83.5770;
+
+      leafletMapInstance = L.map("farmland-map-canvas", {
+        center: [initialLat, initialLon],
+        zoom: 16,
+        zoomControl: true
       });
 
-      // Hyper-Local Location Search Bar (Blinkit Style)
-      const locSearchInput = getEl("location-search-input");
-      locSearchInput.addEventListener("input", (e) => {
-        clearTimeout(searchDebounceTimer);
-        searchDebounceTimer = setTimeout(() => {
-          searchHyperlocalLocations(e.target.value);
-        }, 280);
+      satTileLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        maxZoom: 19,
+        attribution: "Esri Satellite Imagery"
       });
 
-      // Close autocomplete dropdown on outside click
-      document.addEventListener("click", (e) => {
-        if (!locSearchInput.contains(e.target) && !getEl("location-search-dropdown").contains(e.target)) {
-          getEl("location-search-dropdown").classList.add("hidden");
+      osmTileLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap contributors"
+      });
+
+      satTileLayer.addTo(leafletMapInstance);
+
+      // Custom high-contrast tactile harvest marker pin
+      const harvestIcon = L.divIcon({
+        className: "custom-harvest-pin",
+        html: `<div style="background-color:#10b981; border:3px solid #ffffff; width:36px; height:36px; border-radius:50%; box-shadow:0 0 14px rgba(16,185,129,0.9); display:flex; align-items:center; justify-content:center; font-size:20px; cursor:grab;">📍</div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 36]
+      });
+
+      mapMarker = L.marker([initialLat, initialLon], {
+        draggable: true,
+        icon: harvestIcon
+      }).addTo(leafletMapInstance);
+
+      mapMarker.on("dragend", (e) => {
+        const pos = e.target.getLatLng();
+        onPinPositionUpdated(pos.lat, pos.lng);
+      });
+
+      leafletMapInstance.on("click", (e) => {
+        if (isMeasureMode) {
+          addMeasurePoint(e.latlng);
+        } else {
+          mapMarker.setLatLng(e.latlng);
+          onPinPositionUpdated(e.latlng.lat, e.latlng.lng);
         }
       });
+    }
 
-      // GPS Detect Buttons
-      getEl("btn-detect-gps").addEventListener("click", detectFieldGPS);
-      getEl("btn-detect-gps-inline").addEventListener("click", detectFieldGPS);
+    function addMeasurePoint(latlng) {
+      measurePoints = [...measurePoints, [latlng.lat, latlng.lng]];
+      const pMarker = L.circleMarker(latlng, {
+        radius: 7,
+        color: "#f59e0b",
+        fillColor: "#ffffff",
+        fillOpacity: 1.0,
+        weight: 3
+      }).addTo(leafletMapInstance);
+      measureMarkers = [...measureMarkers, pMarker];
 
-      
+      if (measurePolygon) leafletMapInstance.removeLayer(measurePolygon);
+      measurePolygon = L.polygon(measurePoints, {
+        color: "#10b981",
+        fillColor: "#10b981",
+        fillOpacity: 0.35,
+        weight: 3
+      }).addTo(leafletMapInstance);
+
+      if (measurePoints.length >= 3) {
+        const sqMeters = calculateGeodesicPolygonArea(measurePoints);
+        calculatedPolygonHa = sqMeters / 10000.0;
+        const bigha = sqMeters / 2500.0;
+        const acre = sqMeters / 4046.86;
+        const isHi = currentLang === "hi";
+        const valText = isHi
+          ? `${bigha.toFixed(2)} बीघा (${acre.toFixed(2)} एकड़)`
+          : `${bigha.toFixed(2)} Bigha (${acre.toFixed(2)} Acre)`;
+        getEl("map-measured-val").textContent = valText;
+      }
+    }
+
+    function clearMeasurements() {
+      measureMarkers.forEach(m => leafletMapInstance && leafletMapInstance.removeLayer(m));
+      measureMarkers = [];
+      measurePoints = [];
+      if (measurePolygon && leafletMapInstance) {
+        leafletMapInstance.removeLayer(measurePolygon);
+        measurePolygon = null;
+      }
+      calculatedPolygonHa = 0.0;
+      getEl("map-measured-val").textContent = currentLang === "hi" ? "0.00 बीघा" : "0.00 Bigha";
+    }
+
+    function toggleFarmlandMap() {
+      const container = getEl("map-pointer-container");
+      if (!container) return;
+      const isHidden = container.classList.contains("hidden");
+      if (isHidden) {
+        container.classList.remove("hidden");
+        setTimeout(() => {
+          initFarmlandMap();
+          if (leafletMapInstance) {
+            leafletMapInstance.invalidateSize();
+            const lat = parseFloat(getEl("coord-lat").value) || 25.5928;
+            const lon = parseFloat(getEl("coord-lon").value) || 83.5770;
+            leafletMapInstance.setView([lat, lon], 16);
+            if (mapMarker) mapMarker.setLatLng([lat, lon]);
+          }
+        }, 120);
+      } else {
+        container.classList.add("hidden");
+      }
+    }
+
     // =========================================================================
     // PHASE B: DYNAMIC ALTERNATIVE CROP POP-UP & MACHINERY LIFECYCLE
     // =========================================================================
@@ -3168,8 +3338,8 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
 
     async function updateAlternativeAndMachineryPlan() {
       const crop = selectedCrop || "wheat";
-      const areaHa = parseFloat(getEl("plot-area")?.value) || 1.0;
-      const unit = getEl("plot-unit")?.value || "bigha_pucca";
+      const areaHa = parseFloat(getEl("plot-area-val")?.value) || 1.0;
+      const unit = getEl("plot-area-unit")?.value || "bigha_pucca";
       const areaInHa = convertToHectares(areaHa, unit);
       const lat = parseFloat(getEl("coord-lat")?.value) || 25.5928;
       const lon = parseFloat(getEl("coord-lon")?.value) || 83.5770;
@@ -3211,7 +3381,6 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       const reasonEl = getEl("alt-popup-reason");
       if (reasonEl) reasonEl.textContent = alt.reason;
 
-      const btnApply = getEl("btn-apply-alt-crop");
       const lblApply = getEl("lbl-apply-alt-crop");
       if (lblApply) {
         const cropName = CROP_DB[alt.suggested_crop]?.[isHi ? "name_hi" : "name_en"] || alt.suggested_crop;
@@ -3229,13 +3398,13 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       const grid = getEl("machinery-tools-grid");
       if (!grid) return;
 
-      grid.innerHTML = mach.tools.map(tool => `
+      grid.innerHTML = (mach.tools || []).map(tool => `
         <div class="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-1 hover:border-emerald-500 transition">
           <div class="flex items-center justify-between gap-2">
-            <span class="font-extrabold text-xs text-slate-900">${tool.name}</span>
-            <span class="text-[11px] font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${tool.hire_cost}</span>
+            <span class="font-extrabold text-xs text-slate-900">${escapeHtml(tool.name)}</span>
+            <span class="text-[11px] font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${escapeHtml(tool.hire_cost)}</span>
           </div>
-          <p class="text-[11px] text-slate-600 leading-snug">${tool.role}</p>
+          <p class="text-[11px] text-slate-600 leading-snug">${escapeHtml(tool.role)}</p>
         </div>
       `).join("");
     }
@@ -3248,18 +3417,20 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       container.innerHTML = stages.map(st => `
         <div class="p-3 rounded-xl bg-white border-l-4 border-l-emerald-600 border border-slate-200 shadow-2xs space-y-1">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="font-extrabold text-xs text-emerald-950">${st.stage_num}. ${st.title}</span>
-            <span class="text-[10px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">${st.timeline}</span>
+            <span class="font-extrabold text-xs text-emerald-950">${escapeHtml(st.stage_num)}. ${escapeHtml(st.title)}</span>
+            <span class="text-[10px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">${escapeHtml(st.timeline)}</span>
           </div>
-          <p class="text-[11px] text-slate-700 leading-relaxed">${st.activity}</p>
+          <p class="text-[11px] text-slate-700 leading-relaxed">${escapeHtml(st.activity)}</p>
           <div class="text-[10px] text-emerald-800 font-semibold pt-0.5">
-            <strong>${isHi ? "प्रयुक्त औजार:" : "Tools Used:"}</strong> ${st.tools}
+            <strong>${isHi ? "प्रयुक्त औजार:" : "Tools Used:"}</strong> ${escapeHtml(st.tools)}
           </div>
         </div>
       `).join("");
     }
 
-    // Phase C: Certified Seeds & Government Subsidized Store Locator
+    // =========================================================================
+    // PHASE C: CERTIFIED SEEDS & GOVERNMENT SUBSIDIZED STORE LOCATOR
+    // =========================================================================
     async function updateCertifiedSeedsAndStores() {
       const crop = selectedCrop || getEl("crop-select")?.value || "wheat";
       const areaVal = parseFloat(getEl("plot-area-val")?.value) || 1.0;
@@ -3340,25 +3511,25 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         <div class="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 shadow-2xs space-y-2.5 transition flex flex-col justify-between">
           <div class="space-y-1.5">
             <div class="flex items-start justify-between gap-2">
-              <h6 class="font-extrabold text-xs sm:text-sm text-emerald-950">${v.name}</h6>
+              <h6 class="font-extrabold text-xs sm:text-sm text-emerald-950">${escapeHtml(v.name)}</h6>
               <span class="text-[10px] font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
-                ${v.subsidy_savings_pct}% ${isHi ? "छूट" : "Off"}
+                ${Number(v.subsidy_savings_pct)}% ${isHi ? "छूट" : "Off"}
               </span>
             </div>
             <div class="grid grid-cols-2 gap-1.5 text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
-              <div><strong>${isHi ? "अवधि:" : "Maturity:"}</strong> ${v.maturity_days} ${isHi ? "दिन" : "days"}</div>
-              <div><strong>${isHi ? "उपज:" : "Yield:"}</strong> ${v.yield_q_ha} ${isHi ? "कुं./हे." : "q/ha"}</div>
-              <div><strong>${isHi ? "अंकुरण:" : "Germination:"}</strong> ≥${v.germination_pct}%</div>
-              <div><strong>${isHi ? "बीज दर:" : "Seed Rate:"}</strong> ${v.seed_rate_kg_ha} kg/हे.</div>
+              <div><strong>${isHi ? "अवधि:" : "Maturity:"}</strong> ${Number(v.maturity_days)} ${isHi ? "दिन" : "days"}</div>
+              <div><strong>${isHi ? "उपज:" : "Yield:"}</strong> ${Number(v.yield_q_ha)} ${isHi ? "कुं./हे." : "q/ha"}</div>
+              <div><strong>${isHi ? "अंकुरण:" : "Germination:"}</strong> ≥${Number(v.germination_pct)}%</div>
+              <div><strong>${isHi ? "बीज दर:" : "Seed Rate:"}</strong> ${Number(v.seed_rate_kg_ha)} kg/हे.</div>
             </div>
-            <p class="text-[11px] text-slate-600 leading-snug">${v.features}</p>
+            <p class="text-[11px] text-slate-600 leading-snug">${escapeHtml(v.features)}</p>
           </div>
           <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
             <div>
               <span class="text-[10px] text-slate-500 block">${isHi ? "सरकारी दर:" : "Gov Price:"}</span>
               <div class="flex items-baseline gap-1.5">
-                <span class="font-black text-emerald-700 text-sm">₹${v.subsidized_price_per_kg_inr}/kg</span>
-                <span class="text-[11px] text-slate-400 line-through">₹${v.market_price_per_kg_inr}</span>
+                <span class="font-black text-emerald-700 text-sm">₹${Number(v.subsidized_price_per_kg_inr)}/kg</span>
+                <span class="text-[11px] text-slate-400 line-through">₹${Number(v.market_price_per_kg_inr)}</span>
               </div>
             </div>
             <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
@@ -3375,37 +3546,75 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       if (!container || !stores) return;
       const isHi = currentLang === "hi";
 
-      container.innerHTML = stores.map(s => `
+      container.innerHTML = stores.map(s => {
+        const cleanPhone = String(s.phone || "").split("/")[0].replace(/[^0-9]/g, "");
+        const displayPhone = String(s.phone || "").split("/")[0].trim();
+        return `
         <div class="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 shadow-2xs space-y-2.5 transition flex flex-col justify-between">
           <div class="space-y-1">
             <div class="flex items-start justify-between gap-2">
               <span class="text-[10px] font-black uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                ${s.store_type}
+                ${escapeHtml(s.store_type)}
               </span>
               <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded shrink-0">
-                📍 ${s.distance_km} km
+                📍 ${Number(s.distance_km)} km
               </span>
             </div>
-            <h6 class="font-extrabold text-xs sm:text-sm text-slate-900 leading-snug">${s.name}</h6>
-            <p class="text-[11px] text-slate-600 leading-tight">🏢 ${s.address}</p>
+            <h6 class="font-extrabold text-xs sm:text-sm text-slate-900 leading-snug">${escapeHtml(s.name)}</h6>
+            <p class="text-[11px] text-slate-600 leading-tight">🏢 ${escapeHtml(s.address)}</p>
             <div class="text-[10px] text-slate-500 pt-0.5">
-              <span>🕒 ${s.hours}</span>
+              <span>🕒 ${escapeHtml(s.hours)}</span>
             </div>
             <div class="text-[10px] font-semibold text-emerald-800 bg-emerald-50/70 p-1.5 rounded border border-emerald-200/60">
-              💳 ${s.subsidy_mode}
+              💳 ${escapeHtml(s.subsidy_mode)}
             </div>
           </div>
           <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
-            <a href="tel:${s.phone.split('/')[0].replace(/[^0-9]/g, '')}" class="min-h-[44px] flex-1 px-3 py-2 rounded-xl text-xs font-black bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-2xs">
+            <a href="tel:${escapeHtml(cleanPhone)}" class="min-h-[44px] flex-1 px-3 py-2 rounded-xl text-xs font-black bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-2xs">
               <span>📞</span> <span>${isHi ? "कॉल करें" : "Call Store"}</span>
             </a>
-            <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">${s.phone.split('/')[0].trim()}</span>
+            <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">${escapeHtml(displayPhone)}</span>
           </div>
         </div>
-      `).join("");
+      `;
+      }).join("");
     }
 
-    // Phase A: Farmland Map Pointer Event Listeners
+    // DOM Ready Event Listeners
+    document.addEventListener("DOMContentLoaded", () => {
+      checkBackendHealth();
+
+      // Land Unit Conversion Listeners
+      getEl("plot-area-val").addEventListener("input", () => {
+        updateLandUnitConverter();
+        runAdvisoryEngine();
+      });
+      getEl("plot-area-unit").addEventListener("change", () => {
+        updateLandUnitConverter();
+        runAdvisoryEngine();
+      });
+
+      // Hyper-Local Location Search Bar (Blinkit Style)
+      const locSearchInput = getEl("location-search-input");
+      locSearchInput.addEventListener("input", (e) => {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+          searchHyperlocalLocations(e.target.value);
+        }, 280);
+      });
+
+      // Close autocomplete dropdown on outside click
+      document.addEventListener("click", (e) => {
+        if (!locSearchInput.contains(e.target) && !getEl("location-search-dropdown").contains(e.target)) {
+          getEl("location-search-dropdown").classList.add("hidden");
+        }
+      });
+
+      // GPS Detect Buttons
+      getEl("btn-detect-gps").addEventListener("click", detectFieldGPS);
+      getEl("btn-detect-gps-inline").addEventListener("click", detectFieldGPS);
+
+      // Phase A: Farmland Map Pointer Event Listeners
       const btnToggleMap = getEl("btn-toggle-map");
       if (btnToggleMap) btnToggleMap.addEventListener("click", toggleFarmlandMap);
 
@@ -3465,8 +3674,8 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
             showToastNotification(alertMsg, "amber");
             return;
           }
-          const plotInput = getEl("plot-area");
-          const unitSelect = getEl("plot-unit");
+          const plotInput = getEl("plot-area-val");
+          const unitSelect = getEl("plot-area-unit");
           if (plotInput && unitSelect) {
             unitSelect.value = "ha";
             plotInput.value = calculatedPolygonHa.toFixed(2);
@@ -3505,6 +3714,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
             "emerald"
           );
         });
+      }
 
       // Phase B Event Listeners
       const btnMinAlt = getEl("btn-minimize-alt-popup");
@@ -3582,9 +3792,6 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
           runAdvisoryEngine();
         });
       }
-
-      }
-
 
       // Coordinate Nudge Toggle
       getEl("btn-toggle-coord-nudge").addEventListener("click", () => {
@@ -3754,55 +3961,42 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         }
 
         if (!lastSpokenPlanText) {
-          runAdvisoryEngine();
+          alert(currentLang === "hi" ? "कृपया पहले सलाह तैयार होने दें।" : "Please wait for advisory plan to generate.");
+          return;
         }
-        if (!lastSpokenPlanText) return;
 
         updateAudioButtons(true);
 
-        // Try Web Speech Synthesis first
         if ("speechSynthesis" in window) {
-          try {
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(lastSpokenPlanText);
-            u.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
-            u.rate = 0.92;
+          const utterance = new SpeechSynthesisUtterance(lastSpokenPlanText);
+          utterance.lang = currentLang === "hi" ? "hi-IN" : "en-IN";
+          utterance.rate = 0.95;
+          utterance.pitch = 1.0;
 
-            // Check if Hindi voice is available
-            const voices = window.speechSynthesis.getVoices();
-            const matchingVoice = voices.find(v => v.lang.toLowerCase().startsWith(currentLang === "hi" ? "hi" : "en"));
-            if (matchingVoice) u.voice = matchingVoice;
+          utterance.onend = () => updateAudioButtons(false);
+          utterance.onerror = () => fallbackToNeuralTTS(lastSpokenPlanText);
 
-            u.onend = () => updateAudioButtons(false);
-            u.onerror = (e) => {
-              console.warn("SpeechSynthesis error, falling back to Neural TTS:", e);
-              fallbackToNeuralTTS(lastSpokenPlanText);
-            };
+          const voices = window.speechSynthesis.getVoices();
+          const targetVoice = voices.find(v => v.lang.startsWith(currentLang === "hi" ? "hi" : "en"));
+          if (targetVoice) utterance.voice = targetVoice;
 
-            window.speechSynthesis.speak(u);
-            return;
-          } catch (e) {
-            console.warn("SpeechSynthesis exception:", e);
-          }
+          window.speechSynthesis.speak(utterance);
+        } else {
+          fallbackToNeuralTTS(lastSpokenPlanText);
         }
-
-        // Fallback to Backend Neural Audio
-        fallbackToNeuralTTS(lastSpokenPlanText);
       }
 
       getEl("btn-listen-speech").addEventListener("click", speakPlan);
       getEl("btn-listen-speech-2").addEventListener("click", speakPlan);
 
-      // Download / Share MP3 Audio Slip
-      const btnDownloadAudio = getEl("btn-download-audio");
-      if (btnDownloadAudio) {
-        btnDownloadAudio.addEventListener("click", () => {
-          if (!lastSpokenPlanText) runAdvisoryEngine();
-          if (!lastSpokenPlanText) return;
-          const url = `/api/v1/tts/synthesize?text=${encodeURIComponent(lastSpokenPlanText)}&lang=${currentLang}`;
-          window.open(url, "_blank");
-        });
-      }
+      // Download Audio MP3
+      getEl("btn-download-audio").addEventListener("click", () => {
+        if (!lastSpokenPlanText) {
+          alert(currentLang === "hi" ? "कृपया पहले सलाह तैयार होने दें।" : "Please generate plan first.");
+          return;
+        }
+        window.open(`/api/v1/tts/synthesize?text=${encodeURIComponent(lastSpokenPlanText)}&lang=${currentLang}`, "_blank");
+      });
 
       // WhatsApp Share
       getEl("btn-share-whatsapp").addEventListener("click", shareAdvisoryOnWhatsApp);
@@ -3875,8 +4069,8 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
           const isHi = currentLang === "hi";
           const cropKey = selectedCrop || "wheat";
           const cropName = CROP_DB[cropKey]?.[isHi ? "name_hi" : "name_en"] || cropKey;
-          const areaVal = getEl("plot-area")?.value || "1";
-          const unitVal = getEl("plot-unit")?.value || "ha";
+          const areaVal = getEl("plot-area-val")?.value || "1";
+          const unitVal = getEl("plot-area-unit")?.value || "ha";
           const text = isHi
             ? `🌾 *KhetSathi 360 — जैविक खेती व बाजार लिंकेज अनुरोध*\n\nफसल: ${cropName}\nरकबा: ${areaVal} ${unitVal}\n\nमैं रासायनिक उर्वरक मुक्त जैविक खेती (PKVY/PGS प्रमाणीकरण) अपनाना चाहता हूँ। कृपया मुझे नजदीकी FPO एकत्रीकरण केंद्र व खरीद अनुबंध से जोड़ें।\n\nसत्यापित पोर्टल: https://www.jaivikkheti.in`
             : `🌾 *KhetSathi 360 — Organic Farming & Direct Market Linkage Request*\n\nCrop: ${cropName}\nArea: ${areaVal} ${unitVal}\n\nI want to transition to certified organic cultivation under PKVY/PGS. Please connect me with the nearest FPO aggregation hub and direct buyer contract.\n\nVerified Portal: https://www.jaivikkheti.in`;
@@ -3912,186 +4106,13 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         });
       }
 
-      
-        // =========================================================================
-    // PHASE A: INTERACTIVE FARMLAND MAP POINTER & POLYGON ACREAGE ENGINE
-    // =========================================================================
-    let leafletMapInstance = null;
-    let mapMarker = null;
-    let satTileLayer = null;
-    let osmTileLayer = null;
-    let isMeasureMode = false;
-    let measurePolygon = null;
-    let measurePoints = [];
-    let measureMarkers = [];
-    let calculatedPolygonHa = 0.0;
-    let mapPinDebounceTimer = null;
-
-    function calculateGeodesicPolygonArea(coords) {
-      if (!coords || coords.length < 3) return 0.0;
-      const meanLat = coords.reduce((acc, c) => acc + c[0], 0) / coords.length;
-      const latRad = (meanLat * Math.PI) / 180.0;
-      const metersPerLat = 111139.0;
-      const metersPerLon = 111139.0 * Math.cos(latRad);
-      const xy = coords.map(c => [c[1] * metersPerLon, c[0] * metersPerLat]);
-      let area = 0.0;
-      const n = xy.length;
-      for (let i = 0; i < n; i++) {
-        const j = (i + 1) % n;
-        area += xy[i][0] * xy[j][1];
-        area -= xy[j][0] * xy[i][1];
-      }
-      return Math.abs(area) / 2.0;
-    }
-
-    function initFarmlandMap() {
-      if (leafletMapInstance) {
-        leafletMapInstance.invalidateSize();
-        return;
-      }
-      if (typeof L === "undefined") {
-        console.warn("[KhetSathi] Leaflet library not loaded, using tactile coordinate nudge fallback.");
-        getEl("map-pointer-container")?.classList.add("hidden");
-        getEl("coord-nudge-box")?.classList.remove("hidden");
-        const msg = currentLang === "hi" 
-          ? "⚠️ ऑफलाइन मोड: नक्शा लोड नहीं हो सका। कृपया निर्देशांक का उपयोग करें।" 
-          : "⚠️ Offline Mode: Map failed to load. Please use manual coordinate controls.";
-        showToastNotification(msg, "amber");
-        return;
-      }
-
-      const initialLat = parseFloat(getEl("coord-lat")?.value) || 25.5928;
-      const initialLon = parseFloat(getEl("coord-lon")?.value) || 83.5770;
-
-      leafletMapInstance = L.map("farmland-map-canvas", {
-        center: [initialLat, initialLon],
-        zoom: 16,
-        zoomControl: true
-      });
-
-      satTileLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-        maxZoom: 19,
-        attribution: "Esri Satellite Imagery"
-      });
-
-      osmTileLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap contributors"
-      });
-
-      satTileLayer.addTo(leafletMapInstance);
-
-      // Custom high-contrast tactile harvest marker pin
-      const harvestIcon = L.divIcon({
-        className: "custom-harvest-pin",
-        html: `<div style="background-color:#10b981; border:3px solid #ffffff; width:36px; height:36px; border-radius:50%; box-shadow:0 0 14px rgba(16,185,129,0.9); display:flex; align-items:center; justify-content:center; font-size:20px; cursor:grab;">📍</div>`,
-        iconSize: [36, 36],
-        iconAnchor: [18, 36]
-      });
-
-      mapMarker = L.marker([initialLat, initialLon], {
-        draggable: true,
-        icon: harvestIcon
-      }).addTo(leafletMapInstance);
-
-      function onPinPositionUpdated(lat, lon) {
-        getEl("coord-lat").value = lat.toFixed(4);
-        getEl("coord-lon").value = lon.toFixed(4);
-        const overlayCoords = getEl("map-overlay-coords");
-        if (overlayCoords) overlayCoords.textContent = `${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`;
-        clearTimeout(mapPinDebounceTimer);
-        mapPinDebounceTimer = setTimeout(() => {
-          fetchLocationAndWeather(lat, lon);
-        }, 250);
-      }
-
-      mapMarker.on("dragend", (e) => {
-        const pos = e.target.getLatLng();
-        onPinPositionUpdated(pos.lat, pos.lng);
-      });
-
-      leafletMapInstance.on("click", (e) => {
-        if (isMeasureMode) {
-          addMeasurePoint(e.latlng);
-        } else {
-          mapMarker.setLatLng(e.latlng);
-          onPinPositionUpdated(e.latlng.lat, e.latlng.lng);
-        }
-      });
-    }
-
-    function addMeasurePoint(latlng) {
-      // Immutable append pattern
-      measurePoints = [...measurePoints, [latlng.lat, latlng.lng]];
-      const pMarker = L.circleMarker(latlng, {
-        radius: 7,
-        color: "#f59e0b",
-        fillColor: "#ffffff",
-        fillOpacity: 1.0,
-        weight: 3
-      }).addTo(leafletMapInstance);
-      measureMarkers = [...measureMarkers, pMarker];
-
-      if (measurePolygon) leafletMapInstance.removeLayer(measurePolygon);
-      measurePolygon = L.polygon(measurePoints, {
-        color: "#10b981",
-        fillColor: "#10b981",
-        fillOpacity: 0.35,
-        weight: 3
-      }).addTo(leafletMapInstance);
-
-      if (measurePoints.length >= 3) {
-        const sqMeters = calculateGeodesicPolygonArea(measurePoints);
-        calculatedPolygonHa = sqMeters / 10000.0;
-        const bigha = sqMeters / 2500.0;
-        const acre = sqMeters / 4046.86;
-        const isHi = currentLang === "hi";
-        const valText = isHi
-          ? `${bigha.toFixed(2)} बीघा (${acre.toFixed(2)} एकड़)`
-          : `${bigha.toFixed(2)} Bigha (${acre.toFixed(2)} Acre)`;
-        getEl("map-measured-val").textContent = valText;
-      }
-    }
-
-    function clearMeasurements() {
-      measureMarkers.forEach(m => leafletMapInstance && leafletMapInstance.removeLayer(m));
-      measureMarkers = [];
-      measurePoints = [];
-      if (measurePolygon && leafletMapInstance) {
-        leafletMapInstance.removeLayer(measurePolygon);
-        measurePolygon = null;
-      }
-      calculatedPolygonHa = 0.0;
-      getEl("map-measured-val").textContent = currentLang === "hi" ? "0.00 बीघा" : "0.00 Bigha";
-    }
-
-    function toggleFarmlandMap() {
-      const container = getEl("map-pointer-container");
-      if (!container) return;
-      const isHidden = container.classList.contains("hidden");
-      if (isHidden) {
-        container.classList.remove("hidden");
-        setTimeout(() => {
-          initFarmlandMap();
-          if (leafletMapInstance) {
-            leafletMapInstance.invalidateSize();
-            const lat = parseFloat(getEl("coord-lat").value) || 25.5928;
-            const lon = parseFloat(getEl("coord-lon").value) || 83.5770;
-            leafletMapInstance.setView([lat, lon], 16);
-            if (mapMarker) mapMarker.setLatLng([lat, lon]);
-          }
-        }, 120);
-      } else {
-        container.classList.add("hidden");
-      }
-    }
-
       // Initial Execution
       setLanguage(currentLang);
       renderShcTable();
       fetchLocationAndWeather(25.5928, 83.5770);
     });
   </script>
+
   <!-- Toast Notification Bar (Non-blocking) -->
   
   <!-- Phase B: Floating Top-Right Smart Alternative Crop Pop-up -->
@@ -4105,10 +4126,10 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         </div>
       </div>
       <div class="flex items-center gap-1">
-        <button id="btn-minimize-alt-popup" type="button" class="min-h-[36px] min-w-[36px] p-1.5 rounded-lg hover:bg-amber-400 font-black text-xs transition flex items-center justify-center" aria-label="छोटा करें">
+        <button id="btn-minimize-alt-popup" type="button" class="min-h-[44px] min-w-[44px] p-2 rounded-lg hover:bg-amber-400 font-black text-xs transition flex items-center justify-center" aria-label="छोटा करें">
           <span id="alt-min-icon">➖</span>
         </button>
-        <button id="btn-close-alt-popup" type="button" class="min-h-[36px] min-w-[36px] p-1.5 rounded-lg hover:bg-amber-400 font-black text-xs transition flex items-center justify-center" aria-label="बंद करें">
+        <button id="btn-close-alt-popup" type="button" class="min-h-[44px] min-w-[44px] p-2 rounded-lg hover:bg-amber-400 font-black text-xs transition flex items-center justify-center" aria-label="बंद करें">
           <span>✖️</span>
         </button>
       </div>
