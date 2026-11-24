@@ -4,10 +4,10 @@ Automated regression tests verifying all security, XSS sanitization, parameter v
 bilingual parity, and DOM contract remediations from the code audit.
 """
 
-import html
 import re
-from pathlib import Path
 import unittest
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 from app.api import app
@@ -55,19 +55,19 @@ class TestAuditRemediation(unittest.TestCase):
 
     def test_no_orphan_plot_area_ids(self):
         """Script must never query non-existent plot-area or plot-unit IDs."""
-        scripts = re.findall(r'<script.*?>([\s\S]*?)</script>', self.html_content)
+        scripts = re.findall(r"<script.*?>([\s\S]*?)</script>", self.html_content)
         all_js = "\n".join(scripts)
         bad_matches = re.findall(r'getEl\([\'"]plot-(?:area|unit)[\'"]\)', all_js)
         self.assertEqual(bad_matches, [], f"Found orphaned element IDs: {bad_matches}")
 
     def test_html_tag_balance(self):
         """HTML must have perfectly matched container tags."""
-        div_open = len(re.findall(r'<div\b', self.html_content))
-        div_close = len(re.findall(r'</div>', self.html_content))
+        div_open = len(re.findall(r"<div\b", self.html_content))
+        div_close = len(re.findall(r"</div>", self.html_content))
         self.assertEqual(div_open, div_close, f"Div mismatch: {div_open} open vs {div_close} close")
 
-        btn_open = len(re.findall(r'<button\b', self.html_content))
-        btn_close = len(re.findall(r'</button>', self.html_content))
+        btn_open = len(re.findall(r"<button\b", self.html_content))
+        btn_close = len(re.findall(r"</button>", self.html_content))
         self.assertEqual(btn_open, btn_close, f"Button mismatch: {btn_open} open vs {btn_close} close")
 
     def test_bilingual_idmap_coverage(self):
@@ -92,20 +92,71 @@ class TestAuditRemediation(unittest.TestCase):
             self.assertIn(f'"{lbl}":', self.html_content, f"Missing idMap mapping for: {lbl}")
 
     def test_touch_target_accessibility(self):
-        """Interactive controls in map and popup must meet WCAG 2.2 touch target minimums (44px)."""
+        """Interactive controls across navigation, inputs, and popups must meet WCAG 2.2 touch target minimums (44px)."""
         controls = [
+            "tab-module-1",
+            "tab-module-2",
+            "btn-scientific-mode",
+            "lang-toggle",
+            "btn-choice-direct",
+            "btn-choice-ocr",
             "btn-detect-gps-inline",
             "btn-toggle-map",
             "btn-toggle-coord-nudge",
+            "coord-lat",
+            "coord-lon",
+            "irrigation-select",
+            "btn-browse-file",
             "btn-minimize-alt-popup",
             "btn-close-alt-popup",
             "btn-apply-alt-crop",
             "btn-view-machinery-plan",
+            "btn-whatsapp-organic",
+            "btn-close-sci-console",
         ]
         for c in controls:
             pattern = rf'id="{c}"[^>]*class="[^"]*min-h-\[44px\]'
             match = re.search(pattern, self.html_content)
             self.assertIsNotNone(match, f"Control {c} lacks min-h-[44px] touch target class")
+
+    def test_crop_db_defined_and_complete(self):
+        """Frontend script must define CROP_DB with all standard crops."""
+        self.assertIn("const CROP_DB =", self.html_content)
+        for crop in ["wheat", "rice", "maize", "mustard", "gram", "sugarcane"]:
+            self.assertIn(f"{crop}:", self.html_content)
+
+    def test_aria_live_and_atomic_regions(self):
+        """Live prescription outputs must declare role='status', aria-live='polite', and aria-atomic='true'."""
+        status_regions = [
+            "out-dap-bags",
+            "out-urea-bags",
+            "out-mop-bags",
+            "org-panel-vc-bags",
+            "org-panel-jeeva-litres",
+            "org-panel-bio-npk",
+        ]
+        for r in status_regions:
+            pattern = rf'id="{r}"[^>]*aria-live="polite"[^>]*aria-atomic="true"'
+            match = re.search(pattern, self.html_content)
+            self.assertIsNotNone(match, f"Region {r} lacks required live region semantics")
+
+    def test_escape_key_listener_present(self):
+        """Global keydown handler must support dismissing overlays via Escape key."""
+        self.assertIn('e.key === "Escape"', self.html_content)
+
+    def test_skeleton_loading_states(self):
+        """Low-bandwidth 4G skeleton animations must be defined in HTML and JS."""
+        self.assertIn("renderMachinerySkeleton()", self.html_content)
+        self.assertIn("renderLifecycleStagesSkeleton()", self.html_content)
+        self.assertIn("renderSeedVarietiesSkeleton()", self.html_content)
+        self.assertIn("renderSeedStoresSkeleton()", self.html_content)
+        self.assertIn("renderWeatherSkeleton()", self.html_content)
+        self.assertIn("animate-pulse", self.html_content)
+
+    def test_no_dynamic_touch_target_shrinkage(self):
+        """Click handlers must never dynamically reassign touch targets below 44px."""
+        self.assertNotIn("min-h-[38px]", self.html_content)
+        self.assertNotIn("min-h-[40px]", self.html_content)
 
 
 if __name__ == "__main__":

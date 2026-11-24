@@ -4,13 +4,11 @@ Certified Seed Varieties, Government Subsidized Price Matrix & Block Store Locat
 """
 
 import unittest
+
 from fastapi.testclient import TestClient
 
 from app.api import app
-from app.seed_store_service import (
-    get_certified_seed_varieties,
-    get_nearby_government_seed_stores
-)
+from app.seed_store_service import get_certified_seed_varieties, get_nearby_government_seed_stores
 
 
 class TestPhaseCSeedsAndStores(unittest.TestCase):
@@ -79,7 +77,6 @@ class TestPhaseCSeedsAndStores(unittest.TestCase):
         - Bilingual I18N keys for certified seeds and government block stores
         - WCAG 2.2 touch target compliance (min-h-[44px])
         """
-        import os
         from pathlib import Path
 
         html_path = Path(__file__).resolve().parent.parent / "frontend" / "index.html"

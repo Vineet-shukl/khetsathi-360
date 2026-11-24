@@ -42,18 +42,18 @@ from app.contracts import (
     YieldPredictionRequest,
     YieldPredictionResponse,
 )
-from app.district_soil_model import STATE_TO_ZONE, DistrictSoilModel
 from app.crop_machinery_service import (
     evaluate_alternative_crop,
-    get_plot_scaled_machinery_plan,
     get_cultivation_lifecycle_stages,
+    get_plot_scaled_machinery_plan,
 )
+from app.district_soil_model import STATE_TO_ZONE, DistrictSoilModel
+from app.ml_residual import ResidualMLModel
+from app.satellite_service import calculate_satellite_vegetation
 from app.seed_store_service import (
     get_certified_seed_varieties,
     get_nearby_government_seed_stores,
 )
-from app.ml_residual import ResidualMLModel
-from app.satellite_service import calculate_satellite_vegetation
 from app.weather_service import fetch_live_weather, search_pinpoint_locations
 from app.yield_model import YieldModel
 
@@ -133,13 +133,17 @@ def search_location(
 
 @app.get("/api/v1/crop/alternative-and-machinery")
 def crop_alternative_and_machinery(
-    crop: str = Query(..., min_length=1, max_length=50, pattern=r"^[a-zA-Z0-9_\-]+$", description="Crop identifier, e.g. wheat, rice"),
+    crop: str = Query(
+        ..., min_length=1, max_length=50, pattern=r"^[a-zA-Z0-9_\-]+$", description="Crop identifier, e.g. wheat, rice"
+    ),
     area_ha: float = Query(default=1.0, gt=0, le=500.0, description="Area in hectares"),
     lat: float | None = Query(default=None, ge=6.0, le=38.0),
     lon: float | None = Query(default=None, ge=68.0, le=98.0),
     rain_prob_pct: int = Query(default=15, ge=0, le=100),
     et0: float = Query(default=4.0, ge=0.0, le=25.0),
-    lang: str = Query(default="hi", min_length=2, max_length=5, pattern=r"^(hi|en)$", description="Language (hi or en)"),
+    lang: str = Query(
+        default="hi", min_length=2, max_length=5, pattern=r"^(hi|en)$", description="Language (hi or en)"
+    ),
 ):
     """
     Evaluates microclimate-triggered alternative crop suggestions and
@@ -176,12 +180,16 @@ def crop_alternative_and_machinery(
 
 @app.get("/api/v1/seed/certified-and-stores")
 def seed_certified_and_stores(
-    crop: str = Query(..., min_length=1, max_length=50, pattern=r"^[a-zA-Z0-9_\-]+$", description="Crop identifier, e.g. wheat, rice"),
+    crop: str = Query(
+        ..., min_length=1, max_length=50, pattern=r"^[a-zA-Z0-9_\-]+$", description="Crop identifier, e.g. wheat, rice"
+    ),
     district: str = Query(default="Ghazipur", min_length=1, max_length=100, description="District name"),
     area_ha: float = Query(default=1.0, gt=0, le=500.0, description="Area in hectares"),
     lat: float | None = Query(default=None, ge=6.0, le=38.0),
     lon: float | None = Query(default=None, ge=68.0, le=98.0),
-    lang: str = Query(default="hi", min_length=2, max_length=5, pattern=r"^(hi|en)$", description="Language (hi or en)"),
+    lang: str = Query(
+        default="hi", min_length=2, max_length=5, pattern=r"^(hi|en)$", description="Language (hi or en)"
+    ),
 ):
     """
     Returns ICAR-certified seed varieties with transparent government subsidized prices,

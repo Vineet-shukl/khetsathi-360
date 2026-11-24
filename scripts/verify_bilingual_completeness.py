@@ -6,9 +6,10 @@ Authoritative verification test asserting 100% bilingual parity across:
 3. frontend/future.html (Standalone Future Organic Hub)
 """
 
-import sys
 import re
+import sys
 from pathlib import Path
+
 
 def test_file(filepath: Path):
     print("=" * 70)
@@ -19,15 +20,15 @@ def test_file(filepath: Path):
     errors = []
 
     # 1. Parse I18N blocks
-    hi_match = re.search(r'hi:\s*\{(.*?)\n\s*\},', content, re.DOTALL)
-    en_match = re.search(r'en:\s*\{(.*?)\n\s*\}', content, re.DOTALL)
+    hi_match = re.search(r"hi:\s*\{(.*?)\n\s*\},", content, re.DOTALL)
+    en_match = re.search(r"en:\s*\{(.*?)\n\s*\}", content, re.DOTALL)
 
     if not hi_match or not en_match:
         errors.append("Failed to locate I18N.hi or I18N.en dictionary.")
     else:
         # Extract keys defined as 'keyName: "..."'
-        hi_keys = set(re.findall(r'^\s*([a-zA-Z0-9_]+)\s*:', hi_match.group(1), re.MULTILINE))
-        en_keys = set(re.findall(r'^\s*([a-zA-Z0-9_]+)\s*:', en_match.group(1), re.MULTILINE))
+        hi_keys = set(re.findall(r"^\s*([a-zA-Z0-9_]+)\s*:", hi_match.group(1), re.MULTILINE))
+        en_keys = set(re.findall(r"^\s*([a-zA-Z0-9_]+)\s*:", en_match.group(1), re.MULTILINE))
 
         print(f"✓ Parsed I18N keys: hi={len(hi_keys)}, en={len(en_keys)}")
         diff_en = hi_keys - en_keys
@@ -39,7 +40,7 @@ def test_file(filepath: Path):
             errors.append(f"Keys present in EN but missing in HI: {diff_hi}")
 
     # 2. Check idMap / textMap target existence in DOM
-    idmap_match = re.search(r'const (idMap|textMap) = \{(.*?)\};', content, re.DOTALL)
+    idmap_match = re.search(r"const (idMap|textMap) = \{(.*?)\};", content, re.DOTALL)
     if not idmap_match:
         errors.append("Could not find idMap or textMap object.")
     else:
@@ -56,35 +57,83 @@ def test_file(filepath: Path):
             print("✓ All mapped elements exist in HTML DOM.")
 
     # 3. Check for any unmapped static Hindi nodes
-    script_idx = content.find('<script')
+    script_idx = content.find("<script")
     body_html = content[:script_idx] if script_idx != -1 else content
-    tags = re.findall(r'<([a-z0-9]+)([^>]*)>([^<]+)</\1>', body_html, re.IGNORECASE)
+    tags = re.findall(r"<([a-z0-9]+)([^>]*)>([^<]+)</\1>", body_html, re.IGNORECASE)
 
     idmap_text = idmap_match.group(2) if idmap_match else ""
     dynamic_whitelist = {
-        'geo-location-text', 'converted-ha-pill', 'ocr-status-text', 'ocr-percent-text',
-        'weather-loc-label', 'weather-stat-line', 'weather-guardrail-pill',
-        'sat-vigor-title', 'sat-ndvi-badge', 'sat-ndvi-val-text', 'sat-clay-text', 'sat-density-text', 'sat-cec-text', 'sat-action-text',
-        'conf-title', 'out-dap-bags', 'out-dap-sub', 'out-urea-bags', 'out-urea-sub', 'out-mop-bags', 'out-mop-sub',
-        'irrigation-stage-pill', 'org-net-gain-badge', 'org-savings-val', 'org-premium-val', 'org-subsidy-val', 'org-profit-val',
-        'org-vc-bags', 'org-bio-npk', 'org-jeevamrut', 'org-neem-cake', 'shc-amendment-note', 'assim-result',
-        'slider-years-text', 'chem-soc-val', 'chem-cost-val', 'chem-water-val', 'chem-verdict',
-        'org-soc-val', 'org-worm-val', 'org-water-val', 'org-verdict',
-        'jeev-dung', 'jeev-urine', 'jeev-jaggery', 'jeev-flour', 'jeev-water',
-        'beej-dung', 'beej-urine', 'beej-milk', 'beej-water',
-        'neem-leaves', 'neem-urine', 'neem-dung', 'neem-water',
-        'eco-chem-total-cost', 'eco-org-total-cost', 'eco-org-mandi', 'eco-org-net', 'eco-extra-gain'
+        "geo-location-text",
+        "converted-ha-pill",
+        "ocr-status-text",
+        "ocr-percent-text",
+        "weather-loc-label",
+        "weather-stat-line",
+        "weather-guardrail-pill",
+        "sat-vigor-title",
+        "sat-ndvi-badge",
+        "sat-ndvi-val-text",
+        "sat-clay-text",
+        "sat-density-text",
+        "sat-cec-text",
+        "sat-action-text",
+        "conf-title",
+        "out-dap-bags",
+        "out-dap-sub",
+        "out-urea-bags",
+        "out-urea-sub",
+        "out-mop-bags",
+        "out-mop-sub",
+        "irrigation-stage-pill",
+        "org-net-gain-badge",
+        "org-savings-val",
+        "org-premium-val",
+        "org-subsidy-val",
+        "org-profit-val",
+        "org-vc-bags",
+        "org-bio-npk",
+        "org-jeevamrut",
+        "org-neem-cake",
+        "shc-amendment-note",
+        "assim-result",
+        "slider-years-text",
+        "chem-soc-val",
+        "chem-cost-val",
+        "chem-water-val",
+        "chem-verdict",
+        "org-soc-val",
+        "org-worm-val",
+        "org-water-val",
+        "org-verdict",
+        "jeev-dung",
+        "jeev-urine",
+        "jeev-jaggery",
+        "jeev-flour",
+        "jeev-water",
+        "beej-dung",
+        "beej-urine",
+        "beej-milk",
+        "beej-water",
+        "neem-leaves",
+        "neem-urine",
+        "neem-dung",
+        "neem-water",
+        "eco-chem-total-cost",
+        "eco-org-total-cost",
+        "eco-org-mandi",
+        "eco-org-net",
+        "eco-extra-gain",
     }
 
     unmapped = []
     for tag_name, attrs, text in tags:
         text_clean = text.strip()
-        if tag_name in ['title', 'style']:
+        if tag_name in ["title", "style"]:
             continue
-        if re.search(r'[\u0900-\u097F]', text_clean) and len(text_clean) > 2:
+        if re.search(r"[\u0900-\u097F]", text_clean) and len(text_clean) > 2:
             id_m = re.search(r'id=["\']([^"\']+)["\']', attrs)
             if not id_m:
-                unmapped.append((tag_name, 'NO_ID', text_clean))
+                unmapped.append((tag_name, "NO_ID", text_clean))
             else:
                 el_id = id_m.group(1)
                 if el_id not in idmap_text and el_id not in dynamic_whitelist:
@@ -104,12 +153,13 @@ def test_file(filepath: Path):
         print("\n✅ PASSED: 100% Bilingual Parity Confirmed!")
         return True
 
+
 def main():
     root = Path(__file__).resolve().parent.parent
     files = [
         root / "frontend" / "index.html",
         root / "frontend" / "index_v1_legacy.html",
-        root / "frontend" / "future.html"
+        root / "frontend" / "future.html",
     ]
 
     all_passed = True
@@ -127,6 +177,7 @@ def main():
     else:
         print("\n🎉 ALL 3 SURFACES PASSED 100% BILINGUAL VERIFICATION!")
         sys.exit(0)
+
 
 if __name__ == "__main__":
     main()

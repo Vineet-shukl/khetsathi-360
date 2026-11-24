@@ -4,13 +4,14 @@ Smart Floating Alternative Crop Suggestion Engine & Plot-Scale Machinery Lifecyc
 """
 
 import unittest
+
 from fastapi.testclient import TestClient
 
 from app.api import app
 from app.crop_machinery_service import (
     evaluate_alternative_crop,
+    get_cultivation_lifecycle_stages,
     get_plot_scaled_machinery_plan,
-    get_cultivation_lifecycle_stages
 )
 
 
@@ -24,11 +25,7 @@ class TestPhaseBCropMachinery(unittest.TestCase):
         engine recommends Mustard (सरसों) with positive water savings and margin boost.
         """
         alt = evaluate_alternative_crop(
-            crop="wheat",
-            area_ha=1.0,
-            rain_prob_48h_pct=10,
-            et0_fao_mm_day=4.5,
-            language="hi"
+            crop="wheat", area_ha=1.0, rain_prob_48h_pct=10, et0_fao_mm_day=4.5, language="hi"
         )
         self.assertTrue(alt["has_alternative"])
         self.assertEqual(alt["suggested_crop"], "mustard")
@@ -42,11 +39,7 @@ class TestPhaseBCropMachinery(unittest.TestCase):
         engine suggests Maize or Pulses (Gram) with >= 60% water reduction.
         """
         alt = evaluate_alternative_crop(
-            crop="rice",
-            area_ha=1.5,
-            rain_prob_48h_pct=15,
-            et0_fao_mm_day=5.2,
-            language="en"
+            crop="rice", area_ha=1.5, rain_prob_48h_pct=15, et0_fao_mm_day=5.2, language="en"
         )
         self.assertTrue(alt["has_alternative"])
         self.assertIn(alt["suggested_crop"], ["maize", "gram"])
@@ -73,7 +66,9 @@ class TestPhaseBCropMachinery(unittest.TestCase):
         # Large: 3.5 Ha (14 Bigha)
         large = get_plot_scaled_machinery_plan(area_ha=3.5, language="hi")
         self.assertEqual(large["tier"], "commercial")
-        self.assertTrue(any("रोटावेटर" in t["name"] or "कंबाइन" in t["name"] or "ट्रैक्टर" in t["name"] for t in large["tools"]))
+        self.assertTrue(
+            any("रोटावेटर" in t["name"] or "कंबाइन" in t["name"] or "ट्रैक्टर" in t["name"] for t in large["tools"])
+        )
 
     def test_cultivation_stages_structure(self):
         """

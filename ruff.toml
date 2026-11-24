@@ -16,7 +16,7 @@ select = [
 ignore = [
     "E501", # line-length managed by formatter
 ]
-allowed-confusables = ["–", "×"]
+allowed-confusables = ["–", "×", "➖", "➕", "ℹ"]
 
 [lint.per-file-ignores]
 # FastAPI uses Query(), File(), Path() in default function signatures
@@ -24,6 +24,7 @@ allowed-confusables = ["–", "×"]
 # Test suites and training scripts use sys.path modifications before local imports
 "tests/*" = ["E402"]
 "ml_pipeline/*" = ["E402"]
+"scripts/*" = ["RUF001"]
 
 [lint.isort]
 known-first-party = ["app", "ml_pipeline"]

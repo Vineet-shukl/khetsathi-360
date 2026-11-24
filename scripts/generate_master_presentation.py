@@ -6,11 +6,12 @@ Includes executive design, high-contrast palette, prototype screenshots, and det
 
 import os
 from pathlib import Path
+
 from pptx import Presentation
-from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN
 from pptx.enum.shapes import MSO_SHAPE
+from pptx.util import Inches, Pt
+
 
 def create_deck():
     prs = Presentation()
@@ -21,18 +22,18 @@ def create_deck():
     blank_layout = prs.slide_layouts[6]
 
     # Brand Color Palette
-    C_FOREST_DARK = RGBColor(14, 45, 31)     # #0e2d1f
-    C_FOREST_MED  = RGBColor(27, 72, 52)     # #1b4834
-    C_EMERALD     = RGBColor(16, 185, 129)   # #10b981
-    C_AMBER       = RGBColor(245, 158, 11)   # #f59e0b
-    C_AMBER_DARK  = RGBColor(180, 83, 9)     # #b45309
-    C_SLATE_DARK  = RGBColor(15, 31, 23)     # #0f1f17
-    C_SLATE_MUTED = RGBColor(71, 85, 105)    # #475569
-    C_LIGHT_BG    = RGBColor(244, 247, 244)  # #f4f7f4
-    C_WHITE       = RGBColor(255, 255, 255)  # #ffffff
+    C_FOREST_DARK = RGBColor(14, 45, 31)  # #0e2d1f
+    C_FOREST_MED = RGBColor(27, 72, 52)  # #1b4834
+    C_EMERALD = RGBColor(16, 185, 129)  # #10b981
+    C_AMBER = RGBColor(245, 158, 11)  # #f59e0b
+    C_AMBER_DARK = RGBColor(180, 83, 9)  # #b45309
+    C_SLATE_DARK = RGBColor(15, 31, 23)  # #0f1f17
+    C_SLATE_MUTED = RGBColor(71, 85, 105)  # #475569
+    C_LIGHT_BG = RGBColor(244, 247, 244)  # #f4f7f4
+    C_WHITE = RGBColor(255, 255, 255)  # #ffffff
     C_CARD_BORDER = RGBColor(212, 223, 214)  # #d4dfd6
-    C_CYAN        = RGBColor(8, 145, 178)    # #0891b2
-    C_RED         = RGBColor(220, 38, 38)    # #dc2626
+    C_CYAN = RGBColor(8, 145, 178)  # #0891b2
+    C_RED = RGBColor(220, 38, 38)  # #dc2626
 
     def add_header(slide, title_text, category_text="KHETSATHI 360 · STRATEGIC BLUEPRINT"):
         # Header banner background
@@ -116,7 +117,7 @@ def create_deck():
     pill_data = [
         ("695 Districts", "Full Pan-India Geospatial Baseline"),
         ("Class-5 UX", "Visual Cards + Audio Speech Reader"),
-        ("100% Parity", "Flawless Bilingual Hindi ⇄ English")
+        ("100% Parity", "Flawless Bilingual Hindi ⇄ English"),
     ]
     for idx, (title, sub) in enumerate(pill_data):
         card_x = Inches(1.3 + idx * 3.65)
@@ -139,10 +140,22 @@ def create_deck():
     add_header(s2, "The Ground Reality: Why Existing Agri-Tech Fails Grassroots Farmers", "THE PROBLEM CONTEXT")
 
     problems = [
-        ("🧪 Chemical Overdosing & Fertilizer Burn", "Farmers apply Urea & DAP blindly based on habit. Soil Organic Carbon (SOC) has plummeted below 0.5% in 70% of Indian soils. Massive leaching wastes ₹12,000/ha."),
-        ("🌾 Seed Fraud & Store Disconnect", "Fake or sub-par seed varieties flood local private dealers. Farmers have zero real-time awareness of nearest Government Subsidized Seed Stores (राजकीय बीज भंडार) or KVKs."),
-        ("🌧️ Microclimate Shocks & Rain Leaching", "Weather forecasts are too generic (state-level). Top-dressing Urea right before sudden downpours washes expensive nitrogen into local waterways, causing 100% chemical loss."),
-        ("📱 Literacy & Digital Divide Barrier", "Most agriculture portals are complex English spreadsheets designed for desktop agronomists. India's rural smallholders (Class 5 literacy) are completely left behind.")
+        (
+            "🧪 Chemical Overdosing & Fertilizer Burn",
+            "Farmers apply Urea & DAP blindly based on habit. Soil Organic Carbon (SOC) has plummeted below 0.5% in 70% of Indian soils. Massive leaching wastes ₹12,000/ha.",
+        ),
+        (
+            "🌾 Seed Fraud & Store Disconnect",
+            "Fake or sub-par seed varieties flood local private dealers. Farmers have zero real-time awareness of nearest Government Subsidized Seed Stores (राजकीय बीज भंडार) or KVKs.",
+        ),
+        (
+            "🌧️ Microclimate Shocks & Rain Leaching",
+            "Weather forecasts are too generic (state-level). Top-dressing Urea right before sudden downpours washes expensive nitrogen into local waterways, causing 100% chemical loss.",
+        ),
+        (
+            "📱 Literacy & Digital Divide Barrier",
+            "Most agriculture portals are complex English spreadsheets designed for desktop agronomists. India's rural smallholders (Class 5 literacy) are completely left behind.",
+        ),
     ]
     for i, (title, desc) in enumerate(problems):
         row = i // 2
@@ -170,13 +183,34 @@ def create_deck():
 
     pillars = [
         ("1. Farmland Map Pointer", "Tap/drag pin on satellite imagery; 1-click GPS + lat/lon coordinate precision."),
-        ("2. Certified Seed & Govt Stores", "Best climate-resilient varieties; locator for Block Seed Stores & subsidized rates."),
-        ("3. Weather & Alternate Crop Pop-up", "NWP microclimate forecasting; minimizable top-right advice pop-up + machinery lifecycle."),
-        ("4. Dual Soil Intelligence", "Multimodal 12-param SHC Vision OCR with strict guardrails + 695-district spatial baseline."),
-        ("5. Amrit Mati Organic Mode", "One-touch chemical/organic toggle; input savings ledger + direct buyer/PGS-India links."),
-        ("6. Industrial Speed & 4G PWA", "Sub-200ms TTFB, skeleton screens, and service worker offline caching on budget devices."),
-        ("7. Class-5 Friendly UX Benchmark", "Visual tactile cards, audio speech narration, outdoor contrast, 100% bilingual parity."),
-        ("8. Core Rule & Governance", "Permanent binding architectural constitution codified in docs/PROJECT_FOUNDATION.md.")
+        (
+            "2. Certified Seed & Govt Stores",
+            "Best climate-resilient varieties; locator for Block Seed Stores & subsidized rates.",
+        ),
+        (
+            "3. Weather & Alternate Crop Pop-up",
+            "NWP microclimate forecasting; minimizable top-right advice pop-up + machinery lifecycle.",
+        ),
+        (
+            "4. Dual Soil Intelligence",
+            "Multimodal 12-param SHC Vision OCR with strict guardrails + 695-district spatial baseline.",
+        ),
+        (
+            "5. Amrit Mati Organic Mode",
+            "One-touch chemical/organic toggle; input savings ledger + direct buyer/PGS-India links.",
+        ),
+        (
+            "6. Industrial Speed & 4G PWA",
+            "Sub-200ms TTFB, skeleton screens, and service worker offline caching on budget devices.",
+        ),
+        (
+            "7. Class-5 Friendly UX Benchmark",
+            "Visual tactile cards, audio speech narration, outdoor contrast, 100% bilingual parity.",
+        ),
+        (
+            "8. Core Rule & Governance",
+            "Permanent binding architectural constitution codified in docs/PROJECT_FOUNDATION.md.",
+        ),
     ]
     for i, (p_title, p_desc) in enumerate(pillars):
         row = i // 4
@@ -216,7 +250,7 @@ def create_deck():
         "3-Way Land Area Unit Converter: Automatically converts local units (Pucca Bigha, Kuccha Bigha, Acre) into standard hectares.",
         "Deterministic Agronomic Plan: Calculates ICAR package of practices elemental targets and converts them into commercial 50kg DAP, 45kg Urea, and 50kg MOP bags.",
         "DAP Nitrogen Credit Offset: Automatically subtracts the 18% elemental N already delivered by DAP so farmers avoid over-applying Urea.",
-        "Audio Narration: Built-in voice playback allowing low-literacy farmers to listen to their customized plan in clear Hindi/English."
+        "Audio Narration: Built-in voice playback allowing low-literacy farmers to listen to their customized plan in clear Hindi/English.",
     ]
     for b in bullets4:
         p_b = tb4.text_frame.add_paragraph()
@@ -252,7 +286,7 @@ def create_deck():
         "ISRIC SoilGrids 250m Profile: Extracts physical topsoil clay percentage, bulk density (g/cm³), and cation exchange capacity (CEC) to predict fertilizer retention.",
         "Open-Meteo High-Resolution NWP: Real-time numerical weather prediction delivering live temperature, relative humidity, and 48-hour precipitation forecasts.",
         "Active Rain-Leaching Guardrail: Triggers an immediate high-contrast alert: 'HOLD Urea Top-Dress!' when 48h rain probability exceeds 60%, saving thousands of rupees in fertilizer runoff.",
-        "FAO-56 Evapotranspiration (ET0): Dynamic crop water demand curve calculating daily irrigation requirements in mm/day."
+        "FAO-56 Evapotranspiration (ET0): Dynamic crop water demand curve calculating daily irrigation requirements in mm/day.",
     ]
     for b in bullets5:
         p_b = tb5.text_frame.add_paragraph()
@@ -279,7 +313,7 @@ def create_deck():
         "Instant Lab Card Digitization: Farmers photograph their official Soil Health Card; computer vision extracts all 12 chemical parameters (N, P, K, OC, pH, EC, S, Zn, Fe, Cu, Mn, B).",
         "Rigorous Document Guardrails: Pre-validation filters reject non-agricultural documents (resumes, electricity bills, invoices, receipts) with zero false triggers.",
         "Bilingual Devanagari OCR: Reads cards printed in Hindi, English, and regional state agricultural formats.",
-        "Dynamic Bag Calibration: Ingested soil numbers instantly adjust the fertilizer recommendation to address specific soil deficiencies (e.g., Zinc or Gypsum amendments)."
+        "Dynamic Bag Calibration: Ingested soil numbers instantly adjust the fertilizer recommendation to address specific soil deficiencies (e.g., Zinc or Gypsum amendments).",
     ]
     for b in b6a:
         p_b = tb6a.text_frame.add_paragraph()
@@ -300,7 +334,7 @@ def create_deck():
         "Zero-Card Fallback: 65% of Indian farmers have never received a lab soil card. KhetSathi 360 provides a geostatistical baseline for every village.",
         "Spatial Inverse Distance Weighting: Real centroid dataset spanning 695 rural districts of India interpolates expected soil N-P-K, pH, and organic carbon based on GPS coordinates.",
         "Uncertainty Flagging: Transparently informs the farmer whether advice is 'Lab Card Verified' (±5% confidence) or 'District Baseline Estimate' (±15% confidence).",
-        "Autonomous Offline Operation: Geostatistical district bundle is pre-cached on the device, functioning without an active cellular connection."
+        "Autonomous Offline Operation: Geostatistical district bundle is pre-cached on the device, functioning without an active cellular connection.",
     ]
     for b in b6b:
         p_b = tb6b.text_frame.add_paragraph()
@@ -315,10 +349,22 @@ def create_deck():
     add_header(s7, "Built & Live Prototype: Standalone 'Amrit Mati' Organic Hub", "ORGANIC MISSION & ECONOMICS · LIVE")
 
     features7 = [
-        ("⏳ 30-Year Intergenerational Soil Simulator", "Farmers drag a timeline slider from 1 to 30 years to contrast the degrading chemical trajectory (hardened soil, +180% input debt) against the regenerative organic trajectory (living earthworms, rich humus, 1.45% SOC)."),
-        ("🥣 DIY Zero-Cost Bio-Input Recipe Kitchen", "Interactive proportional formulations for Jeevamrit (जीवामृत), Beejamrit (बीजामृत), and Neemastra (नीमास्त्र). Enter plot acreage, and ingredients (cow dung, urine, jaggery, neem leaves) automatically scale."),
-        ("💰 Comparative Economic Ledger", "Demonstrates tangible farmer profitability: -18% fertilizer input savings, +25% organic mandi price premium, and ₹50,000/ha PKVY government assistance, resulting in +₹36,700 extra net profit per hectare."),
-        ("🛒 Direct Institutional Buyer Routes", "Direct links and WhatsApp integration connecting farmers to Jaivik Kheti e-market, free PGS-India green/organic certification, SFAC/NABARD FPO aggregation hubs, and APEDA export channels.")
+        (
+            "⏳ 30-Year Intergenerational Soil Simulator",
+            "Farmers drag a timeline slider from 1 to 30 years to contrast the degrading chemical trajectory (hardened soil, +180% input debt) against the regenerative organic trajectory (living earthworms, rich humus, 1.45% SOC).",
+        ),
+        (
+            "🥣 DIY Zero-Cost Bio-Input Recipe Kitchen",
+            "Interactive proportional formulations for Jeevamrit (जीवामृत), Beejamrit (बीजामृत), and Neemastra (नीमास्त्र). Enter plot acreage, and ingredients (cow dung, urine, jaggery, neem leaves) automatically scale.",
+        ),
+        (
+            "💰 Comparative Economic Ledger",
+            "Demonstrates tangible farmer profitability: -18% fertilizer input savings, +25% organic mandi price premium, and ₹50,000/ha PKVY government assistance, resulting in +₹36,700 extra net profit per hectare.",
+        ),
+        (
+            "🛒 Direct Institutional Buyer Routes",
+            "Direct links and WhatsApp integration connecting farmers to Jaivik Kheti e-market, free PGS-India green/organic certification, SFAC/NABARD FPO aggregation hubs, and APEDA export channels.",
+        ),
     ]
     for i, (title, desc) in enumerate(features7):
         row = i // 2
@@ -359,10 +405,22 @@ def create_deck():
     p_lead.font.color.rgb = C_SLATE_MUTED
 
     dev_points = [
-        ("📍 Interactive Draggable Pin", "Farmer opens the map, pans to their village, and drags a large harvest-pin directly onto their field parcel."),
-        ("🛰️ Hybrid Satellite & Cadastral Overlay", "Utilizes high-resolution OpenStreetMap and ISRO Bhuvan satellite imagery showing field boundaries, canals, and village roads."),
-        ("📐 Automatic Acreage Estimation", "Allows farmers to tap the corners of their farm to automatically compute field area in Bigha and Acres, eliminating manual conversion errors."),
-        ("🔄 Real-Time Coordinate Sync", "Moving the pin instantly updates latitude, longitude, elevation, district agronomic zone, and microclimate weather forecast.")
+        (
+            "📍 Interactive Draggable Pin",
+            "Farmer opens the map, pans to their village, and drags a large harvest-pin directly onto their field parcel.",
+        ),
+        (
+            "🛰️ Hybrid Satellite & Cadastral Overlay",
+            "Utilizes high-resolution OpenStreetMap and ISRO Bhuvan satellite imagery showing field boundaries, canals, and village roads.",
+        ),
+        (
+            "📐 Automatic Acreage Estimation",
+            "Allows farmers to tap the corners of their farm to automatically compute field area in Bigha and Acres, eliminating manual conversion errors.",
+        ),
+        (
+            "🔄 Real-Time Coordinate Sync",
+            "Moving the pin instantly updates latitude, longitude, elevation, district agronomic zone, and microclimate weather forecast.",
+        ),
     ]
     for idx, (head, body) in enumerate(dev_points):
         row = idx // 2
@@ -386,7 +444,9 @@ def create_deck():
     # SLIDE 9: IN ACTIVE DEVELOPMENT - SMART POP-UP & MACHINERY GUIDE
     # =========================================================================
     s9 = prs.slides.add_slide(blank_layout)
-    add_header(s9, "In Active Development: Smart Alternate Crop Pop-up & Machinery Plan", "PILLAR 3 EVOLUTION · IN PROGRESS")
+    add_header(
+        s9, "In Active Development: Smart Alternate Crop Pop-up & Machinery Plan", "PILLAR 3 EVOLUTION · IN PROGRESS"
+    )
 
     add_card(s9, Inches(0.8), Inches(1.45), Inches(5.7), Inches(5.6), bg_color=C_WHITE, border_color=C_AMBER)
     tb9a = s9.shapes.add_textbox(Inches(1.0), Inches(1.65), Inches(5.3), Inches(5.2))
@@ -401,7 +461,7 @@ def create_deck():
         "Non-Intrusive Top-Right Widget: Floats gracefully at the top-right of the screen with a 1-click 'Minimize / Expand' toggle, respecting farmer focus.",
         "Predictive Crop Intelligence: Analyzes seasonal rainfall, canal water shortage, and prevailing mandi prices to evaluate if an alternate crop yields superior net margins.",
         "Actionable Vernacular Suggestion: '🌾 आप गेहूं बो रहे हैं, पर इस साल कम पानी में सरसों (Mustard) लगाने से ₹18,000 अधिक मुनाफा और 60% कम पानी लगेगा!'",
-        "1-Click Plan Switcher: Clicking 'विस्तार से देखें' immediately reconfigures the entire input, fertilizer, and harvest schedule to the recommended alternative."
+        "1-Click Plan Switcher: Clicking 'विस्तार से देखें' immediately reconfigures the entire input, fertilizer, and harvest schedule to the recommended alternative.",
     ]
     for b in b9a:
         p_b = tb9a.text_frame.add_paragraph()
@@ -422,7 +482,7 @@ def create_deck():
         "Calibrated by Measured Farm Size: Machinery recommendations automatically adjust whether the farmer has 1 Bigha (0.25 ha) or 10 Hectares.",
         "Smallholders (<2 Bigha): Recommends bullock ploughing, manual hand seeders, knapsack sprayers, and sickle reapers to minimize hired tractor rental waste.",
         "Medium/Large Farms (>1 Ha): Recommends Tractor Rotavator for deep tillage, Seed-cum-Fertilizer Drills for uniform germination, and Combine Harvesters.",
-        "End-to-End Cultivation Timeline: Sowing depth, seed treatment (Beejamrit/Trichoderma), weeding stages, and irrigation milestones laid out chronologically."
+        "End-to-End Cultivation Timeline: Sowing depth, seed treatment (Beejamrit/Trichoderma), weeding stages, and irrigation milestones laid out chronologically.",
     ]
     for b in b9b:
         p_b = tb9b.text_frame.add_paragraph()
@@ -434,7 +494,9 @@ def create_deck():
     # SLIDE 10: UNDER POLISHING - CERTIFIED SEEDS & GOVT STORES
     # =========================================================================
     s10 = prs.slides.add_slide(blank_layout)
-    add_header(s10, "Under Polishing: Certified Seed Varieties & Govt Subsidized Stores", "PILLAR 2 EVOLUTION · UP NEXT")
+    add_header(
+        s10, "Under Polishing: Certified Seed Varieties & Govt Subsidized Stores", "PILLAR 2 EVOLUTION · UP NEXT"
+    )
 
     add_card(s10, Inches(0.8), Inches(1.45), Inches(11.733), Inches(5.6), bg_color=C_WHITE)
     tb10 = s10.shapes.add_textbox(Inches(1.1), Inches(1.65), Inches(11.1), Inches(5.2))
@@ -451,10 +513,22 @@ def create_deck():
     p_lead10.font.color.rgb = C_SLATE_MUTED
 
     seed_pillars = [
-        ("🏆 Verified Certified Varieties", "Recommends officially certified varieties (e.g. HD-2967, PBW-343, Pusa Basmati 1121) tailored to soil type, sowing date, and regional heat tolerance."),
-        ("🏛️ Govt Block Seed Store Locator", "Integrates district directories for Block Agriculture Seed Stores (राजकीय कृषि बीज भंडार), Krishi Vigyan Kendras (KVK), and PACS societies nearby."),
-        ("💰 Transparent Price Subsidies", "Displays Government Subsidized Seed Rates (e.g., ₹22/kg) alongside prevailing open market prices (₹38/kg), showing exact cash savings."),
-        ("📞 Direct Dealer & Contact Directory", "Provides direct phone numbers, addresses, and navigation routes to authorized seed distribution centers within a 15 km radius.")
+        (
+            "🏆 Verified Certified Varieties",
+            "Recommends officially certified varieties (e.g. HD-2967, PBW-343, Pusa Basmati 1121) tailored to soil type, sowing date, and regional heat tolerance.",
+        ),
+        (
+            "🏛️ Govt Block Seed Store Locator",
+            "Integrates district directories for Block Agriculture Seed Stores (राजकीय कृषि बीज भंडार), Krishi Vigyan Kendras (KVK), and PACS societies nearby.",
+        ),
+        (
+            "💰 Transparent Price Subsidies",
+            "Displays Government Subsidized Seed Rates (e.g., ₹22/kg) alongside prevailing open market prices (₹38/kg), showing exact cash savings.",
+        ),
+        (
+            "📞 Direct Dealer & Contact Directory",
+            "Provides direct phone numbers, addresses, and navigation routes to authorized seed distribution centers within a 15 km radius.",
+        ),
     ]
     for idx, (head, body) in enumerate(seed_pillars):
         row = idx // 2
@@ -481,10 +555,22 @@ def create_deck():
     add_header(s11, "Design Benchmark: Accessible for Class-5 Educated Farmers", "HUMAN-COMPUTER INTERACTION (HCI)")
 
     hci_cards = [
-        ("👁️ Visual Tactile Cards (No Dense Jargon)", "Information is delivered through physical-metaphor cards (fertilizer bags with exact 50kg/45kg badges, watering icons, weather pills). Zero confusing chemical formulas in the primary farmer view."),
-        ("🔊 Voice Audio Reader ('सलाह बोलकर सुनें')", "One-touch audio narration translates the full operational plan into clear spoken Hindi or English via the Web Speech API and backend TTS, allowing illiterate farmers to listen hands-free."),
-        ("☀️ High-Contrast Outdoor Sun Legibility", "Engineered for harsh outdoor sunlight in the middle of a farm field. Deep agricultural forest green (#0e2d1f), harvest gold (#f59e0b), and stark white cards exceed WCAG 2.2 AA standards."),
-        ("🌐 100% Flawless Bilingual Parity", "Guaranteed zero untranslated English remnants in Hindi mode, and zero leftover Devanagari in English mode. 152 translation keys synchronized across all application modules.")
+        (
+            "👁️ Visual Tactile Cards (No Dense Jargon)",
+            "Information is delivered through physical-metaphor cards (fertilizer bags with exact 50kg/45kg badges, watering icons, weather pills). Zero confusing chemical formulas in the primary farmer view.",
+        ),
+        (
+            "🔊 Voice Audio Reader ('सलाह बोलकर सुनें')",
+            "One-touch audio narration translates the full operational plan into clear spoken Hindi or English via the Web Speech API and backend TTS, allowing illiterate farmers to listen hands-free.",
+        ),
+        (
+            "☀️ High-Contrast Outdoor Sun Legibility",
+            "Engineered for harsh outdoor sunlight in the middle of a farm field. Deep agricultural forest green (#0e2d1f), harvest gold (#f59e0b), and stark white cards exceed WCAG 2.2 AA standards.",
+        ),
+        (
+            "🌐 100% Flawless Bilingual Parity",
+            "Guaranteed zero untranslated English remnants in Hindi mode, and zero leftover Devanagari in English mode. 152 translation keys synchronized across all application modules.",
+        ),
     ]
     for i, (title, desc) in enumerate(hci_cards):
         row = i // 2
@@ -511,10 +597,22 @@ def create_deck():
     add_header(s12, "Technical Architecture: Scalability & Low-Spec 4G Readiness", "INDUSTRIAL-GRADE PERFORMANCE")
 
     tech_points = [
-        ("⚡ Sub-200ms Time-to-First-Byte", "Ultra-lean zero-framework delivery on the root route ('/') ensures lightning-fast boot times even on slow 2G/3G/4G connections."),
-        ("📴 PWA Offline Service Worker (v2.3)", "Evicts stale caches and pre-caches the 695-district geostatistical baseline, enabling zero-connectivity field operations when cell towers drop."),
-        ("🦴 Smooth Shimmer Skeleton Loaders", "Eliminates Cumulative Layout Shift (CLS < 0.05) and white-screen hangs while asynchronous weather or satellite telemetry loads."),
-        ("🧱 Clean Modular FastAPI Backend", "Strict Pydantic contract validation, stateless microservices, and 51+ unit tests passing with 100% CI/CD quality gate pass rate.")
+        (
+            "⚡ Sub-200ms Time-to-First-Byte",
+            "Ultra-lean zero-framework delivery on the root route ('/') ensures lightning-fast boot times even on slow 2G/3G/4G connections.",
+        ),
+        (
+            "📴 PWA Offline Service Worker (v2.3)",
+            "Evicts stale caches and pre-caches the 695-district geostatistical baseline, enabling zero-connectivity field operations when cell towers drop.",
+        ),
+        (
+            "🦴 Smooth Shimmer Skeleton Loaders",
+            "Eliminates Cumulative Layout Shift (CLS < 0.05) and white-screen hangs while asynchronous weather or satellite telemetry loads.",
+        ),
+        (
+            "🧱 Clean Modular FastAPI Backend",
+            "Strict Pydantic contract validation, stateless microservices, and 51+ unit tests passing with 100% CI/CD quality gate pass rate.",
+        ),
     ]
     for i, (title, desc) in enumerate(tech_points):
         row = i // 2
@@ -541,10 +639,22 @@ def create_deck():
     add_header(s13, "Scope Discipline: What We Pruned & Why", "PRODUCT PRUNING & REFINEMENT")
 
     pruned_items = [
-        ("❌ Generic / Non-Agri OCR Documents", "Why Pruned: Farmers inadvertently uploaded resumes, grocery bills, and identity cards. We engineered strict rejection guardrails rather than attempting to parse non-agricultural documents."),
-        ("❌ Heavy Desktop Agronomist Spreadsheets", "Why Pruned: Dense data tables with 40+ decimal columns overwhelm farmers. We relocated advanced statistical models to an optional 'Scientific Mode' toggle, keeping the main interface clean."),
-        ("❌ Bulky Client-Side JS Framework Bundles", "Why Pruned: Monolithic client bundles caused 5-second blank screen hangs on budget 2GB-RAM Android phones. The root interface was re-architected into zero-bloat tactile HTML/CSS."),
-        ("❌ Theoretical Web3 / Blockchain Schemes", "Why Pruned: Abstract crypto and carbon token speculation distracts from real-world farmer profitability. We anchored organic incentives directly into proven government PKVY subsidies and verified mandis.")
+        (
+            "❌ Generic / Non-Agri OCR Documents",
+            "Why Pruned: Farmers inadvertently uploaded resumes, grocery bills, and identity cards. We engineered strict rejection guardrails rather than attempting to parse non-agricultural documents.",
+        ),
+        (
+            "❌ Heavy Desktop Agronomist Spreadsheets",
+            "Why Pruned: Dense data tables with 40+ decimal columns overwhelm farmers. We relocated advanced statistical models to an optional 'Scientific Mode' toggle, keeping the main interface clean.",
+        ),
+        (
+            "❌ Bulky Client-Side JS Framework Bundles",
+            "Why Pruned: Monolithic client bundles caused 5-second blank screen hangs on budget 2GB-RAM Android phones. The root interface was re-architected into zero-bloat tactile HTML/CSS.",
+        ),
+        (
+            "❌ Theoretical Web3 / Blockchain Schemes",
+            "Why Pruned: Abstract crypto and carbon token speculation distracts from real-world farmer profitability. We anchored organic incentives directly into proven government PKVY subsidies and verified mandis.",
+        ),
     ]
     for i, (title, desc) in enumerate(pruned_items):
         row = i // 2
@@ -571,10 +681,30 @@ def create_deck():
     add_header(s14, "Strategic Roadmap: Deployment Status & Next Engineering Phase", "EXECUTION PLAN & SUMMARY")
 
     phases14 = [
-        ("PROTOTYPE LIVE ON RENDER", "Main Kisan Mitra Advisory & Future Organic Hub", "Serving live at khetsathi-360.onrender.com. Complete 51-test suite passing, Spatial IDW active across 695 districts, Copernicus Sentinel-2 NDVI live, zero bilingual drift.", C_EMERALD),
-        ("IMMEDIATE PHASE A", "Interactive Farmland Map Pointer", "Integrate touch-first satellite/cadastral map widget into Step 1. Farmers tap or drag a harvest pin onto their exact field parcel for automatic coordinate and area lock.", C_CYAN),
-        ("IMMEDIATE PHASE B", "Smart Floating Pop-up & Machinery Guide", "Deploy top-right minimizable dynamic advice widget recommending higher-margin seasonal crops + end-to-end machinery lifecycle tailored to measured farm acreage.", C_AMBER_DARK),
-        ("IMMEDIATE PHASE C", "Subsidized Seed & Govt Store Locator", "Integrate National Seeds Corp and state Beej Vikas Nigam directories. Connect farmers to nearest Block Seed Stores with transparent subsidized pricing.", C_FOREST_MED)
+        (
+            "PROTOTYPE LIVE ON RENDER",
+            "Main Kisan Mitra Advisory & Future Organic Hub",
+            "Serving live at khetsathi-360.onrender.com. Complete 51-test suite passing, Spatial IDW active across 695 districts, Copernicus Sentinel-2 NDVI live, zero bilingual drift.",
+            C_EMERALD,
+        ),
+        (
+            "IMMEDIATE PHASE A",
+            "Interactive Farmland Map Pointer",
+            "Integrate touch-first satellite/cadastral map widget into Step 1. Farmers tap or drag a harvest pin onto their exact field parcel for automatic coordinate and area lock.",
+            C_CYAN,
+        ),
+        (
+            "IMMEDIATE PHASE B",
+            "Smart Floating Pop-up & Machinery Guide",
+            "Deploy top-right minimizable dynamic advice widget recommending higher-margin seasonal crops + end-to-end machinery lifecycle tailored to measured farm acreage.",
+            C_AMBER_DARK,
+        ),
+        (
+            "IMMEDIATE PHASE C",
+            "Subsidized Seed & Govt Store Locator",
+            "Integrate National Seeds Corp and state Beej Vikas Nigam directories. Connect farmers to nearest Block Seed Stores with transparent subsidized pricing.",
+            C_FOREST_MED,
+        ),
     ]
     for idx, (badge, title, desc, border_c) in enumerate(phases14):
         row = idx // 2
@@ -609,6 +739,7 @@ def create_deck():
     prs.save(str(out_path))
     print(f"Master presentation successfully generated at: {out_path}")
     print(f"File size: {out_path.stat().st_size} bytes")
+
 
 if __name__ == "__main__":
     create_deck()

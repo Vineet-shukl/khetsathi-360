@@ -5,6 +5,7 @@ Interactive Farmland Map Pointer, Geodesic Acreage Calculation & Bilingual Parit
 
 import math
 import unittest
+
 from fastapi.testclient import TestClient
 
 from app.api import app
@@ -21,14 +22,14 @@ def calculate_polygon_area_sq_meters(coords: list[tuple[float, float]]) -> float
 
     mean_lat = sum(c[0] for c in coords) / len(coords)
     lat_rad = math.radians(mean_lat)
-    
+
     # 1 deg lat in meters ~ 111,139 m
     # 1 deg lon in meters ~ 111,139 * cos(lat) m
     meters_per_lat = 111139.0
     meters_per_lon = 111139.0 * math.cos(lat_rad)
 
     xy = [(c[1] * meters_per_lon, c[0] * meters_per_lat) for c in coords]
-    
+
     # Shoelace formula
     area = 0.0
     n = len(xy)
@@ -36,7 +37,7 @@ def calculate_polygon_area_sq_meters(coords: list[tuple[float, float]]) -> float
         j = (i + 1) % n
         area += xy[i][0] * xy[j][1]
         area -= xy[j][0] * xy[i][1]
-        
+
     return abs(area) / 2.0
 
 
@@ -51,25 +52,25 @@ class TestMapPointerContracts(unittest.TestCase):
         """
         lat_ref = 25.5928
         lon_ref = 83.5770
-        
+
         d_lat = 100.0 / 111139.0
         d_lon = 100.0 / (111139.0 * math.cos(math.radians(lat_ref)))
-        
+
         polygon = [
             (lat_ref, lon_ref),
             (lat_ref + d_lat, lon_ref),
             (lat_ref + d_lat, lon_ref + d_lon),
-            (lat_ref, lon_ref + d_lon)
+            (lat_ref, lon_ref + d_lon),
         ]
-        
+
         sqm = calculate_polygon_area_sq_meters(polygon)
         self.assertAlmostEqual(sqm, 10000.0, delta=200.0)  # within 2% of 10,000 m2
-        
+
         # Test unit conversions from sqm
         ha = sqm / 10000.0
         bigha_pucca = sqm / 2500.0  # 1 Pucca Bigha = 2,500 m2 (UP/Bihar)
-        acre = sqm / 4046.86       # 1 Acre = 4046.86 m2
-        
+        acre = sqm / 4046.86  # 1 Acre = 4046.86 m2
+
         self.assertAlmostEqual(ha, 1.0, delta=0.02)
         self.assertAlmostEqual(bigha_pucca, 4.0, delta=0.08)
         self.assertAlmostEqual(acre, 2.47, delta=0.05)
@@ -144,7 +145,7 @@ class TestMapPointerContracts(unittest.TestCase):
         Validates that frontend/index.html includes all required Phase A
         map pointer translation keys in both I18N.hi and I18N.en with zero discrepancy.
         """
-        with open("frontend/index.html", "r", encoding="utf-8") as f:
+        with open("frontend/index.html", encoding="utf-8") as f:
             content = f.read()
 
         required_map_keys = [
@@ -161,7 +162,7 @@ class TestMapPointerContracts(unittest.TestCase):
             "mapApplyArea",
             "mapMeasureHint",
             "mapResetMeasure",
-            "mapOverlayTitle"
+            "mapOverlayTitle",
         ]
 
         # Verify presence in I18N.hi block and I18N.en block

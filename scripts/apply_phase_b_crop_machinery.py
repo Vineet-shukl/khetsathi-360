@@ -8,11 +8,11 @@ Applies Phase B into frontend/index.html:
 """
 
 from pathlib import Path
-import re
+
 
 def apply_phase_b():
     html_path = Path("frontend/index.html")
-    with open(html_path, "r", encoding="utf-8") as f:
+    with open(html_path, encoding="utf-8") as f:
         html = f.read()
 
     # 1. Floating Top-Right Alternate Crop Pop-up HTML
@@ -54,7 +54,7 @@ def apply_phase_b():
   </aside>
 """
 
-    if "id=\"floating-crop-advisor\"" not in html:
+    if 'id="floating-crop-advisor"' not in html:
         target_body = '<div id="toast-banner"'
         html = html.replace(target_body, floating_popup_html + "\n  " + target_body)
         print("1. Added Floating Crop Advisor Popup before toast banner")
@@ -108,8 +108,8 @@ def apply_phase_b():
         </div>
 """
 
-    if "id=\"machinery-lifecycle-card\"" not in html:
-        target_step3_insert = '<!-- Chronological Step-by-Step Action Cards -->'
+    if 'id="machinery-lifecycle-card"' not in html:
+        target_step3_insert = "<!-- Chronological Step-by-Step Action Cards -->"
         html = html.replace(target_step3_insert, machinery_card_html + "\n        " + target_step3_insert)
         print("2. Added Machinery & Lifecycle Card in Step 3")
 
@@ -199,7 +199,7 @@ def apply_phase_b():
       const isHi = currentLang === "hi";
       const badge = getEl("alt-popup-badge");
       if (badge) {
-        badge.textContent = isHi 
+        badge.textContent = isHi
           ? `+₹${Math.round(alt.total_extra_profit_inr).toLocaleString("en-IN")} लाभ · ${alt.water_saving_pct}% जल बचत`
           : `+₹${Math.round(alt.total_extra_profit_inr).toLocaleString("en-IN")} Gain · ${alt.water_saving_pct}% Water Saved`;
       }
@@ -318,7 +318,7 @@ def apply_phase_b():
 """
 
     if "Phase B Event Listeners" not in html:
-        target_listeners = "btnLockParcel.addEventListener(\"click\""
+        target_listeners = 'btnLockParcel.addEventListener("click"'
         idx = html.find(target_listeners)
         end_idx = html.find("});", idx) + 3
         html = html[:end_idx] + "\n" + listeners_b + html[end_idx:]
@@ -334,6 +334,7 @@ def apply_phase_b():
         f.write(html)
     print("SUCCESS: Phase B fully applied to frontend/index.html")
     return True
+
 
 if __name__ == "__main__":
     apply_phase_b()

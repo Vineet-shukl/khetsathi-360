@@ -12,12 +12,13 @@ Applies all 10 reviewer recommendations to frontend/index.html:
 9. High-contrast text on coordinates overlay
 """
 
-from pathlib import Path
 import re
+from pathlib import Path
+
 
 def remediate():
     html_path = Path("frontend/index.html")
-    with open(html_path, "r", encoding="utf-8") as f:
+    with open(html_path, encoding="utf-8") as f:
         html = f.read()
 
     # 1. Update Map buttons HTML for WCAG 2.2 min-h-[44px] and full i18n spans
@@ -27,9 +28,9 @@ def remediate():
     if idx == -1:
         print("ERROR: map-pointer-container not found")
         return False
-    end_idx = html.find('</div>\n            </div>', idx)
+    end_idx = html.find("</div>\n            </div>", idx)
     if end_idx == -1:
-        end_idx = html.find('</div>\n          </div>', idx)
+        end_idx = html.find("</div>\n          </div>", idx)
 
     new_map_container = """            <!-- Interactive Farmland Map Pointer Container (Phase A) -->
             <div id="map-pointer-container" class="hidden space-y-3 p-4 rounded-2xl bg-emerald-950/5 border-2 border-emerald-600/60 shadow-md transition-all mt-2">
@@ -80,7 +81,7 @@ def remediate():
               <!-- Map Canvas & Offline Fallback -->
               <div class="relative w-full rounded-2xl overflow-hidden border-2 border-emerald-700/40 shadow-inner" style="height: 380px;">
                 <div id="farmland-map-canvas" class="w-full h-full z-10"></div>
-                
+
                 <!-- Floating Pin Coordinates & Confirmation Overlay -->
                 <div id="map-pin-overlay" class="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 z-20 p-3 rounded-xl bg-white/95 backdrop-blur-sm border border-emerald-700/40 shadow-xl flex items-center justify-between gap-3 text-xs">
                   <div class="flex items-center gap-2">
@@ -98,7 +99,9 @@ def remediate():
             </div>"""
 
     # Replace the container block
-    pattern_container = re.compile(r'<!-- Interactive Farmland Map Pointer Container \(Phase A\) -->.*?</div>\s*</div>\s*</div>', re.DOTALL)
+    pattern_container = re.compile(
+        r"<!-- Interactive Farmland Map Pointer Container \(Phase A\) -->.*?</div>\s*</div>\s*</div>", re.DOTALL
+    )
     if pattern_container.search(html):
         html = pattern_container.sub(new_map_container, html, count=1)
         print("1. Replaced #map-pointer-container with WCAG 44px compliant HTML")
@@ -112,7 +115,7 @@ def remediate():
     <span id="toast-icon">ℹ️</span>
     <span id="toast-msg">Notification</span>
   </div>"""
-    if "id=\"toast-banner\"" not in html:
+    if 'id="toast-banner"' not in html:
         html = html.replace("</body>", toast_html + "\n</body>")
         print("2. Added #toast-banner before </body>")
 
@@ -173,7 +176,9 @@ def remediate():
         "lbl-clear-measure": dict.mapResetMeasure,
         "map-overlay-title": dict.mapOverlayTitle,"""
 
-    pattern_setlang = re.compile(r'"lbl-map-toggle":\s*dict\.mapPointerBtn,.*?"lbl-apply-area":\s*dict\.mapApplyArea,', re.DOTALL)
+    pattern_setlang = re.compile(
+        r'"lbl-map-toggle":\s*dict\.mapPointerBtn,.*?"lbl-apply-area":\s*dict\.mapApplyArea,', re.DOTALL
+    )
     html = pattern_setlang.sub(setlang_full, html)
     print("4. Updated setLanguage with complete DOM element bindings")
 
@@ -274,8 +279,11 @@ def remediate():
         print("5. Replaced detectFieldGPS with Promise-based version and added showToastNotification")
 
     # 6. Replace Map JS Engine with debounced fetches, offline guard, immutable points, and min parcel size
-    old_map_js_pattern = re.compile(r'// =========================================================================\s*// PHASE A: INTERACTIVE FARMLAND MAP POINTER.*?function toggleFarmlandMap\(\) \{.*?\}\s*\}', re.DOTALL)
-    
+    old_map_js_pattern = re.compile(
+        r"// =========================================================================\s*// PHASE A: INTERACTIVE FARMLAND MAP POINTER.*?function toggleFarmlandMap\(\) \{.*?\}\s*\}",
+        re.DOTALL,
+    )
+
     new_map_js = """    // =========================================================================
     // PHASE A: INTERACTIVE FARMLAND MAP POINTER & POLYGON ACREAGE ENGINE
     // =========================================================================
@@ -316,8 +324,8 @@ def remediate():
         console.warn("[KhetSathi] Leaflet library not loaded, using tactile coordinate nudge fallback.");
         getEl("map-pointer-container")?.classList.add("hidden");
         getEl("coord-nudge-box")?.classList.remove("hidden");
-        const msg = currentLang === "hi" 
-          ? "⚠️ ऑफलाइन मोड: नक्शा लोड नहीं हो सका। कृपया निर्देशांक का उपयोग करें।" 
+        const msg = currentLang === "hi"
+          ? "⚠️ ऑफलाइन मोड: नक्शा लोड नहीं हो सका। कृपया निर्देशांक का उपयोग करें।"
           : "⚠️ Offline Mode: Map failed to load. Please use manual coordinate controls.";
         showToastNotification(msg, "amber");
         return;
@@ -453,8 +461,11 @@ def remediate():
     print("6. Updated Map JS Engine with debouncing, immutability, and offline fallback")
 
     # 7. Update Map Event Listeners with async GPS, MIN_PARCEL_HA, and non-blocking toast
-    old_listeners_pattern = re.compile(r'// Phase A: Farmland Map Pointer Event Listeners.*?btnLockParcel\.addEventListener\("click", \(\) => \{.*?\}\);\s*\}', re.DOTALL)
-    
+    old_listeners_pattern = re.compile(
+        r'// Phase A: Farmland Map Pointer Event Listeners.*?btnLockParcel\.addEventListener\("click", \(\) => \{.*?\}\);\s*\}',
+        re.DOTALL,
+    )
+
     new_listeners = """// Phase A: Farmland Map Pointer Event Listeners
       const btnToggleMap = getEl("btn-toggle-map");
       if (btnToggleMap) btnToggleMap.addEventListener("click", toggleFarmlandMap);
@@ -565,6 +576,7 @@ def remediate():
 
     print("ALL REMEDIATIONS APPLIED CLEANLY TO frontend/index.html")
     return True
+
 
 if __name__ == "__main__":
     remediate()

@@ -12,9 +12,10 @@ Applies Phase A (Interactive Farmland Map Pointer) into frontend/index.html with
 import sys
 from pathlib import Path
 
+
 def apply_phase_a():
     html_path = Path("frontend/index.html")
-    with open(html_path, "r", encoding="utf-8") as f:
+    with open(html_path, encoding="utf-8") as f:
         html = f.read()
 
     # 1. Add Leaflet into <head>
@@ -34,7 +35,7 @@ def apply_phase_a():
     map_btn_html = """                <button id="btn-toggle-map" type="button" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold shadow flex items-center gap-1.5 transition">
                   <span>🗺️</span> <span id="lbl-map-toggle">नक्शे पर खेत चुनें</span>
                 </button>"""
-    
+
     target_btn_anchor = """                <button id="btn-detect-gps-inline" type="button" class="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold shadow flex items-center gap-1.5">
                   <span>📍</span> <span id="lbl-gps-inline">1-Click GPS</span>
                 </button>"""
@@ -97,7 +98,7 @@ def apply_phase_a():
               <!-- Map Canvas & Offline Fallback -->
               <div class="relative w-full rounded-xl overflow-hidden border border-emerald-700/30 shadow-inner" style="height: 380px;">
                 <div id="farmland-map-canvas" class="w-full h-full z-10"></div>
-                
+
                 <!-- Floating Pin Coordinates & Confirmation Overlay -->
                 <div id="map-pin-overlay" class="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 z-20 p-2.5 rounded-xl bg-white/95 backdrop-blur-sm border border-emerald-700/40 shadow-xl flex items-center justify-between gap-3 text-xs">
                   <div class="flex items-center gap-2">
@@ -481,6 +482,7 @@ def apply_phase_a():
         f.write(html)
     print("SUCCESS: Phase A Map Pointer fully integrated into frontend/index.html")
     return True
+
 
 if __name__ == "__main__":
     if apply_phase_a():
