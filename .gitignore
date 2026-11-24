@@ -1,11 +1,60 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables & secrets
 .env
+.env.*
+!.env.example
+
+# Test, lint & quality caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Data & raw scratch downloads
 data/raw/*
 !data/raw/.gitkeep
+*.xlsx
+*.xls
 tracker_download.xlsx
+PROJECT_DASHBOARD.csv
+WORK_TRACKER.csv
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
 *.log
-.pytest_cache/
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# Editor & IDE configurations
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.sublime-project
+*.sublime-workspace
+
+# Node & Frontend client builds
+node_modules/
 client/node_modules/
 client/dist/
-
+.npm
+.yarn/
+.turbo/
