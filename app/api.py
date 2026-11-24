@@ -43,6 +43,11 @@ from app.contracts import (
     YieldPredictionResponse,
 )
 from app.district_soil_model import STATE_TO_ZONE, DistrictSoilModel
+from app.crop_machinery_service import (
+    evaluate_alternative_crop,
+    get_plot_scaled_machinery_plan,
+    get_cultivation_lifecycle_stages,
+)
 from app.ml_residual import ResidualMLModel
 from app.satellite_service import calculate_satellite_vegetation
 from app.weather_service import fetch_live_weather, search_pinpoint_locations
@@ -120,6 +125,49 @@ def search_location(
     """Blinkit/Swiggy style pinpoint location search across Indian localities and 695 districts."""
     records = _DISTRICT_MODEL.records if _DISTRICT_MODEL else None
     return search_pinpoint_locations(query=query, count=8, district_records=records)
+
+
+@app.get("/api/v1/crop/alternative-and-machinery")
+def crop_alternative_and_machinery(
+    crop: str = Query(..., description="Crop identifier, e.g. wheat, rice"),
+    area_ha: float = Query(default=1.0, gt=0, description="Area in hectares"),
+    lat: float | None = Query(default=None, ge=6.0, le=38.0),
+    lon: float | None = Query(default=None, ge=68.0, le=98.0),
+    rain_prob_pct: int = Query(default=15, ge=0, le=100),
+    et0: float = Query(default=4.0, ge=0.0),
+    lang: str = Query(default="hi", description="Language (hi or en)"),
+):
+    """
+    Evaluates microclimate-triggered alternative crop suggestions and
+    delivers farm-size calibrated machinery and 5-stage cultivation timelines.
+    """
+    if lat is not None and lon is not None:
+        try:
+            live_w = fetch_live_weather(lat=lat, lon=lon, language=lang)
+            if live_w:
+                rain_prob_pct = live_w.rain_prob_48h_pct
+                et0 = live_w.et0_fao_mm_day
+        except Exception:
+            pass
+
+    alt = evaluate_alternative_crop(
+        crop=crop,
+        area_ha=area_ha,
+        rain_prob_48h_pct=rain_prob_pct,
+        et0_fao_mm_day=et0,
+        language=lang,
+    )
+    mach = get_plot_scaled_machinery_plan(area_ha=area_ha, language=lang)
+    stages = get_cultivation_lifecycle_stages(crop=crop, area_ha=area_ha, language=lang)
+
+    return {
+        "status": "success",
+        "crop": crop,
+        "area_ha": area_ha,
+        "alternative": alt,
+        "machinery": mach,
+        "lifecycle_stages": stages,
+    }
 
 
 @app.post("/api/v1/advisory", response_model=AdvisoryResponse)
