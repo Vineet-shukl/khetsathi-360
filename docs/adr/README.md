@@ -11,6 +11,7 @@ This directory documents the foundational architectural and agronomic decisions 
 | [0003](0003-multimodal-gemini-shc-guardrails.md) | Multimodal Vision OCR with Pre-Validation Document Guardrails | **Accepted** | 2026-11-20 | Rejection of non-SHC files (resumes, bills) |
 | [0004](0004-pwa-network-first-offline-resilience.md) | Progressive Web App with Network-First Navigation Caching | **Accepted** | 2026-11-20 | Zero-connectivity rural field resilience |
 | [0005](0005-dual-frontend-strategy.md) | Dual Frontend Architecture for Farmer vs Enterprise Modalities | **Accepted** | 2026-11-20 | Speed for farmers (`/`) + Analytics (`/react`) |
+| [0006](0006-farmer-first-endgame-vision-architecture.md) | Farmer-First Endgame Vision Architecture (8 Inviolable Pillars) | **Accepted** | 2026-11-24 | Class-5 accessible UX, map pointing, subsidized seeds, smart crop pop-up & machinery |
 
 ---
 
