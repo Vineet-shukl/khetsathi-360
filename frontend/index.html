@@ -727,6 +727,51 @@
           </div>
         </div>
 
+        <!-- Phase C: Certified Seed Catalog & Government Block Seed Store Locator -->
+        <div id="seed-catalog-stores-card" class="card p-5 border-2 border-emerald-600 bg-gradient-to-br from-white via-emerald-50/20 to-amber-50/20 space-y-5 shadow-md">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl" aria-hidden="true">🌱</span>
+              <div>
+                <span id="lbl-seeds-badge" class="text-[10px] sm:text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full inline-block">
+                  प्रमाणित बीज एवं सरकारी सब्सिडी
+                </span>
+                <h4 id="lbl-seeds-title" class="text-sm sm:text-base font-black text-emerald-950">
+                  जलवायु-अनुकूलित प्रमाणित बीज एवं नजदीकी राजकीय बीज भंडार
+                </h4>
+              </div>
+            </div>
+            <div id="seed-summary-badge-box" class="flex flex-wrap items-center gap-2">
+              <!-- Dynamically populated seed savings banner -->
+            </div>
+          </div>
+
+          <!-- Total Seed Requirement & Subsidy Math Banner -->
+          <div id="seed-requirement-banner" class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <!-- Dynamically populated seed requirement details -->
+          </div>
+
+          <!-- Section 1: Certified ICAR Seed Varieties -->
+          <div class="space-y-2.5">
+            <h5 id="lbl-seed-varieties-head" class="text-xs font-black uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
+              <span>🌾</span> <span>अनुशंसित उन्नत बीज किस्में (ICAR Certified Resilient Varieties)</span>
+            </h5>
+            <div id="seed-varieties-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" aria-live="polite">
+              <!-- Dynamically populated via renderSeedVarieties() -->
+            </div>
+          </div>
+
+          <!-- Section 2: Nearest Government Block Seed Stores & Co-ops -->
+          <div class="space-y-2.5 pt-3 border-t border-slate-200">
+            <h5 id="lbl-seed-stores-head" class="text-xs font-black uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
+              <span>🏬</span> <span>नजदीकी राजकीय बीज भंडार व सहकारी केंद्र (Nearby Government Stores & KVKs)</span>
+            </h5>
+            <div id="seed-stores-list" class="grid grid-cols-1 md:grid-cols-3 gap-3" aria-live="polite">
+              <!-- Dynamically populated via renderSeedStores() -->
+            </div>
+          </div>
+        </div>
+
         <!-- Chronological Step-by-Step Action Cards -->
         <div class="space-y-3">
           <h4 id="lbl-action-cards-head" class="text-sm font-extrabold text-emerald-950">
@@ -1238,28 +1283,17 @@
         locSearchPlaceholder: "उदा: Zamania, Mohammadabad, Ghazipur, Ludhiana, Akola, Vidarbha...",
         gpsInline: "1-Click GPS",
         coordToggle: "निर्देशांक",
-                        mapPointerBtn: "Pinpoint on Map",
-        mapTitle: "Interactive Farmland Map Pointer & Boundaries",
-        mapSub: "Pan/zoom and drop pin on your field parcel, or tap corners to measure acreage",
-        mapSatellite: "Satellite",
-        mapStandard: "Standard",
-        mapMeasureArea: "Measure Area",
-        mapMyGps: "My GPS",
-        mapClose: "Close Map",
-        mapLockParcel: "Lock Parcel",
-        mapMeasuredAreaBadge: "Measured Area",
-        mapApplyArea: "Apply Area",
-        mapMeasureHint: "Tap 3 or 4 corners of your field on the map to measure area.",
-        mapResetMeasure: "Reset",
-        mapOverlayTitle: "Selected Farm Position (Pinpoint)",
-        altPopupTitle: "Smart Alternate Crop Suggestion",
-        altViewMachinery: "View Machinery & Timeline",
-        altApplyCrop: "Switch to this Crop",
-        machineryBadge: "Plot-Scaled Farm Tool Planning",
-        machineryTitle: "Plot-Scaled Machinery & Sowing-to-Harvest Lifecycle",
-        toolsHeading: "🛠️ Recommended Implements & Custom Hire Rates",
-        lifecycleHeading: "📅 5-Stage Sowing-to-Harvest Timeline",
-
+        mapPointerBtn: "नक्शे पर खेत पहचानें",
+        mapTitle: "खेत स्थिति व सीमांकन (Farmland Map Pointer)",
+        mapSub: "नक्शे को ज़ूम करके अपने खेत पर पिन रखें या कोनों को छूकर रकबा नापें",
+        mapSatellite: "सैटेलाइट",
+        mapStandard: "साधारण",
+        mapMeasureArea: "खेत नापें",
+        mapMyGps: "मेरा GPS",
+        mapClose: "नक्शा बंद करें",
+        mapLockParcel: "रकबा लॉक करें",
+        mapMeasuredAreaBadge: "नापा गया रकबा",
+        mapApplyArea: "रकबा लागू करें",
         mapMeasureHint: "खेत के 3 या 4 कोनों को नक्शे पर छूएं। रकबा स्वतः निकल जाएगा।",
         mapResetMeasure: "रीसेट",
         mapOverlayTitle: "चयनित खेत स्थिति (Pinpoint)",
@@ -1270,6 +1304,22 @@
         machineryTitle: "खेत आकार अनुसार औजार व बुवाई-से-कटाई संपूर्ण चक्र",
         toolsHeading: "🛠️ अनुशंसित कृषि यंत्र व मानक किराया दरें",
         lifecycleHeading: "📅 5-चरणीय बुवाई से कटाई समय-चक्र",
+
+        // Phase C: Certified Seed & Government Block Stores (Hindi)
+        seedsBadge: "प्रमाणित बीज एवं सरकारी सब्सिडी",
+        seedsTitle: "जलवायु-अनुकूलित प्रमाणित बीज एवं नजदीकी राजकीय बीज भंडार",
+        seedsSummaryTitle: "खेत रकबे अनुसार कुल बीज आवश्यकता व सब्सिडी बचत",
+        seedVarietiesHead: "🌾 अनुशंसित उन्नत बीज किस्में (ICAR Certified Resilient Varieties)",
+        seedStoresHead: "🏬 नजदीकी राजकीय बीज भंडार व सहकारी केंद्र (Nearby Government Stores & KVKs)",
+        seedsGovPrice: "सरकारी दर",
+        seedsMarketPrice: "खुला बाजार",
+        seedsSavings: "सरकारी बचत",
+        seedsMaturity: "पकने की अवधि",
+        seedsYield: "अपेक्षित उपज",
+        seedsGermination: "अंकुरण",
+        seedsRate: "बीज दर",
+        storesCall: "कॉल करें",
+        storesHours: "समय",
 
 
         cropCardsLabel: "फसल चुनें (Select Crop)",
@@ -1461,16 +1511,21 @@
         toolsHeading: "🛠️ Recommended Implements & Custom Hire Rates",
         lifecycleHeading: "📅 5-Stage Sowing-to-Harvest Timeline",
 
-        mapMeasureHint: "खेत के 3 या 4 कोनों को नक्शे पर छूएं। रकबा स्वतः निकल जाएगा।",
-        mapResetMeasure: "रीसेट",
-        mapOverlayTitle: "चयनित खेत स्थिति (Pinpoint)",
-        altPopupTitle: "वैकल्पिक फसल सुझाव",
-        altViewMachinery: "औजार व खेती चक्र देखें",
-        altApplyCrop: "यह फसल अपनाएं",
-        machineryBadge: "खेत रकबा आधारित औजार योजना",
-        machineryTitle: "खेत आकार अनुसार औजार व बुवाई-से-कटाई संपूर्ण चक्र",
-        toolsHeading: "🛠️ अनुशंसित कृषि यंत्र व मानक किराया दरें",
-        lifecycleHeading: "📅 5-चरणीय बुवाई से कटाई समय-चक्र",
+        // Phase C: Certified Seed & Government Block Stores (English)
+        seedsBadge: "Certified Seeds & Gov Subsidy",
+        seedsTitle: "Climate-Resilient Certified Seeds & Government Block Stores",
+        seedsSummaryTitle: "Parcel-Calibrated Seed Requirement & Subsidy Math",
+        seedVarietiesHead: "🌾 Recommended Certified Seed Varieties (ICAR Certified)",
+        seedStoresHead: "🏬 Nearby Government Block Seed Stores & Co-ops (Subsidized Stock)",
+        seedsGovPrice: "Gov Rate",
+        seedsMarketPrice: "Open Market",
+        seedsSavings: "Gov Savings",
+        seedsMaturity: "Maturity Duration",
+        seedsYield: "Expected Yield",
+        seedsGermination: "Germination",
+        seedsRate: "Seed Rate",
+        storesCall: "Call Store",
+        storesHours: "Hours",
 
 
         cropCardsLabel: "Select Crop",
@@ -1635,6 +1690,7 @@
     let currentWeatherData = null;
     let lastCalculatedPlan = null;
     let currentLocationDisplayName = "गाज़ीपुर, उत्तर प्रदेश";
+    let currentDistrictName = "Ghazipur";
 
     function getEl(id) { return document.getElementById(id); }
 
@@ -1733,6 +1789,14 @@
         "out-mop-note": dict.outMopNote,
         "lbl-irrigation-card-title": dict.irrigationCardTitle,
         "lbl-irr-title-text": dict.irrigationCardTitle,
+        "lbl-machinery-badge": dict.machineryBadge,
+        "lbl-machinery-title": dict.machineryTitle,
+        "lbl-tools-heading": dict.toolsHeading,
+        "lbl-lifecycle-heading": dict.lifecycleHeading,
+        "lbl-seeds-badge": dict.seedsBadge,
+        "lbl-seeds-title": dict.seedsTitle,
+        "lbl-seed-varieties-head": dict.seedVarietiesHead,
+        "lbl-seed-stores-head": dict.seedStoresHead,
         "lbl-action-cards-head": dict.actionCardsHead,
         "lbl-btn-whatsapp": dict.btnWhatsapp,
         "lbl-btn-print": dict.btnPrint,
@@ -1966,6 +2030,7 @@
         const distResp = await fetch(`/api/v1/district/baseline?lat=${lat}&lon=${lon}`);
         if (distResp.ok) {
           const distData = await distResp.json();
+          if (distData.nearest_district) currentDistrictName = distData.nearest_district;
           if (distData.zone) getEl("zone-select").value = distData.zone;
           if (distData.expected_soil) {
             getEl("soil-n").value = distData.expected_soil.n;
@@ -2400,6 +2465,10 @@
 
       // Update Visual Charts
       updateCharts(reqN, reqP, reqK, dapKg, ureaKg, mopKg, crop, et0);
+
+      // Phase B & Phase C Live Updates
+      updateAlternativeAndMachineryPlan();
+      updateCertifiedSeedsAndStores();
     }
 
     // Populate Off-screen Printable Slip DOM
@@ -2921,6 +2990,152 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
           <p class="text-[11px] text-slate-700 leading-relaxed">${st.activity}</p>
           <div class="text-[10px] text-emerald-800 font-semibold pt-0.5">
             <strong>${isHi ? "प्रयुक्त औजार:" : "Tools Used:"}</strong> ${st.tools}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Phase C: Certified Seeds & Government Subsidized Store Locator
+    async function updateCertifiedSeedsAndStores() {
+      const crop = selectedCrop || getEl("crop-select")?.value || "wheat";
+      const areaVal = parseFloat(getEl("plot-area-val")?.value) || 1.0;
+      const unit = getEl("plot-area-unit")?.value || "bigha_pucca";
+      const areaInHa = convertToHectares(areaVal, unit);
+      const district = currentDistrictName || "Ghazipur";
+      const lat = parseFloat(getEl("coord-lat")?.value) || 25.5928;
+      const lon = parseFloat(getEl("coord-lon")?.value) || 83.5770;
+
+      try {
+        const url = `/api/v1/seed/certified-and-stores?crop=${encodeURIComponent(crop)}&district=${encodeURIComponent(district)}&area_ha=${areaInHa.toFixed(2)}&lat=${lat}&lon=${lon}&lang=${currentLang}`;
+        const resp = await fetch(url);
+        if (resp.ok) {
+          const data = await resp.json();
+          renderSeedSummary(data.seed_requirement);
+          renderSeedVarieties(data.varieties, data.seed_requirement);
+          renderSeedStores(data.stores);
+        }
+      } catch (err) {
+        console.warn("[KhetSathi Phase C] Seed & Stores API call error:", err);
+      }
+    }
+
+    function renderSeedSummary(req) {
+      if (!req) return;
+      const isHi = currentLang === "hi";
+
+      const badgeBox = getEl("seed-summary-badge-box");
+      if (badgeBox) {
+        badgeBox.innerHTML = `
+          <span class="text-xs font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-lg border border-emerald-300">
+            ${isHi ? `कुल बचत: ₹${Math.round(req.total_savings_inr).toLocaleString("en-IN")}` : `Total Savings: ₹${Math.round(req.total_savings_inr).toLocaleString("en-IN")}`}
+          </span>
+          <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
+            ${req.subsidy_savings_pct}% ${isHi ? "छूट" : "Subsidy"}
+          </span>
+        `;
+      }
+
+      const banner = getEl("seed-requirement-banner");
+      if (banner) {
+        banner.innerHTML = `
+          <div class="space-y-1">
+            <span class="text-[11px] font-black uppercase tracking-wider text-emerald-900 block">
+              ${isHi ? "खेत रकबा अनुसार प्रमाणित बीज मात्रा:" : "Parcel-Calibrated Certified Seed Requirement:"}
+            </span>
+            <div class="text-sm font-extrabold text-slate-900 flex flex-wrap items-center gap-2">
+              <span>📦 ${req.total_seed_kg} kg (${req.bags_count} ${isHi ? "बैग" : "Bags"} · ${isHi ? "प्रति बैग" : "Per bag"} ${req.bag_size_kg} kg)</span>
+              <span class="text-xs text-slate-500 font-normal">(${isHi ? "मानक बीज दर:" : "Seed Rate:"} ${req.seed_rate_kg_ha} kg/हेक्टेयर)</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-xs font-bold pt-2 md:pt-0 border-t md:border-t-0 md:border-l md:pl-4 border-emerald-200">
+            <div>
+              <span class="text-[10px] text-slate-500 block">${isHi ? "सरकारी रियायती दर कुल खर्च:" : "Gov Subsidized Total:"}</span>
+              <span class="text-emerald-700 font-black text-sm">₹${Math.round(req.subsidized_total_inr).toLocaleString("en-IN")}</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 block">${isHi ? "खुला बाजार अनुमानित खर्च:" : "Open Market Est.:"}</span>
+              <span class="text-slate-500 line-through">₹${Math.round(req.market_total_inr).toLocaleString("en-IN")}</span>
+            </div>
+            <div class="bg-emerald-100/90 text-emerald-900 px-2.5 py-1 rounded-lg border border-emerald-300">
+              <span class="text-[10px] uppercase font-black block">${isHi ? "सीधी किसान बचत" : "Direct Savings"}</span>
+              <span class="font-black text-sm">+₹${Math.round(req.total_savings_inr).toLocaleString("en-IN")}</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderSeedVarieties(varieties, req) {
+      const container = getEl("seed-varieties-list");
+      if (!container || !varieties) return;
+      const isHi = currentLang === "hi";
+
+      container.innerHTML = varieties.map(v => {
+        const bagSavings = Math.round(v.savings_per_kg_inr * (req ? req.bag_size_kg : 40));
+        return `
+        <div class="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 shadow-2xs space-y-2.5 transition flex flex-col justify-between">
+          <div class="space-y-1.5">
+            <div class="flex items-start justify-between gap-2">
+              <h6 class="font-extrabold text-xs sm:text-sm text-emerald-950">${v.name}</h6>
+              <span class="text-[10px] font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
+                ${v.subsidy_savings_pct}% ${isHi ? "छूट" : "Off"}
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
+              <div><strong>${isHi ? "अवधि:" : "Maturity:"}</strong> ${v.maturity_days} ${isHi ? "दिन" : "days"}</div>
+              <div><strong>${isHi ? "उपज:" : "Yield:"}</strong> ${v.yield_q_ha} ${isHi ? "कुं./हे." : "q/ha"}</div>
+              <div><strong>${isHi ? "अंकुरण:" : "Germination:"}</strong> ≥${v.germination_pct}%</div>
+              <div><strong>${isHi ? "बीज दर:" : "Seed Rate:"}</strong> ${v.seed_rate_kg_ha} kg/हे.</div>
+            </div>
+            <p class="text-[11px] text-slate-600 leading-snug">${v.features}</p>
+          </div>
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div>
+              <span class="text-[10px] text-slate-500 block">${isHi ? "सरकारी दर:" : "Gov Price:"}</span>
+              <div class="flex items-baseline gap-1.5">
+                <span class="font-black text-emerald-700 text-sm">₹${v.subsidized_price_per_kg_inr}/kg</span>
+                <span class="text-[11px] text-slate-400 line-through">₹${v.market_price_per_kg_inr}</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-1 rounded border border-emerald-200">
+              ${isHi ? `प्रति बैग ₹${bagSavings} बचत` : `₹${bagSavings} off/bag`}
+            </span>
+          </div>
+        </div>
+      `;
+      }).join("");
+    }
+
+    function renderSeedStores(stores) {
+      const container = getEl("seed-stores-list");
+      if (!container || !stores) return;
+      const isHi = currentLang === "hi";
+
+      container.innerHTML = stores.map(s => `
+        <div class="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 shadow-2xs space-y-2.5 transition flex flex-col justify-between">
+          <div class="space-y-1">
+            <div class="flex items-start justify-between gap-2">
+              <span class="text-[10px] font-black uppercase text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                ${s.store_type}
+              </span>
+              <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded shrink-0">
+                📍 ${s.distance_km} km
+              </span>
+            </div>
+            <h6 class="font-extrabold text-xs sm:text-sm text-slate-900 leading-snug">${s.name}</h6>
+            <p class="text-[11px] text-slate-600 leading-tight">🏢 ${s.address}</p>
+            <div class="text-[10px] text-slate-500 pt-0.5">
+              <span>🕒 ${s.hours}</span>
+            </div>
+            <div class="text-[10px] font-semibold text-emerald-800 bg-emerald-50/70 p-1.5 rounded border border-emerald-200/60">
+              💳 ${s.subsidy_mode}
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+            <a href="tel:${s.phone.split('/')[0].replace(/[^0-9]/g, '')}" class="min-h-[44px] flex-1 px-3 py-2 rounded-xl text-xs font-black bg-emerald-700 hover:bg-emerald-600 text-white transition flex items-center justify-center gap-1.5 shadow-2xs">
+              <span>📞</span> <span>${isHi ? "कॉल करें" : "Call Store"}</span>
+            </a>
+            <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">${s.phone.split('/')[0].trim()}</span>
           </div>
         </div>
       `).join("");

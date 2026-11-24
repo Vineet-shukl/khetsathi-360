@@ -48,6 +48,10 @@ from app.crop_machinery_service import (
     get_plot_scaled_machinery_plan,
     get_cultivation_lifecycle_stages,
 )
+from app.seed_store_service import (
+    get_certified_seed_varieties,
+    get_nearby_government_seed_stores,
+)
 from app.ml_residual import ResidualMLModel
 from app.satellite_service import calculate_satellite_vegetation
 from app.weather_service import fetch_live_weather, search_pinpoint_locations
@@ -167,6 +171,62 @@ def crop_alternative_and_machinery(
         "alternative": alt,
         "machinery": mach,
         "lifecycle_stages": stages,
+    }
+
+
+@app.get("/api/v1/seed/certified-and-stores")
+def seed_certified_and_stores(
+    crop: str = Query(..., description="Crop identifier, e.g. wheat, rice"),
+    district: str = Query(default="Ghazipur", description="District name"),
+    area_ha: float = Query(default=1.0, gt=0, description="Area in hectares"),
+    lat: float | None = Query(default=None, ge=6.0, le=38.0),
+    lon: float | None = Query(default=None, ge=68.0, le=98.0),
+    lang: str = Query(default="hi", description="Language (hi or en)"),
+):
+    """
+    Returns ICAR-certified seed varieties with transparent government subsidized prices,
+    calculated seed requirements for the parcel, and nearby verified Government Block
+    Seed Stores (राजकीय कृषि बीज भंडार), KVKs, and PACS.
+    """
+    import math
+
+    varieties = get_certified_seed_varieties(crop=crop, region="Uttar Pradesh", language=lang)
+    stores = get_nearby_government_seed_stores(district=district, lat=lat or 25.5928, lon=lon or 83.5770, language=lang)
+
+    seed_rate = varieties[0]["seed_rate_kg_ha"] if varieties else 100
+    sub_price = varieties[0]["subsidized_price_per_kg_inr"] if varieties else 22.0
+    mkt_price = varieties[0]["market_price_per_kg_inr"] if varieties else 38.0
+
+    total_seed_kg = round(seed_rate * area_ha, 1)
+    crop_l = crop.lower()
+    bag_size_kg = 40.0 if crop_l == "wheat" else (25.0 if crop_l == "rice" else (5.0 if crop_l == "mustard" else 40.0))
+    bags_count = math.ceil(total_seed_kg / bag_size_kg)
+    subsidized_total = round(total_seed_kg * sub_price, 2)
+    market_total = round(total_seed_kg * mkt_price, 2)
+    total_savings = round(market_total - subsidized_total, 2)
+    savings_pct = round((total_savings / market_total) * 100, 1) if market_total > 0 else 0.0
+
+    seed_requirement = {
+        "crop": crop,
+        "area_ha": area_ha,
+        "seed_rate_kg_ha": seed_rate,
+        "total_seed_kg": total_seed_kg,
+        "bag_size_kg": bag_size_kg,
+        "bags_count": bags_count,
+        "subsidized_total_inr": subsidized_total,
+        "market_total_inr": market_total,
+        "total_savings_inr": total_savings,
+        "savings_pct": savings_pct,
+    }
+
+    return {
+        "status": "success",
+        "crop": crop,
+        "district": district,
+        "area_ha": area_ha,
+        "varieties": varieties,
+        "stores": stores,
+        "seed_requirement": seed_requirement,
     }
 
 
