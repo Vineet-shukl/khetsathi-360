@@ -131,7 +131,22 @@ ZONE_MARKET_HUBS: list[dict[str, Any]] = [
     },
 ]
 
-_STATE_TO_ZONE: dict[str, ZoneId] = {h["state"].lower(): h["zone"] for h in ZONE_MARKET_HUBS}
+_STATE_TO_ZONE: dict[str, ZoneId] = {
+    **{h["state"].lower(): h["zone"] for h in ZONE_MARKET_HUBS},
+    "bihar": "zone4",
+    "haryana": "zone6",
+    "rajasthan": "zone8",
+    "telangana": "zone10",
+    "andhra pradesh": "zone10",
+}
+
+
+def _format_market_name(rec: dict[str, Any], fallback_state: str) -> str:
+    raw = str(rec.get("market") or rec.get("district") or fallback_state.title()).strip()
+    lowered = raw.lower()
+    if any(tok in lowered for tok in ("apmc", "mandi", "market", "samiti")):
+        return raw
+    return f"{raw} APMC"
 
 
 def _fetch_agmarknet_records(commodity: str, force_refresh: bool = False) -> dict[str, dict[str, Any]]:
@@ -149,14 +164,14 @@ def _fetch_agmarknet_records(commodity: str, force_refresh: bool = False) -> dic
         {
             "api-key": api_key,
             "format": "json",
-            "limit": "60",
+            "limit": "300",
             "filters[commodity]": commodity,
         }
     )
     url = f"https://api.data.gov.in/resource/{AGMARKNET_RESOURCE_ID}?{params}"
     try:
         req = urllib.request.Request(url, headers={"Accept": "application/json", "User-Agent": "KhetSathi360/2.0"})
-        with urllib.request.urlopen(req, timeout=6) as resp:
+        with urllib.request.urlopen(req, timeout=8) as resp:
             payload = json.loads(resp.read().decode("utf-8"))
         records = payload.get("records", [])
         by_zone: dict[str, dict[str, Any]] = {}
@@ -166,14 +181,17 @@ def _fetch_agmarknet_records(commodity: str, force_refresh: bool = False) -> dic
             if not zone or zone in by_zone:
                 continue
             try:
-                min_p = float(rec["min_price"])
                 modal_p = float(rec["modal_price"])
-                max_p = float(rec["max_price"])
+                if modal_p <= 0:
+                    continue
+                raw_min = float(rec.get("min_price") or modal_p)
+                raw_max = float(rec.get("max_price") or modal_p)
             except (KeyError, TypeError, ValueError):
                 continue
-            market_name = f"{rec.get('market', rec.get('district', state.title()))} APMC"
+            min_p = raw_min if raw_min > 0 else modal_p
+            max_p = raw_max if raw_max >= modal_p else modal_p
             by_zone[zone] = {
-                "market_hub": market_name,
+                "market_hub": _format_market_name(rec, state),
                 "min_price_inr_per_q": round(min_p, 1),
                 "modal_price_inr_per_q": round(modal_p, 1),
                 "max_price_inr_per_q": round(max_p, 1),
