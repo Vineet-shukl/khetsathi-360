@@ -1968,6 +1968,25 @@
 
     function getEl(id) { return document.getElementById(id); }
 
+    let toastHideTimer = null;
+    function showToastNotification(msg, tone = "emerald") {
+      const banner = getEl("toast-banner");
+      const iconEl = getEl("toast-icon");
+      const msgEl = getEl("toast-msg");
+      if (!banner || !msgEl) return;
+      const toneMap = {
+        emerald: "bg-emerald-900 text-white border border-emerald-500",
+        amber: "bg-amber-500 text-slate-950 border border-amber-700",
+        red: "bg-red-700 text-white border border-red-400"
+      };
+      banner.className = `fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl shadow-2xl font-bold text-xs flex items-center gap-2 transition-all duration-300 ${toneMap[tone] || toneMap.emerald}`;
+      if (iconEl) iconEl.textContent = tone === "amber" ? "⚠️" : (tone === "red" ? "🛑" : "✅");
+      msgEl.textContent = msg;
+      banner.classList.remove("hidden");
+      clearTimeout(toastHideTimer);
+      toastHideTimer = setTimeout(() => banner.classList.add("hidden"), 3500);
+    }
+
     // Backend Health Verification
     async function checkBackendHealth() {
       try {
@@ -2195,6 +2214,9 @@
       const locInput = getEl("location-search-input");
       if (locInput) locInput.placeholder = dict.locSearchPlaceholder;
 
+      const langBtn = getEl("lang-toggle");
+      if (langBtn) langBtn.setAttribute("aria-label", lang === "hi" ? "Switch Language (Current: Hindi)" : "Switch Language (Current: English)");
+
       updateLandUnitConverter();
       if (currentWeatherData) renderWeatherUI(currentWeatherData);
       runAdvisoryEngine();
@@ -2218,12 +2240,17 @@
       }
     }
 
+    function convertToHectares(val, unitKey) {
+      const num = parseFloat(val) || 1.0;
+      const factor = LAND_CONV[unitKey] || 0.25;
+      return Math.max(0.05, num * factor);
+    }
+
     // Land Unit Converter Handler
     function updateLandUnitConverter() {
       const val = parseFloat(getEl("plot-area-val").value) || 1.0;
       const unitKey = getEl("plot-area-unit").value;
-      const factor = LAND_CONV[unitKey] || 0.25;
-      const canonicalHa = Math.max(0.05, val * factor);
+      const canonicalHa = convertToHectares(val, unitKey);
 
       getEl("area-input").value = canonicalHa.toFixed(2);
 
@@ -2583,10 +2610,12 @@
       }
 
       // Dynamic Organic Farming Economics & Bio-Input Calculations
+      let orgDataCache = null;
       try {
         const orgResp = await fetch(`/api/v1/organic/advisory?crop=${cropKey}&area_ha=${areaHa}`);
         if (orgResp.ok) {
           const orgData = await orgResp.json();
+          orgDataCache = orgData;
           const eco = orgData.economics;
           const inp = orgData.input_plan;
 
@@ -2600,12 +2629,20 @@
 
           const premVal = getEl("org-premium-val");
           if (premVal) premVal.textContent = `+${eco.organic_market_premium_pct}% (₹${Math.round(eco.expected_organic_price_per_q_inr)}/कु.)`;
+          const premSub = getEl("lbl-org-prem-sub");
+          if (premSub) premSub.textContent = isHi
+            ? `₹${Math.round(eco.expected_organic_price_per_q_inr).toLocaleString("en-IN")}/क्विंटल तक थोक दर`
+            : `Up to ₹${Math.round(eco.expected_organic_price_per_q_inr).toLocaleString("en-IN")}/q wholesale rate`;
 
           const subVal = getEl("org-subsidy-val");
           if (subVal) subVal.textContent = `₹${Math.round(eco.pkvy_annual_assistance_inr).toLocaleString("en-IN")}/वर्ष`;
 
           const profVal = getEl("org-profit-val");
           if (profVal) profVal.textContent = `₹${Math.round(eco.organic_net_profit_inr).toLocaleString("en-IN")}`;
+          const netSub = getEl("lbl-org-net-sub");
+          if (netSub) netSub.textContent = isHi
+            ? `पारंपरिक से ₹${Math.round(eco.net_profit_increase_inr).toLocaleString("en-IN")} अधिक`
+            : `₹${Math.round(eco.net_profit_increase_inr).toLocaleString("en-IN")} higher than conventional`;
 
           const vcBagsEl = getEl("org-vc-bags");
           if (vcBagsEl) vcBagsEl.textContent = isHi
@@ -2674,7 +2711,21 @@
 
       // Chronological Action Plan Cards
       const actions = [];
-      if (isHi) {
+      if (currentDashboardMode === "organic" && orgDataCache && orgDataCache.input_plan) {
+        const guideList = isHi
+          ? orgDataCache.input_plan.application_guidelines_hi
+          : orgDataCache.input_plan.application_guidelines_en;
+        const icons = ["🌱", "🧪", "💧", "🛡️"];
+        const tones = ["emerald", "amber", "sky", "emerald"];
+        (guideList || []).forEach((line, idx) => {
+          actions.push({
+            icon: icons[idx] || "🌿",
+            tone: tones[idx] || "emerald",
+            title: isHi ? `जैविक चरण ${idx + 1}` : `Organic Step ${idx + 1}`,
+            body: line
+          });
+        });
+      } else if (isHi) {
         actions.push({
           icon: "🌱",
           tone: "emerald",
@@ -3642,7 +3693,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
             ${isHi ? `कुल बचत: ₹${Math.round(req.total_savings_inr).toLocaleString("en-IN")}` : `Total Savings: ₹${Math.round(req.total_savings_inr).toLocaleString("en-IN")}`}
           </span>
           <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
-            ${req.subsidy_savings_pct}% ${isHi ? "छूट" : "Subsidy"}
+            ${Number(req.savings_pct ?? req.subsidy_savings_pct ?? 0)}% ${isHi ? "छूट" : "Subsidy"}
           </span>
         `;
       }
@@ -3694,8 +3745,8 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
               </span>
             </div>
             <div class="grid grid-cols-2 gap-1.5 text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100">
-              <div><strong>${isHi ? "अवधि:" : "Maturity:"}</strong> ${Number(v.maturity_days)} ${isHi ? "दिन" : "days"}</div>
-              <div><strong>${isHi ? "उपज:" : "Yield:"}</strong> ${Number(v.yield_q_ha)} ${isHi ? "कुं./हे." : "q/ha"}</div>
+              <div><strong>${isHi ? "अवधि:" : "Maturity:"}</strong> ${escapeHtml(v.maturity_days)} ${isHi ? "दिन" : "days"}</div>
+              <div><strong>${isHi ? "उपज:" : "Yield:"}</strong> ${escapeHtml(v.yield_q_ha)} ${isHi ? "कुं./हे." : "q/ha"}</div>
               <div><strong>${isHi ? "अंकुरण:" : "Germination:"}</strong> ≥${Number(v.germination_pct)}%</div>
               <div><strong>${isHi ? "बीज दर:" : "Seed Rate:"}</strong> ${Number(v.seed_rate_kg_ha)} kg/हे.</div>
             </div>
