@@ -20,6 +20,8 @@ htmlcov/
 # Data & raw scratch downloads
 data/raw/*
 !data/raw/.gitkeep
+data/*.db
+data/*.sqlite3
 *.xlsx
 *.xls
 tracker_download.xlsx

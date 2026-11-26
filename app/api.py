@@ -27,8 +27,16 @@ from app.contracts import (
     AdvisoryResponse,
     AnalyticsCoverageResponse,
     CropId,
+    FPOAssimilationEvent,
+    FPOAssimilationEventCreate,
+    FPOFarmerRecord,
+    FPOFarmerRecordCreate,
+    FPOFarmerRecordUpdate,
+    FPOLedgerResponse,
     InvestorMetricsResponse,
     LocationSearchResult,
+    MandiPricesResponse,
+    MandiQuoteCreateRequest,
     OrganicAdvisoryResponse,
     ROIEstimate,
     ROIEstimateRequest,
@@ -49,6 +57,8 @@ from app.crop_machinery_service import (
 )
 from app.district_soil_model import STATE_TO_ZONE, DistrictSoilModel
 from app.env_loader import load_local_env
+from app.fpo_records_service import FPORecordsStore
+from app.mandi_service import get_cluster_modal_price_map, get_live_mandi_prices
 from app.ml_residual import ResidualMLModel
 from app.satellite_service import calculate_satellite_vegetation
 from app.seed_store_service import (
@@ -556,6 +566,100 @@ def get_analytics_coverage():
         crops_supported=list(CROPS.keys()),
         zones_covered=list(ZONES.keys()),
     )
+
+
+# ---------------------------------------------------------------------------
+# FPO Real-Time Mandi Prices & SQLite Cluster Records Endpoints
+# ---------------------------------------------------------------------------
+_FPO_STORE_SINGLETON: FPORecordsStore | None = None
+_FPO_STORE_PATH: str | None = None
+
+
+def _get_fpo_store() -> FPORecordsStore:
+    global _FPO_STORE_SINGLETON, _FPO_STORE_PATH
+    env_db = os.getenv("KHETSATHI_FPO_DB")
+    if _FPO_STORE_SINGLETON is None or _FPO_STORE_PATH != env_db:
+        _FPO_STORE_SINGLETON = FPORecordsStore(env_db)
+        _FPO_STORE_PATH = env_db
+    return _FPO_STORE_SINGLETON
+
+
+@app.get("/api/v1/fpo/mandi-prices", response_model=MandiPricesResponse)
+def get_fpo_mandi_prices(
+    crop: CropId = Query("wheat", description="Crop key for mandi price lookup"),
+    refresh: bool = Query(False, description="Bypass 15-minute upstream Agmarknet cache"),
+):
+    """Returns zone-wise live mandi prices (Agmarknet / FPO spot quotes / CACP benchmark)."""
+    store = _get_fpo_store()
+    return get_live_mandi_prices(crop=crop, store=store, force_refresh=refresh)
+
+
+@app.post("/api/v1/fpo/mandi-prices/quote", response_model=MandiPricesResponse)
+def upsert_fpo_mandi_quote(req: MandiQuoteCreateRequest):
+    """Persists a verified live FPO/APMC spot quote and returns refreshed prices."""
+    store = _get_fpo_store()
+    store.upsert_mandi_quote(
+        crop=req.crop,
+        zone=req.zone,
+        market_hub=req.market_hub,
+        min_price=req.min_price_inr_per_q,
+        modal_price=req.modal_price_inr_per_q,
+        max_price=req.max_price_inr_per_q,
+        arrivals_tonnes=req.arrivals_tonnes,
+    )
+    return get_live_mandi_prices(crop=req.crop, store=store, force_refresh=False)
+
+
+@app.get("/api/v1/fpo/records", response_model=FPOLedgerResponse)
+def get_fpo_records(
+    crop: CropId | None = Query(None, description="Optional crop filter"),
+    status: str | None = Query(None, description="Filter: verified_shc | low_n | growing | ready_to_sell | dispatched"),
+    q: str | None = Query(None, max_length=80, description="Search farmer, village, district, or crop"),
+):
+    """Lists real-time persisted FPO farmer records valued at current live mandi modal prices."""
+    store = _get_fpo_store()
+    modal_map = get_cluster_modal_price_map(store)
+    return store.list_ledger(modal_price_lookup=modal_map, crop_filter=crop, status_filter=status, search=q)
+
+
+@app.post("/api/v1/fpo/records", response_model=FPOFarmerRecord)
+def create_fpo_record(req: FPOFarmerRecordCreate):
+    """Creates a real-time farmer soil/procurement lot record in the FPO SQLite ledger."""
+    store = _get_fpo_store()
+    modal_map = get_cluster_modal_price_map(store)
+    return store.create_record(req, modal_price_lookup=modal_map)
+
+
+@app.patch("/api/v1/fpo/records/{record_id}", response_model=FPOFarmerRecord)
+def update_fpo_record(record_id: int, req: FPOFarmerRecordUpdate):
+    """Updates lot status, area, or soil verification badge for an existing FPO record."""
+    store = _get_fpo_store()
+    modal_map = get_cluster_modal_price_map(store)
+    updated = store.update_record(record_id, req, modal_price_lookup=modal_map)
+    if updated is None:
+        raise HTTPException(status_code=404, detail=f"FPO record {record_id} not found")
+    return updated
+
+
+@app.delete("/api/v1/fpo/records/{record_id}")
+def delete_fpo_record(record_id: int):
+    """Deletes an FPO farmer/lot record by ID."""
+    store = _get_fpo_store()
+    if not store.delete_record(record_id):
+        raise HTTPException(status_code=404, detail=f"FPO record {record_id} not found")
+    return {"deleted": True, "id": record_id}
+
+
+@app.get("/api/v1/fpo/events", response_model=list[FPOAssimilationEvent])
+def list_fpo_events(limit: int = Query(12, ge=1, le=50)):
+    """Lists recent persisted mid-season field assimilation events."""
+    return _get_fpo_store().list_assimilation_events(limit=limit)
+
+
+@app.post("/api/v1/fpo/events", response_model=FPOAssimilationEvent)
+def create_fpo_event(req: FPOAssimilationEventCreate):
+    """Persists a mid-season weather or leaf symptom assimilation event to the FPO log."""
+    return _get_fpo_store().add_assimilation_event(req)
 
 
 @app.get("/api/v1/tts/synthesize")

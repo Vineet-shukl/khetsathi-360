@@ -1306,82 +1306,157 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- MODULE 2: मिट्टी परीक्षण व FPO केंद्र (SOIL HEALTH LAB & FPO HUB)          -->
-    <!-- 12-Parameter Lab Classifier + Pan-India Mandi Prices + In-Season Recal     -->
+    <!-- MODULE 2: मिट्टी परीक्षण व FPO केंद्र (LIGHT REAL-TIME FPO CONSOLE)       -->
+    <!-- Connected to Real Mandi Prices, SQLite Cluster Records & Closed-Loop Log  -->
     <!-- ========================================================================= -->
-    <section id="panel-module-2" role="tabpanel" aria-labelledby="tab-module-2" tabindex="0" class="hidden space-y-6">
+    <section id="panel-module-2" role="tabpanel" aria-labelledby="tab-module-2" tabindex="0" class="hidden space-y-5">
 
-      <!-- Header Banner -->
-      <div class="card p-5 sm:p-6 bg-gradient-to-r from-slate-900 to-emerald-950 text-white border-0 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
-        <div>
-          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold mb-2 border border-emerald-400/30">
-            <span>🧪</span> <span id="lbl-mod2-badge">मृदा स्वास्थ्य प्रयोगशाला एवं FPO क्लस्टर कंसोल</span>
+      <!-- Light Luminous FPO Command Header -->
+      <div class="card p-4 sm:p-5 bg-gradient-to-br from-emerald-50/90 via-white to-amber-50/70 border border-emerald-200/80 text-emerald-950 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/90 text-emerald-900 text-xs font-extrabold border border-emerald-200">
+              <span>🧪</span> <span id="lbl-mod2-badge">मृदा स्वास्थ्य प्रयोगशाला एवं FPO क्लस्टर कंसोल</span>
+            </div>
+            <span id="fpo-live-pill" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white text-emerald-800 text-[11px] font-bold border border-emerald-200 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span id="lbl-fpo-live-status">रियल-टाइम सिंक</span>
+              <span id="fpo-last-sync" class="text-slate-500 font-mono">Live</span>
+            </span>
           </div>
-          <h2 id="lbl-mod2-title" class="text-xl sm:text-2xl font-extrabold text-white">
-            12-पैरामीटर मृदा कार्ड विश्लेषक व मंडी मूल्य पूर्वानुमान
+          <h2 id="lbl-mod2-title" class="text-lg sm:text-xl font-extrabold text-emerald-950 tracking-tight">
+            लाइव मंडी भाव, क्लस्टर रिकॉर्ड व 12-पैरामीटर मृदा विश्लेषक
           </h2>
-          <p id="lbl-mod2-sub" class="text-xs sm:text-sm text-emerald-100 mt-1 max-w-2xl leading-relaxed">
-            DAC&amp;FW एवं ICAR मानकों के अनुसार प्रयोगशाला ग्रेड मृदा परीक्षण रिपोर्ट, सीएसीपी न्यूनतम समर्थन मूल्य (MSP) और गतिशील मंडी भाव।
+          <p id="lbl-mod2-sub" class="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
+            वास्तविक CACP / Agmarknet मंडी दरें, लाइव किसान लॉट बहीखाता (SQLite रिकॉर्ड) और ICAR मानक मृदा विश्लेषण।
           </p>
         </div>
-        <button id="send-to-engine-btn" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition shadow flex items-center gap-1.5 shrink-0">
-          <span>➔</span> <span id="lbl-btn-load-advisory">किसान सलाहकार में लोड करें</span>
-        </button>
+
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <button id="btn-fpo-refresh" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-sm transition flex items-center gap-1.5">
+            <span>🔄</span> <span id="lbl-fpo-refresh">ताज़ा करें</span>
+          </button>
+          <button id="send-to-engine-btn" type="button" class="btn-shine min-h-[44px] px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-800 hover:bg-emerald-700 text-white transition shadow flex items-center gap-1.5">
+            <span>➔</span> <span id="lbl-btn-load-advisory">किसान सलाहकार में लोड करें</span>
+          </button>
+        </div>
       </div>
 
-      <!-- 12-Parameter Soil Health Evaluation Table -->
-      <div class="card p-5 sm:p-6 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-          <div>
-            <h3 id="lbl-shc-table-title" class="text-base font-extrabold text-emerald-950">
-              मृदा स्वास्थ्य कार्ड 12-मानक विश्लेषण (ICAR Soil Health Standards)
-            </h3>
-            <p id="lbl-shc-table-sub" class="text-xs text-slate-600">भारत सरकार के कृषि मंत्रालय द्वारा निर्धारित मानक सीमाएं</p>
+      <!-- 4-Card Live FPO Cluster KPI Strip -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="card p-3.5 bg-white border border-slate-200/80 space-y-1">
+          <p id="lbl-fpo-kpi1-title" class="text-[11px] font-bold text-slate-500 uppercase tracking-wide">सक्रिय किसान व लॉट</p>
+          <div class="flex items-baseline justify-between gap-2">
+            <span id="fpo-kpi-farmers" class="text-xl sm:text-2xl font-black text-emerald-950">--</span>
+            <span id="fpo-kpi-area" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">-- ha</span>
           </div>
-          <span id="shc-amendment-note" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
-            Balanced parameters
-          </span>
+          <p id="fpo-kpi-verified-shc" class="text-[11px] text-slate-600 font-medium">-- SHC verified</p>
+        </div>
+
+        <div class="card p-3.5 bg-white border border-slate-200/80 space-y-1">
+          <p id="lbl-fpo-kpi2-title" class="text-[11px] font-bold text-slate-500 uppercase tracking-wide">लाइव मॉडल मंडी भाव</p>
+          <div class="flex items-baseline justify-between gap-2">
+            <span id="fpo-kpi-price" class="text-xl sm:text-2xl font-black text-emerald-800">₹--</span>
+            <span id="fpo-kpi-msp-delta" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">MSP --</span>
+          </div>
+          <p id="fpo-kpi-price-src" class="text-[11px] text-slate-600 font-medium truncate">CACP / APMC Feed</p>
+        </div>
+
+        <div class="card p-3.5 bg-white border border-slate-200/80 space-y-1">
+          <p id="lbl-fpo-kpi3-title" class="text-[11px] font-bold text-slate-500 uppercase tracking-wide">बिक्री हेतु तैयार उपज</p>
+          <div class="flex items-baseline justify-between gap-2">
+            <span id="fpo-kpi-ready-q" class="text-xl sm:text-2xl font-black text-amber-800">-- q</span>
+            <span id="fpo-kpi-ready-lots" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">-- lots</span>
+          </div>
+          <p id="fpo-kpi-total-q" class="text-[11px] text-slate-600 font-medium">Total pool: -- q</p>
+        </div>
+
+        <div class="card p-3.5 bg-gradient-to-br from-emerald-50/80 to-white border border-emerald-200 space-y-1">
+          <p id="lbl-fpo-kpi4-title" class="text-[11px] font-bold text-emerald-800 uppercase tracking-wide">क्लस्टर अनुमानित मूल्य</p>
+          <div class="flex items-baseline justify-between gap-2">
+            <span id="fpo-kpi-value" class="text-xl sm:text-2xl font-black text-emerald-950">₹--</span>
+            <span id="fpo-kpi-low-n" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">-- Low-N</span>
+          </div>
+          <p id="lbl-fpo-kpi4-sub" class="text-[11px] text-emerald-700 font-medium">At live modal mandi rate</p>
+        </div>
+      </div>
+
+      <!-- Real-Time Interactive Mandi Price Card -->
+      <div class="card p-4 sm:p-5 bg-white space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 id="lbl-mandi-title" class="text-base font-extrabold text-emerald-950">
+                रियल-टाइम मंडी भाव एवं मूल्य बैंड (Live Mandi Price Bands)
+              </h3>
+              <span id="fpo-price-source-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                CACP MSP + APMC
+              </span>
+            </div>
+            <p id="lbl-mandi-sub" class="text-xs text-slate-600 mt-0.5">CACP न्यूनतम समर्थन मूल्य व वास्तविक मंडी दरों का तुलनात्मक विवरण (₹ / क्विंटल)</p>
+          </div>
+
+          <button id="btn-toggle-quote-form" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-200 transition flex items-center gap-1.5 shrink-0">
+            <span>📈</span> <span id="lbl-btn-log-quote">स्थानीय मंडी भाव अपडेट करें</span>
+          </button>
+        </div>
+
+        <!-- Interactive Crop Filter Pills inside FPO -->
+        <div id="fpo-crop-pills" class="flex flex-wrap gap-2" role="group" aria-label="Select crop for live mandi price">
+          <button type="button" data-crop="wheat" class="fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white shadow-sm transition">🌾 Wheat</button>
+          <button type="button" data-crop="rice" class="fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-800 border border-slate-200 transition">🍚 Rice</button>
+          <button type="button" data-crop="maize" class="fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-800 border border-slate-200 transition">🌽 Maize</button>
+          <button type="button" data-crop="mustard" class="fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-800 border border-slate-200 transition">🌼 Mustard</button>
+          <button type="button" data-crop="gram" class="fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-800 border border-slate-200 transition">🫘 Gram</button>
+          <button type="button" data-crop="sugarcane" class="fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-800 border border-slate-200 transition">🎋 Sugarcane</button>
+        </div>
+
+        <!-- Collapsible Inline Live Spot Rate Form -->
+        <div id="fpo-quote-form" class="hidden p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+          <div class="sm:col-span-3">
+            <label for="quote-zone" class="block text-[11px] font-bold text-slate-700 mb-1">APMC Zone</label>
+            <select id="quote-zone" class="w-full min-h-[44px] rounded-xl border border-amber-300 bg-white px-2.5 text-xs font-semibold text-slate-900">
+              <option value="zone4">Zone 4 · UP</option>
+              <option value="zone6">Zone 6 · PB/HR</option>
+              <option value="zone8">Zone 8 · MP</option>
+              <option value="zone9">Zone 9 · MH</option>
+              <option value="zone10">Zone 10 · KA</option>
+              <option value="zone13">Zone 13 · GJ</option>
+            </select>
+          </div>
+          <div class="sm:col-span-3">
+            <label for="quote-hub" class="block text-[11px] font-bold text-slate-700 mb-1">Mandi / APMC Name</label>
+            <input id="quote-hub" type="text" value="Ghazipur APMC" class="w-full min-h-[44px] rounded-xl border border-amber-300 bg-white px-2.5 text-xs font-semibold text-slate-900" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="quote-min" class="block text-[11px] font-bold text-slate-700 mb-1">Min (₹/q)</label>
+            <input id="quote-min" type="number" step="5" value="2520" class="w-full min-h-[44px] rounded-xl border border-amber-300 bg-white px-2.5 text-xs font-bold text-slate-900" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="quote-modal" class="block text-[11px] font-bold text-slate-700 mb-1">Modal (₹/q)</label>
+            <input id="quote-modal" type="number" step="5" value="2680" class="w-full min-h-[44px] rounded-xl border border-amber-300 bg-white px-2.5 text-xs font-bold text-emerald-900" />
+          </div>
+          <div class="sm:col-span-2">
+            <button id="btn-save-mandi-quote" type="button" class="w-full min-h-[44px] px-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition">
+              💾 Save Quote
+            </button>
+          </div>
+        </div>
+
+        <div class="h-56 sm:h-64">
+          <canvas id="fpoChart"></canvas>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-xs text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-200 text-slate-700 bg-slate-50">
-                <th class="py-2.5 px-3 font-bold" id="th-shc-param">तत्व (Parameter)</th>
-                <th class="py-2.5 px-3 font-bold" id="th-shc-val">मात्रा (Value)</th>
-                <th class="py-2.5 px-3 font-bold" id="th-shc-unit">इकाई (Unit)</th>
-                <th class="py-2.5 px-3 font-bold" id="th-shc-thresh">सरकारी मानक सीमाएं (Threshold Range)</th>
-                <th class="py-2.5 px-3 font-bold" id="th-shc-status">स्थिति (Status)</th>
-              </tr>
-            </thead>
-            <tbody id="shc-tbody" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Pan-India Mandi Price Bands (CACP / Agmarknet) -->
-      <div class="card p-5 sm:p-6 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-          <div>
-            <h3 id="lbl-mandi-title" class="text-base font-extrabold text-emerald-950">
-              अखिल भारतीय मंडी मूल्य बैंड (Pan-India Mandi Price Bands)
-            </h3>
-            <p id="lbl-mandi-sub" class="text-xs text-slate-600">CACP न्यूनतम समर्थन मूल्य व वास्तविक मंडी दरों का अनुमान (₹ प्रति क्विंटल)</p>
-          </div>
-        </div>
-
-        <div class="h-64">
-          <canvas id="fpoChart"></canvas>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-xs text-left border-collapse mt-3">
-            <thead>
               <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
-                <th class="p-2 font-bold" id="th-fpo-zone">कृषि-जलवायु क्षेत्र (Zone)</th>
-                <th class="p-2 font-bold" id="th-fpo-min">न्यूनतम मूल्य (Min ₹/q)</th>
-                <th class="p-2 font-bold" id="th-fpo-modal">अपेक्षित औसत (Modal ₹/q)</th>
-                <th class="p-2 font-bold" id="th-fpo-max">अधिकतम मूल्य (Max ₹/q)</th>
+                <th class="p-2.5 font-bold" id="th-fpo-zone">कृषि-जलवायु क्षेत्र (Zone)</th>
+                <th class="p-2.5 font-bold" id="th-fpo-market">APMC मंडी</th>
+                <th class="p-2.5 font-bold" id="th-fpo-min">न्यूनतम मूल्य (Min ₹/q)</th>
+                <th class="p-2.5 font-bold" id="th-fpo-modal">अपेक्षित औसत (Modal ₹/q)</th>
+                <th class="p-2.5 font-bold" id="th-fpo-max">अधिकतम मूल्य (Max ₹/q)</th>
+                <th class="p-2.5 font-bold" id="th-fpo-delta">MSP तुलना</th>
               </tr>
             </thead>
             <tbody id="fpo-table-body" class="divide-y divide-slate-100"></tbody>
@@ -1389,13 +1464,132 @@
         </div>
       </div>
 
-      <!-- Mid-Season Dynamic In-Season Assimilation -->
-      <div class="card p-5 sm:p-6 space-y-4">
+      <!-- Real-Time Interactive FPO Farmer & Procurement Ledger -->
+      <div id="fpo-ledger-card" class="card p-4 sm:p-5 bg-white space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div>
+            <h3 id="lbl-fpo-ledger-title" class="text-base font-extrabold text-emerald-950">
+              🌾 लाइव FPO किसान एवं उपज रिकॉर्ड (Real-Time Cluster Ledger)
+            </h3>
+            <p id="lbl-fpo-ledger-sub" class="text-xs text-slate-600">
+              स्कैन किए गए मृदा कार्ड और किसान लॉट की ताज़ा स्थिति व मंडी मूल्य — क्लिक करके स्थिति बदलें या सलाहकार में खोलें।
+            </p>
+          </div>
+          <button id="btn-toggle-add-record" type="button" class="min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 transition flex items-center gap-1.5 shrink-0">
+            <span>➕</span> <span id="lbl-btn-add-record">नया किसान / लॉट जोड़ें</span>
+          </button>
+        </div>
+
+        <!-- Inline Lightweight Add Farmer Record Drawer -->
+        <div id="fpo-add-record-form" class="hidden p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+          <div class="sm:col-span-3">
+            <label for="rec-farmer-name" class="block text-[11px] font-bold text-slate-700 mb-1">Farmer Name</label>
+            <input id="rec-farmer-name" type="text" placeholder="e.g. Suresh Yadav" class="w-full min-h-[44px] rounded-xl border border-emerald-200 bg-white px-2.5 text-xs font-semibold text-slate-900" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="rec-village" class="block text-[11px] font-bold text-slate-700 mb-1">Village</label>
+            <input id="rec-village" type="text" placeholder="e.g. Zamania" class="w-full min-h-[44px] rounded-xl border border-emerald-200 bg-white px-2.5 text-xs font-semibold text-slate-900" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="rec-district" class="block text-[11px] font-bold text-slate-700 mb-1">District</label>
+            <input id="rec-district" type="text" value="Ghazipur" class="w-full min-h-[44px] rounded-xl border border-emerald-200 bg-white px-2.5 text-xs font-semibold text-slate-900" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="rec-crop" class="block text-[11px] font-bold text-slate-700 mb-1">Crop</label>
+            <select id="rec-crop" class="w-full min-h-[44px] rounded-xl border border-emerald-200 bg-white px-2.5 text-xs font-semibold text-slate-900">
+              <option value="wheat">Wheat</option>
+              <option value="rice">Rice</option>
+              <option value="maize">Maize</option>
+              <option value="mustard">Mustard</option>
+              <option value="gram">Gram</option>
+              <option value="sugarcane">Sugarcane</option>
+            </select>
+          </div>
+          <div class="sm:col-span-1">
+            <label for="rec-area" class="block text-[11px] font-bold text-slate-700 mb-1">Ha</label>
+            <input id="rec-area" type="number" step="0.1" min="0.1" value="1.5" class="w-full min-h-[44px] rounded-xl border border-emerald-200 bg-white px-2.5 text-xs font-bold text-slate-900" />
+          </div>
+          <div class="sm:col-span-2">
+            <button id="btn-submit-fpo-record" type="button" class="w-full min-h-[44px] px-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition">
+              ✅ Save Lot
+            </button>
+          </div>
+        </div>
+
+        <!-- Search + Quick Filter Pills -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div class="relative flex-1 max-w-sm">
+            <input id="fpo-record-search" type="search" placeholder="किसान, गांव या जिले से खोजें..." class="w-full min-h-[44px] rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white px-3.5 text-xs font-semibold text-slate-900 outline-none focus:border-emerald-500 transition" />
+          </div>
+          <div class="flex flex-wrap gap-1.5" role="group" aria-label="Filter FPO records">
+            <button id="fpo-filter-all" type="button" data-filter="all" class="fpo-rec-filter min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white transition">All</button>
+            <button id="fpo-filter-ready" type="button" data-filter="ready_to_sell" class="fpo-rec-filter min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-amber-50 text-slate-700 border border-slate-200 transition">Ready to Sell</button>
+            <button id="fpo-filter-verified" type="button" data-filter="verified_shc" class="fpo-rec-filter min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-700 border border-slate-200 transition">Verified SHC</button>
+            <button id="fpo-filter-lown" type="button" data-filter="low_n" class="fpo-rec-filter min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-rose-50 text-slate-700 border border-slate-200 transition">Low-N Alert</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="p-2.5 font-bold" id="th-rec-farmer">किसान व स्थान</th>
+                <th class="p-2.5 font-bold" id="th-rec-crop">फसल व उपज</th>
+                <th class="p-2.5 font-bold" id="th-rec-soil">मिट्टी (N / pH / स्रोत)</th>
+                <th class="p-2.5 font-bold" id="th-rec-val">लाइव मूल्य (₹)</th>
+                <th class="p-2.5 font-bold" id="th-rec-status">स्थिति</th>
+                <th class="p-2.5 font-bold text-right" id="th-rec-actions">कार्रवाई</th>
+              </tr>
+            </thead>
+            <tbody id="fpo-records-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Compact 12-Parameter Soil Health Evaluation Table -->
+      <div class="card p-4 sm:p-5 bg-white space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div>
+            <h3 id="lbl-shc-table-title" class="text-base font-extrabold text-emerald-950">
+              मृदा स्वास्थ्य कार्ड 12-मानक विश्लेषण (ICAR Soil Health Standards)
+            </h3>
+            <p id="lbl-shc-table-sub" class="text-xs text-slate-600">भारत सरकार के कृषि मंत्रालय द्वारा निर्धारित मानक सीमाएं</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="shc-amendment-note" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-200">
+              Balanced parameters
+            </span>
+            <button id="btn-toggle-shc-table" type="button" class="min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 transition">
+              📋 Full 12-Param View
+            </button>
+          </div>
+        </div>
+
+        <div id="fpo-active-shc-chips" class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center"></div>
+
+        <div id="fpo-shc-table-wrap" class="hidden overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-700 bg-slate-50">
+                <th class="py-2 px-3 font-bold" id="th-shc-param">तत्व (Parameter)</th>
+                <th class="py-2 px-3 font-bold" id="th-shc-val">मात्रा (Value)</th>
+                <th class="py-2 px-3 font-bold" id="th-shc-unit">इकाई (Unit)</th>
+                <th class="py-2 px-3 font-bold" id="th-shc-thresh">सरकारी मानक सीमाएं (Threshold Range)</th>
+                <th class="py-2 px-3 font-bold" id="th-shc-status">स्थिति (Status)</th>
+              </tr>
+            </thead>
+            <tbody id="shc-tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Mid-Season Dynamic In-Season Assimilation + Live Persisted Timeline -->
+      <div class="card p-4 sm:p-5 bg-white space-y-4">
         <h3 id="lbl-assim-title" class="text-base font-extrabold text-emerald-950 border-b border-slate-100 pb-2">
           मध्य-सत्र गतिशील समायोजन (In-Season Closed-Loop Event Assimilation)
         </h3>
         <p id="lbl-assim-sub" class="text-xs text-slate-600">
-          फसल के दौरान अप्रत्याशित मौसम या लक्षण दर्ज करें — इंजन तुरंत खाद व पानी की सलाह को पुनर्समायोजित करेगा।
+          फसल के दौरान अप्रत्याशित मौसम या लक्षण दर्ज करें — रिकॉर्ड सुरक्षित होगा और इंजन तुरंत सलाह अपडेट करेगा।
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
@@ -1414,7 +1608,7 @@
           </div>
 
           <div class="sm:col-span-3">
-            <button id="assim-btn" type="button" class="w-full min-h-[44px] rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold transition shadow flex items-center justify-center gap-1">
+            <button id="assim-btn" type="button" class="w-full min-h-[44px] rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center justify-center gap-1">
               <span>⚡</span> <span id="lbl-btn-update-assim">सलाह अपडेट करें</span>
             </button>
           </div>
@@ -1423,6 +1617,8 @@
         <div id="assim-result" role="status" aria-live="polite" class="p-3 rounded-xl bg-emerald-50 text-emerald-950 text-xs font-semibold border border-emerald-200">
           मध्य-सत्र घटना दर्ज होने पर यहाँ वास्तविक समायोजन दिखाई देगा।
         </div>
+
+        <div id="fpo-events-feed" class="space-y-1.5 text-xs" aria-live="polite"></div>
       </div>
 
     </section>
@@ -1671,9 +1867,28 @@
         sciConsoleTitle: "वैज्ञानिक व अनुसंधान कंसोल (Scientific & Agronomic Console)",
         sciConsoleSub: "रासायनिक तत्व गणना, डीएपी नाइट्रोजन क्रेडिट समीकरण, हाइब्रिड एमएल रेसिडुअल व FAO-56 जल मांग वक्र",
         mod2Badge: "मृदा स्वास्थ्य प्रयोगशाला एवं FPO क्लस्टर कंसोल",
-        mod2Title: "12-पैरामीटर मृदा कार्ड विश्लेषक व मंडी मूल्य पूर्वानुमान",
-        mod2Sub: "DAC&FW एवं ICAR मानकों के अनुसार प्रयोगशाला ग्रेड मृदा परीक्षण रिपोर्ट, सीएसीपी न्यूनतम समर्थन मूल्य (MSP) और गतिशील मंडी भाव।",
+        mod2Title: "लाइव मंडी भाव, क्लस्टर रिकॉर्ड व 12-पैरामीटर मृदा विश्लेषक",
+        mod2Sub: "वास्तविक CACP / Agmarknet मंडी दरें, लाइव किसान लॉट बहीखाता (SQLite रिकॉर्ड) और ICAR मानक मृदा विश्लेषण।",
         btnLoadAdvisory: "किसान सलाहकार में लोड करें",
+        fpoLiveStatus: "रियल-टाइम सिंक",
+        fpoRefresh: "ताज़ा करें",
+        fpoKpi1Title: "सक्रिय किसान व लॉट",
+        fpoKpi2Title: "लाइव मॉडल मंडी भाव",
+        fpoKpi3Title: "बिक्री हेतु तैयार उपज",
+        fpoKpi4Title: "क्लस्टर अनुमानित मूल्य",
+        fpoKpi4Sub: "लाइव मंडी मॉडल दर के अनुसार",
+        btnLogQuote: "स्थानीय मंडी भाव अपडेट करें",
+        fpoLedgerTitle: "🌾 लाइव FPO किसान एवं उपज रिकॉर्ड (Real-Time Cluster Ledger)",
+        fpoLedgerSub: "स्कैन किए गए मृदा कार्ड और किसान लॉट की ताज़ा स्थिति व मंडी मूल्य — क्लिक करके स्थिति बदलें या सलाहकार में खोलें।",
+        btnAddRecord: "नया किसान / लॉट जोड़ें",
+        thFpoMarket: "APMC मंडी",
+        thFpoDelta: "MSP तुलना",
+        thRecFarmer: "किसान व स्थान",
+        thRecCrop: "फसल व उपज",
+        thRecSoil: "मिट्टी (N / pH / स्रोत)",
+        thRecVal: "लाइव मूल्य (₹)",
+        thRecStatus: "स्थिति",
+        thRecActions: "कार्रवाई",
         shcTableTitle: "मृदा स्वास्थ्य कार्ड 12-मानक विश्लेषण (ICAR Soil Health Standards)",
         shcTableSub: "भारत सरकार के कृषि मंत्रालय द्वारा निर्धारित मानक सीमाएं",
         mandiTitle: "अखिल भारतीय मंडी मूल्य बैंड (Pan-India Mandi Price Bands)",
@@ -1896,9 +2111,28 @@
         sciConsoleTitle: "Scientific & Agronomic Console",
         sciConsoleSub: "Elemental NPK targets, DAP nitrogen credit formulas, Hybrid ML residual & FAO-56 curves",
         mod2Badge: "Soil Health Laboratory & FPO Console",
-        mod2Title: "12-Parameter Soil Health Card Parser & Mandi Price Benchmarks",
-        mod2Sub: "Laboratory-grade evaluations per DAC&FW/ICAR standards, CACP Minimum Support Prices, and dynamic mandi bands.",
+        mod2Title: "Live Mandi Rates, Cluster Ledger & 12-Param Soil Lab",
+        mod2Sub: "Real CACP / Agmarknet mandi quotes, persistent farmer & harvest lot records, and ICAR soil standards.",
         btnLoadAdvisory: "Load into Kisan Mitra Advisory",
+        fpoLiveStatus: "Real-Time Sync",
+        fpoRefresh: "Refresh Live",
+        fpoKpi1Title: "Active Farmers & Plots",
+        fpoKpi2Title: "Live Modal Mandi Rate",
+        fpoKpi3Title: "Ready Harvest Lots",
+        fpoKpi4Title: "Est. Cluster Value",
+        fpoKpi4Sub: "Valued at live modal mandi rate",
+        btnLogQuote: "Update Local Mandi Quote",
+        fpoLedgerTitle: "🌾 Live FPO Farmer & Harvest Ledger (Real Records)",
+        fpoLedgerSub: "Synced SHC scans & procurement lots valued at today's mandi rate — click status to update or load into advisory.",
+        btnAddRecord: "Add Farmer / Lot",
+        thFpoMarket: "APMC Mandi",
+        thFpoDelta: "vs CACP MSP",
+        thRecFarmer: "Farmer & Location",
+        thRecCrop: "Crop & Volume",
+        thRecSoil: "Soil (N / pH / Source)",
+        thRecVal: "Live Value (₹)",
+        thRecStatus: "Lot Status",
+        thRecActions: "Actions",
         shcTableTitle: "Soil Health Card 12-Parameter Analysis (ICAR Standards)",
         shcTableSub: "Official thresholds defined by Ministry of Agriculture, Govt of India",
         mandiTitle: "Pan-India Mandi Price Bands",
@@ -2218,6 +2452,25 @@
         "lbl-mod2-title": dict.mod2Title,
         "lbl-mod2-sub": dict.mod2Sub,
         "lbl-btn-load-advisory": dict.btnLoadAdvisory,
+        "lbl-fpo-live-status": dict.fpoLiveStatus,
+        "lbl-fpo-refresh": dict.fpoRefresh,
+        "lbl-fpo-kpi1-title": dict.fpoKpi1Title,
+        "lbl-fpo-kpi2-title": dict.fpoKpi2Title,
+        "lbl-fpo-kpi3-title": dict.fpoKpi3Title,
+        "lbl-fpo-kpi4-title": dict.fpoKpi4Title,
+        "lbl-fpo-kpi4-sub": dict.fpoKpi4Sub,
+        "lbl-btn-log-quote": dict.btnLogQuote,
+        "lbl-fpo-ledger-title": dict.fpoLedgerTitle,
+        "lbl-fpo-ledger-sub": dict.fpoLedgerSub,
+        "lbl-btn-add-record": dict.btnAddRecord,
+        "th-fpo-market": dict.thFpoMarket,
+        "th-fpo-delta": dict.thFpoDelta,
+        "th-rec-farmer": dict.thRecFarmer,
+        "th-rec-crop": dict.thRecCrop,
+        "th-rec-soil": dict.thRecSoil,
+        "th-rec-val": dict.thRecVal,
+        "th-rec-status": dict.thRecStatus,
+        "th-rec-actions": dict.thRecActions,
         "lbl-shc-table-title": dict.shcTableTitle,
         "lbl-shc-table-sub": dict.shcTableSub,
         "lbl-mandi-title": dict.mandiTitle,
@@ -3208,6 +3461,25 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         tbody.appendChild(tr);
       });
 
+      // Populate compact summary chips alongside 12-parameter SHC table
+      const chipsWrap = getEl("fpo-active-shc-chips");
+      if (chipsWrap) {
+        const chipItems = [
+          { lbl: "Nitrogen (N)", val: `${p.n} kg/ha`, low: p.n < 280 },
+          { lbl: "Phosphorus (P)", val: `${p.p} kg/ha`, low: p.p < 10 },
+          { lbl: "Potash (K)", val: `${p.k} kg/ha`, low: p.k < 120 },
+          { lbl: "Org. Carbon", val: `${p.oc}%`, low: p.oc < 0.5 },
+          { lbl: "Soil pH", val: `${p.ph}`, low: p.ph < 6.0 || p.ph > 8.5 },
+          { lbl: "Zinc (Zn)", val: `${p.zn} ppm`, low: p.zn < 0.5 },
+        ];
+        chipsWrap.innerHTML = chipItems.map(c => `
+          <div class="p-2 rounded-xl border ${c.low ? 'bg-amber-50/80 border-amber-200' : 'bg-emerald-50/70 border-emerald-200'}">
+            <span class="block text-[10px] font-bold text-slate-600">${c.lbl}</span>
+            <span class="text-xs font-extrabold ${c.low ? 'text-amber-900' : 'text-emerald-950'}">${c.val}</span>
+          </div>
+        `).join("");
+      }
+
       const notes = [];
       if (p.ph < 6.0) notes.push("Lime amendment flagged (Acidic pH < 6.0)");
       if (p.ph > 8.5) notes.push("Gypsum amendment flagged (pH > 8.5)");
@@ -3216,74 +3488,347 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       getEl("shc-amendment-note").textContent = notes.length ? notes.join(" · ") : "Balanced micronutrients across 12 parameters";
     }
 
-    // Pan-India Mandi Price Bands (Module 2) — dynamic per selected crop using CACP 2024-25 MSP/FRP
-    function renderFpoChart() {
-      const ctx = getEl("fpoChart");
-      if (!ctx) return;
-      if (fpoChart) fpoChart.destroy();
+    // Real-Time FPO State & Backend Sync Controllers
+    let fpoSelectedCrop = "wheat";
+    let fpoRecordFilter = "all";
+    let fpoSearchQuery = "";
+    let fpoLastRecordsMap = {};
+    let fpoAutoPollTimer = null;
 
-      const cropKey = getEl("crop-select")?.value || selectedCrop || "wheat";
-      const cropMspMap = {
-        wheat: { label: "Wheat (गेहूं)", msp: 2275 },
-        rice: { label: "Rice / Paddy (धान)", msp: 2203 },
-        maize: { label: "Maize (मक्का)", msp: 2090 },
-        mustard: { label: "Mustard (सरसों)", msp: 5650 },
-        gram: { label: "Gram / Chickpea (चना)", msp: 5440 },
-        sugarcane: { label: "Sugarcane FRP (गन्ना)", msp: 315 },
-      };
-      const cropMeta = cropMspMap[cropKey] || cropMspMap.wheat;
-      const baseMsp = cropMeta.msp;
-
-      const zoneFactors = [
-        { name: "Zone 4 (UP)", minF: 0.96, modalF: 1.02, maxF: 1.08 },
-        { name: "Zone 6 (PB)", minF: 0.99, modalF: 1.05, maxF: 1.11 },
-        { name: "Zone 8 (MP)", minF: 0.93, modalF: 1.00, maxF: 1.06 },
-        { name: "Zone 9 (MH)", minF: 0.92, modalF: 0.98, maxF: 1.05 },
-        { name: "Zone 10 (KA)", minF: 0.95, modalF: 1.02, maxF: 1.08 },
-        { name: "Zone 13 (GJ)", minF: 0.97, modalF: 1.03, maxF: 1.10 },
-      ];
-      const zonesData = zoneFactors.map(z => ({
-        name: z.name,
-        min: Math.round(baseMsp * z.minF),
-        modal: Math.round(baseMsp * z.modalF),
-        max: Math.round(baseMsp * z.maxF),
-      }));
-
-      const mandiSub = getEl("lbl-mandi-sub");
-      if (mandiSub) {
-        mandiSub.textContent = currentLang === "hi"
-          ? `${cropMeta.label} · आधिकारिक CACP MSP मानक: ₹${baseMsp}/क्विंटल (±क्षेत्रीय मंडी बैंड)`
-          : `${cropMeta.label} · Official CACP MSP Benchmark: ₹${baseMsp}/quintal (regional mandi bands)`;
-      }
-
-      const yMin = Math.max(0, Math.floor((baseMsp * 0.8) / 50) * 50);
-      fpoChart = new Chart(ctx.getContext("2d"), {
-        type: "bar",
-        data: {
-          labels: zonesData.map(z => z.name),
-          datasets: [
-            { label: "Min Price Band (₹/q)", data: zonesData.map(z => z.min), backgroundColor: "#a7f3d0", borderRadius: 4 },
-            { label: "Expected Modal (₹/q)", data: zonesData.map(z => z.modal), backgroundColor: "#047857", borderRadius: 4 },
-            { label: "Max Price Band (₹/q)", data: zonesData.map(z => z.max), backgroundColor: "#f59e0b", borderRadius: 4 }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: { y: { beginAtZero: yMin === 0, min: yMin, title: { display: true, text: "Price (₹ / quintal)" } } }
-        }
+    function updateFpoCropPillsUI() {
+      document.querySelectorAll(".fpo-crop-pill").forEach(btn => {
+        const isSel = btn.dataset.crop === fpoSelectedCrop;
+        btn.className = isSel
+          ? "fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white shadow-sm transition"
+          : "fpo-crop-pill min-h-[44px] px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-800 border border-slate-200 transition";
       });
+    }
 
-      const fpoTbody = getEl("fpo-table-body");
-      if (fpoTbody) {
-        fpoTbody.innerHTML = zonesData.map(z => `
-          <tr class="hover:bg-slate-50">
-            <td class="p-2 font-semibold text-slate-900">${z.name}</td>
-            <td class="p-2 text-slate-700">₹${z.min}</td>
-            <td class="p-2 font-bold text-emerald-900">₹${z.modal}</td>
-            <td class="p-2 text-slate-700">₹${z.max}</td>
-          </tr>
-        `).join("");
+    async function fetchFpoMandiPrices(forceRefresh = false) {
+      const ctx = getEl("fpoChart");
+      const cropKey = fpoSelectedCrop || getEl("crop-select")?.value || selectedCrop || "wheat";
+      fpoSelectedCrop = cropKey;
+      updateFpoCropPillsUI();
+
+      try {
+        const res = await fetch(`/api/v1/fpo/mandi-prices?crop=${encodeURIComponent(cropKey)}&refresh=${forceRefresh}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        const kpiPrice = getEl("fpo-kpi-price");
+        const kpiDelta = getEl("fpo-kpi-msp-delta");
+        const kpiSrc = getEl("fpo-kpi-price-src");
+        const badgeSrc = getEl("fpo-price-source-badge");
+        const mandiSub = getEl("lbl-mandi-sub");
+
+        if (kpiPrice) {
+          kpiPrice.textContent = `₹${Math.round(data.cluster_modal_price_inr_per_q).toLocaleString("en-IN")}/q`;
+          kpiPrice.classList.remove("val-pop");
+          void kpiPrice.offsetWidth;
+          kpiPrice.classList.add("val-pop");
+        }
+        if (kpiDelta) {
+          const sign = data.cluster_msp_spread_pct >= 0 ? "+" : "";
+          kpiDelta.textContent = `MSP ${sign}${data.cluster_msp_spread_pct}%`;
+        }
+        if (kpiSrc) kpiSrc.textContent = data.primary_source;
+        if (badgeSrc) {
+          badgeSrc.textContent = data.live_feed_connected
+            ? `🟢 ${data.primary_source}`
+            : `📊 ${data.primary_source}`;
+        }
+        if (mandiSub) {
+          mandiSub.textContent = currentLang === "hi"
+            ? `${data.crop_label_hi} (${data.crop_label_en}) · ${data.cacp_msp_season}: ₹${Math.round(data.cacp_msp_inr_per_q)}/क्विंटल`
+            : `${data.crop_label_en} (${data.crop_label_hi}) · ${data.cacp_msp_season}: ₹${Math.round(data.cacp_msp_inr_per_q)}/quintal`;
+        }
+
+        // Pre-fill quote helper defaults from active crop
+        const qMin = getEl("quote-min");
+        const qModal = getEl("quote-modal");
+        if (qMin && qModal && document.activeElement !== qMin && document.activeElement !== qModal) {
+          qMin.value = Math.round(data.cacp_msp_inr_per_q * 0.97);
+          qModal.value = Math.round(data.cluster_modal_price_inr_per_q);
+        }
+
+        const zones = data.zones || [];
+        if (ctx) {
+          if (fpoChart) fpoChart.destroy();
+          const allPrices = zones.flatMap(z => [z.min_price_inr_per_q, z.modal_price_inr_per_q, z.max_price_inr_per_q]);
+          const minBound = allPrices.length ? Math.min(...allPrices) : data.cacp_msp_inr_per_q;
+          const yMin = Math.max(0, Math.floor((minBound * 0.88) / 50) * 50);
+
+          fpoChart = new Chart(ctx.getContext("2d"), {
+            type: "bar",
+            data: {
+              labels: zones.map(z => z.zone_label),
+              datasets: [
+                { label: "Min Price (₹/q)", data: zones.map(z => z.min_price_inr_per_q), backgroundColor: "#a7f3d0", borderRadius: 6 },
+                { label: "Live Modal (₹/q)", data: zones.map(z => z.modal_price_inr_per_q), backgroundColor: "#047857", borderRadius: 6 },
+                { label: "Max Price (₹/q)", data: zones.map(z => z.max_price_inr_per_q), backgroundColor: "#f59e0b", borderRadius: 6 }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { labels: { boxWidth: 12, font: { size: 11 } } } },
+              scales: { y: { beginAtZero: yMin === 0, min: yMin, title: { display: true, text: "Price (₹ / quintal)" } } }
+            }
+          });
+        }
+
+        const fpoTbody = getEl("fpo-table-body");
+        if (fpoTbody) {
+          const srcLabelMap = {
+            agmarknet_live: "Agmarknet Live",
+            fpo_spot_quote: "FPO Quote",
+            cacp_apmc_benchmark: "CACP Benchmark",
+          };
+          fpoTbody.innerHTML = zones.map(z => {
+            const sign = z.msp_delta_inr_per_q >= 0 ? "+" : "";
+            const deltaCls = z.msp_delta_inr_per_q >= 0
+              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+              : "bg-amber-50 text-amber-900 border-amber-200";
+            return `
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="p-2.5 font-bold text-slate-900">${escapeHtml(z.zone_label)}</td>
+                <td class="p-2.5 text-slate-700">
+                  <span class="font-semibold">${escapeHtml(z.market_hub)}</span>
+                  <span class="block text-[10px] text-slate-500">${escapeHtml(srcLabelMap[z.price_source] || z.price_source)} · ${escapeHtml(z.arrival_date)}</span>
+                </td>
+                <td class="p-2.5 text-slate-700 font-mono">₹${Math.round(z.min_price_inr_per_q).toLocaleString("en-IN")}</td>
+                <td class="p-2.5 font-extrabold text-emerald-900 font-mono">₹${Math.round(z.modal_price_inr_per_q).toLocaleString("en-IN")}</td>
+                <td class="p-2.5 text-slate-700 font-mono">₹${Math.round(z.max_price_inr_per_q).toLocaleString("en-IN")}</td>
+                <td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${deltaCls}">${sign}₹${Math.round(z.msp_delta_inr_per_q)} (${sign}${z.msp_delta_pct}%)</span></td>
+              </tr>
+            `;
+          }).join("");
+        }
+      } catch (err) {
+        console.warn("FPO mandi prices fallback/error:", err);
+      }
+    }
+
+    async function fetchFpoLedger() {
+      const tbody = getEl("fpo-records-tbody");
+      try {
+        const params = new URLSearchParams();
+        if (fpoRecordFilter && fpoRecordFilter !== "all") params.set("status", fpoRecordFilter);
+        if (fpoSearchQuery) params.set("q", fpoSearchQuery);
+        const res = await fetch(`/api/v1/fpo/records?${params.toString()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const s = data.summary || {};
+
+        if (getEl("fpo-kpi-farmers")) getEl("fpo-kpi-farmers").textContent = `${s.total_records ?? 0}`;
+        if (getEl("fpo-kpi-area")) getEl("fpo-kpi-area").textContent = `${s.total_area_ha ?? 0} ha`;
+        if (getEl("fpo-kpi-verified-shc")) getEl("fpo-kpi-verified-shc").textContent = `${s.verified_shc_count ?? 0} SHC verified`;
+        if (getEl("fpo-kpi-ready-q")) getEl("fpo-kpi-ready-q").textContent = `${s.ready_quintals ?? 0} q`;
+        if (getEl("fpo-kpi-ready-lots")) getEl("fpo-kpi-ready-lots").textContent = `${s.ready_lots_count ?? 0} lots`;
+        if (getEl("fpo-kpi-total-q")) getEl("fpo-kpi-total-q").textContent = `Total pool: ${s.total_expected_quintals ?? 0} q`;
+        if (getEl("fpo-kpi-value")) {
+          const valLakhs = ((s.estimated_cluster_revenue_inr || 0) / 100000).toFixed(2);
+          getEl("fpo-kpi-value").textContent = `₹${valLakhs}L`;
+        }
+        if (getEl("fpo-kpi-low-n")) getEl("fpo-kpi-low-n").textContent = `${s.low_nitrogen_plots ?? 0} Low-N`;
+        if (getEl("fpo-last-sync")) {
+          const nowTime = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          getEl("fpo-last-sync").textContent = nowTime;
+        }
+
+        const records = data.records || [];
+        fpoLastRecordsMap = {};
+        records.forEach(r => { fpoLastRecordsMap[r.id] = r; });
+
+        if (!tbody) return;
+        if (records.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500 font-semibold">${currentLang === "hi" ? "कोई मेल खाता रिकॉर्ड नहीं मिला।" : "No matching cluster records found."}</td></tr>`;
+          return;
+        }
+
+        const lotBadgeMap = {
+          growing: { lbl: currentLang === "hi" ? "फसल बढ़वार" : "Growing", cls: "bg-sky-50 text-sky-900 border-sky-200" },
+          ready_to_sell: { lbl: currentLang === "hi" ? "बिक्री तैयार" : "Ready to Sell", cls: "bg-amber-50 text-amber-950 border-amber-300" },
+          dispatched: { lbl: currentLang === "hi" ? "मंडी भेजा गया" : "Dispatched", cls: "bg-emerald-50 text-emerald-900 border-emerald-200" },
+        };
+        const soilBadgeMap = {
+          ocr_scan: { lbl: "OCR Scan", cls: "bg-emerald-100 text-emerald-900" },
+          verified_shc: { lbl: "Verified SHC", cls: "bg-emerald-50 text-emerald-800" },
+          block_baseline: { lbl: "Block Est.", cls: "bg-slate-100 text-slate-700" },
+        };
+
+        tbody.innerHTML = records.map(r => {
+          const st = lotBadgeMap[r.lot_status] || lotBadgeMap.growing;
+          const src = soilBadgeMap[r.soil_source] || soilBadgeMap.verified_shc;
+          const lowN = r.n_kg_ha < 280;
+          return `
+            <tr class="hover:bg-emerald-50/30 transition">
+              <td class="p-2.5">
+                <div class="font-bold text-slate-900">${escapeHtml(r.farmer_name)}</div>
+                <div class="text-[11px] text-slate-500">📍 ${escapeHtml(r.village)}, ${escapeHtml(r.district)}</div>
+              </td>
+              <td class="p-2.5">
+                <div class="font-bold text-emerald-950 capitalize">${escapeHtml(r.crop)} · ${r.expected_quintals} q</div>
+                <div class="text-[11px] text-slate-500">${r.area_ha} ha</div>
+              </td>
+              <td class="p-2.5">
+                <div class="flex flex-wrap items-center gap-1">
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${lowN ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-slate-100 text-slate-800'}">N:${r.n_kg_ha}</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800">pH:${r.ph}</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${src.cls}">${src.lbl}</span>
+                </div>
+              </td>
+              <td class="p-2.5 font-mono">
+                <div class="font-extrabold text-emerald-900">₹${Math.round(r.estimated_value_inr).toLocaleString("en-IN")}</div>
+                <div class="text-[10px] text-slate-500">@ ₹${Math.round(r.live_modal_price_inr_per_q)}/q</div>
+              </td>
+              <td class="p-2.5">
+                <button type="button" onclick="window.cycleFpoRecordStatus(${r.id}, '${escapeHtml(r.lot_status)}')" class="min-h-[44px] px-2.5 py-1 rounded-full text-[11px] font-bold border ${st.cls} hover:opacity-80 transition" title="Click to advance lot status">
+                  ${st.lbl} ↻
+                </button>
+              </td>
+              <td class="p-2.5 text-right">
+                <button type="button" onclick="window.loadFpoRecordIntoAdvisory(${r.id})" class="min-h-[44px] px-3 py-1 rounded-xl text-[11px] font-bold bg-white hover:bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-sm transition">
+                  ➔ ${currentLang === "hi" ? "खोलें" : "Load"}
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      } catch (err) {
+        console.warn("FPO ledger load error:", err);
+      }
+    }
+
+    async function fetchFpoEvents() {
+      const feed = getEl("fpo-events-feed");
+      if (!feed) return;
+      try {
+        const res = await fetch("/api/v1/fpo/events?limit=5");
+        if (!res.ok) return;
+        const events = await res.json();
+        if (!Array.isArray(events) || events.length === 0) {
+          feed.innerHTML = "";
+          return;
+        }
+        feed.innerHTML = events.map(ev => {
+          const msg = currentLang === "hi" ? ev.action_summary_hi : ev.action_summary_en;
+          const timeTag = String(ev.created_at || "").replace("T", " ").slice(0, 16);
+          return `
+            <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div>
+                <span class="font-bold text-emerald-900">[${escapeHtml(ev.district)} · ${escapeHtml(ev.crop)}]</span>
+                <span class="text-slate-700 font-semibold"> ${escapeHtml(ev.note)}:</span>
+                <span class="text-slate-600"> ${escapeHtml(msg)}</span>
+              </div>
+              <span class="text-[10px] font-mono text-slate-500">${escapeHtml(timeTag)} UTC</span>
+            </div>
+          `;
+        }).join("");
+      } catch (e) {
+        console.warn("FPO events load error:", e);
+      }
+    }
+
+    async function refreshFpoConsole(forceMandi = false) {
+      await Promise.all([
+        fetchFpoMandiPrices(forceMandi),
+        fetchFpoLedger(),
+        fetchFpoEvents(),
+      ]);
+    }
+
+    function renderFpoChart() {
+      refreshFpoConsole(false);
+    }
+
+    window.cycleFpoRecordStatus = async function(recordId, currentStatus) {
+      const order = ["growing", "ready_to_sell", "dispatched"];
+      const nextStatus = order[(order.indexOf(currentStatus) + 1) % order.length];
+      try {
+        const res = await fetch(`/api/v1/fpo/records/${recordId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lot_status: nextStatus }),
+        });
+        if (res.ok) {
+          await fetchFpoLedger();
+          showToastNotification(
+            currentLang === "hi" ? `✅ लॉट स्थिति अपडेट हुई: ${nextStatus}` : `✅ Lot status updated to ${nextStatus}`,
+            "emerald"
+          );
+        }
+      } catch (e) {
+        console.warn("Lot status update failed:", e);
+      }
+    };
+
+    window.loadFpoRecordIntoAdvisory = function(recordId) {
+      const rec = fpoLastRecordsMap[recordId];
+      if (!rec) return;
+      currentShcPreset = {
+        ...currentShcPreset,
+        district: rec.district,
+        zone: rec.zone,
+        crop: rec.crop,
+        n: rec.n_kg_ha,
+        p: rec.p_kg_ha,
+        k: rec.k_kg_ha,
+        oc: rec.oc_pct,
+        ph: rec.ph,
+        zn: rec.zn_ppm,
+      };
+      if (getEl("zone-select")) getEl("zone-select").value = rec.zone;
+      if (getEl("soil-n")) getEl("soil-n").value = rec.n_kg_ha;
+      if (getEl("soil-p")) getEl("soil-p").value = rec.p_kg_ha;
+      if (getEl("soil-k")) getEl("soil-k").value = rec.k_kg_ha;
+      if (getEl("soil-oc")) getEl("soil-oc").value = rec.oc_pct;
+      if (getEl("soil-ph")) getEl("soil-ph").value = rec.ph;
+      if (getEl("soil-zn")) getEl("soil-zn").value = rec.zn_ppm;
+      if (getEl("no-shc-toggle")) getEl("no-shc-toggle").checked = false;
+      currentLocationDisplayName = rec.district;
+      if (getEl("geo-location-text")) getEl("geo-location-text").textContent = `📍 ${rec.district} (${rec.farmer_name})`;
+      renderShcTable();
+      fpoSelectedCrop = rec.crop;
+      fetchFpoMandiPrices(false);
+      showToastNotification(
+        currentLang === "hi"
+          ? `✅ ${rec.farmer_name} (${rec.district}) का मृदा रिकॉर्ड लोड किया गया`
+          : `✅ Loaded ${rec.farmer_name} (${rec.district}) into SHC & Mandi view`,
+        "emerald"
+      );
+    };
+
+    async function saveOcrScanToFpoRecord(data) {
+      try {
+        const areaRaw = parseFloat(getEl("plot-area-val")?.value) || 1.2;
+        const unitRaw = getEl("plot-area-unit")?.value || "ha";
+        const areaHa = Math.max(0.1, Number(convertToHectares(areaRaw, unitRaw).toFixed(2)));
+        const cropKey = getEl("crop-select")?.value || selectedCrop || "wheat";
+        const zoneKey = getEl("zone-select")?.value || currentShcPreset.zone || "zone4";
+        const dist = data.district || currentLocationDisplayName || "Ghazipur";
+        await fetch("/api/v1/fpo/records", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            farmer_name: `${dist} SHC Scan`,
+            village: "Direct Scan",
+            district: dist,
+            zone: zoneKey,
+            crop: cropKey,
+            area_ha: areaHa,
+            n_kg_ha: Number(data.n_kg_ha ?? 210),
+            p_kg_ha: Number(data.p_kg_ha ?? 14),
+            k_kg_ha: Number(data.k_kg_ha ?? 165),
+            oc_pct: Number(data.oc_pct ?? 0.45),
+            ph: Number(data.ph ?? 7.2),
+            zn_ppm: Number(data.zn_ppm ?? 0.55),
+            soil_source: data.extracted_via === "regional_shc_sample" ? "verified_shc" : "ocr_scan",
+            lot_status: "growing",
+          }),
+        });
+      } catch (e) {
+        console.warn("Background FPO record save skipped:", e);
       }
     }
 
@@ -3485,6 +4030,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
             : `✅ Soil Health Card verified (${data.confidence_pct}% accuracy)! Parameters loaded.`, "emerald");
 
           runAdvisoryEngine();
+          saveOcrScanToFpoRecord(data);
           showOcrResultPopup(data, false);
         }, 600);
 
@@ -3580,6 +4126,10 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         tab2.setAttribute("aria-selected", "false");
         tab1.className = "dark-focus min-h-[44px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-emerald-700 text-white shadow transition flex items-center gap-1.5";
         tab2.className = "dark-focus min-h-[44px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-200 hover:text-white transition flex items-center gap-1.5";
+        if (fpoAutoPollTimer) {
+          clearInterval(fpoAutoPollTimer);
+          fpoAutoPollTimer = null;
+        }
         runAdvisoryEngine();
       } else {
         pan2.classList.remove("hidden");
@@ -3589,8 +4139,14 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         tab2.className = "dark-focus min-h-[44px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-emerald-700 text-white shadow transition flex items-center gap-1.5";
         tab1.className = "dark-focus min-h-[44px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-200 hover:text-white transition flex items-center gap-1.5";
         getEl("floating-crop-advisor")?.classList.add("hidden");
-        renderFpoChart();
+        fpoSelectedCrop = getEl("crop-select")?.value || selectedCrop || fpoSelectedCrop || "wheat";
         renderShcTable();
+        refreshFpoConsole(false);
+        if (!fpoAutoPollTimer) {
+          fpoAutoPollTimer = setInterval(() => {
+            if (activeModule === "module-2") refreshFpoConsole(false);
+          }, 30000);
+        }
       }
     }
 
@@ -4618,8 +5174,8 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         setLanguage(currentLang === "hi" ? "en" : "hi");
       });
 
-      // Mid-Season Assimilation in Module 2
-      getEl("assim-btn").addEventListener("click", () => {
+      // Mid-Season Assimilation in Module 2 (Persisted to SQLite Event Log)
+      getEl("assim-btn").addEventListener("click", async () => {
         const ev = getEl("assim-event").value;
         const note = getEl("assim-note").value.trim();
         const prefix = note ? `[${note}] ` : "";
@@ -4641,7 +5197,160 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         } else if (ev === "dry_spell") {
           getEl("et0-input").value = 4.8;
         }
+        try {
+          await fetch("/api/v1/fpo/events", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event_type: ev,
+              note: note || ev,
+              district: currentLocationDisplayName || currentShcPreset.district || "Cluster Plot",
+              crop: fpoSelectedCrop || selectedCrop || "wheat",
+            }),
+          });
+          await fetchFpoEvents();
+          showToastNotification(
+            isHi ? "⚡ खेत घटना रिकॉर्ड की गई और सलाह अपडेट हुई" : "⚡ Field event saved to FPO log & advisory updated",
+            "emerald"
+          );
+        } catch (err) {
+          console.warn("Assimilation event save failed:", err);
+        }
         runAdvisoryEngine();
+      });
+
+      // Interactive FPO Controls (Live Refresh, Crop Pills, Quote Drawer, Ledger Filters & Add Lot)
+      getEl("btn-fpo-refresh")?.addEventListener("click", async () => {
+        await refreshFpoConsole(true);
+        showToastNotification(
+          currentLang === "hi" ? "🔄 लाइव मंडी भाव और FPO रिकॉर्ड ताज़ा किए गए" : "🔄 Live mandi rates & FPO records synced",
+          "emerald"
+        );
+      });
+
+      document.querySelectorAll(".fpo-crop-pill").forEach(btn => {
+        btn.addEventListener("click", () => {
+          fpoSelectedCrop = btn.dataset.crop || "wheat";
+          fetchFpoMandiPrices(false);
+        });
+      });
+
+      getEl("btn-toggle-quote-form")?.addEventListener("click", () => {
+        getEl("fpo-quote-form")?.classList.toggle("hidden");
+      });
+
+      getEl("btn-save-mandi-quote")?.addEventListener("click", async () => {
+        const zone = getEl("quote-zone")?.value || "zone4";
+        const hub = getEl("quote-hub")?.value.trim() || "Local APMC Mandi";
+        const minP = parseFloat(getEl("quote-min")?.value) || 2400;
+        const modalP = parseFloat(getEl("quote-modal")?.value) || minP;
+        const maxP = Math.max(modalP, Math.round(modalP * 1.05));
+        try {
+          const res = await fetch("/api/v1/fpo/mandi-prices/quote", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              crop: fpoSelectedCrop || "wheat",
+              zone,
+              market_hub: hub,
+              min_price_inr_per_q: minP,
+              modal_price_inr_per_q: modalP,
+              max_price_inr_per_q: maxP,
+            }),
+          });
+          if (res.ok) {
+            getEl("fpo-quote-form")?.classList.add("hidden");
+            await refreshFpoConsole(false);
+            showToastNotification(
+              currentLang === "hi" ? `💾 ${hub} का लाइव भाव सुरक्षित किया गया` : `💾 Saved live quote for ${hub}`,
+              "emerald"
+            );
+          }
+        } catch (err) {
+          console.warn("Save mandi quote failed:", err);
+        }
+      });
+
+      getEl("btn-toggle-add-record")?.addEventListener("click", () => {
+        getEl("fpo-add-record-form")?.classList.toggle("hidden");
+      });
+
+      getEl("btn-submit-fpo-record")?.addEventListener("click", async () => {
+        const farmerName = getEl("rec-farmer-name")?.value.trim();
+        if (!farmerName) {
+          showToastNotification(
+            currentLang === "hi" ? "कृपया किसान का नाम दर्ज करें" : "Please enter farmer name",
+            "amber"
+          );
+          return;
+        }
+        const village = getEl("rec-village")?.value.trim() || "Cluster Village";
+        const district = getEl("rec-district")?.value.trim() || "Ghazipur";
+        const crop = getEl("rec-crop")?.value || "wheat";
+        const areaHa = Math.max(0.1, parseFloat(getEl("rec-area")?.value) || 1.0);
+        try {
+          const res = await fetch("/api/v1/fpo/records", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              farmer_name: farmerName,
+              village,
+              district,
+              zone: getEl("zone-select")?.value || "zone4",
+              crop,
+              area_ha: areaHa,
+              n_kg_ha: parseFloat(getEl("soil-n")?.value) || 220,
+              p_kg_ha: parseFloat(getEl("soil-p")?.value) || 15,
+              k_kg_ha: parseFloat(getEl("soil-k")?.value) || 175,
+              oc_pct: parseFloat(getEl("soil-oc")?.value) || 0.45,
+              ph: parseFloat(getEl("soil-ph")?.value) || 7.2,
+              zn_ppm: parseFloat(getEl("soil-zn")?.value) || 0.55,
+              soil_source: "verified_shc",
+              lot_status: "ready_to_sell",
+            }),
+          });
+          if (res.ok) {
+            if (getEl("rec-farmer-name")) getEl("rec-farmer-name").value = "";
+            getEl("fpo-add-record-form")?.classList.add("hidden");
+            await fetchFpoLedger();
+            showToastNotification(
+              currentLang === "hi" ? `✅ ${farmerName} का लॉट बहीखाते में जुड़ा` : `✅ Added ${farmerName} to FPO ledger`,
+              "emerald"
+            );
+          }
+        } catch (err) {
+          console.warn("Add FPO record failed:", err);
+        }
+      });
+
+      let fpoSearchTimer = null;
+      getEl("fpo-record-search")?.addEventListener("input", (e) => {
+        fpoSearchQuery = e.target.value.trim();
+        clearTimeout(fpoSearchTimer);
+        fpoSearchTimer = setTimeout(() => fetchFpoLedger(), 220);
+      });
+
+      document.querySelectorAll(".fpo-rec-filter").forEach(btn => {
+        btn.addEventListener("click", () => {
+          fpoRecordFilter = btn.dataset.filter || "all";
+          document.querySelectorAll(".fpo-rec-filter").forEach(b => {
+            const active = b.dataset.filter === fpoRecordFilter;
+            b.className = active
+              ? "fpo-rec-filter min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white transition"
+              : "fpo-rec-filter min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-emerald-50 text-slate-700 border border-slate-200 transition";
+          });
+          fetchFpoLedger();
+        });
+      });
+
+      getEl("btn-toggle-shc-table")?.addEventListener("click", () => {
+        const wrap = getEl("fpo-shc-table-wrap");
+        const btn = getEl("btn-toggle-shc-table");
+        if (!wrap || !btn) return;
+        const hidden = wrap.classList.toggle("hidden");
+        btn.textContent = hidden
+          ? (currentLang === "hi" ? "📋 पूरी 12-मानक तालिका" : "📋 Full 12-Param View")
+          : (currentLang === "hi" ? "🔼 संक्षिप्त दृश्य" : "🔼 Compact View");
       });
 
       // 1-Click WhatsApp Direct Cluster & Buyer Connect Handler

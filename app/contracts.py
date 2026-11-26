@@ -275,4 +275,129 @@ class OrganicAdvisoryResponse(BaseModel):
     conversion_timeline: list[str]
 
 
+LotStatus = Literal["growing", "ready_to_sell", "dispatched"]
+SoilRecordSource = Literal["verified_shc", "ocr_scan", "block_baseline"]
+
+
+class MandiZoneQuote(BaseModel):
+    zone: ZoneId
+    zone_label: str
+    market_hub: str
+    state: str
+    min_price_inr_per_q: float
+    modal_price_inr_per_q: float
+    max_price_inr_per_q: float
+    msp_delta_inr_per_q: float
+    msp_delta_pct: float
+    price_source: Literal["agmarknet_live", "fpo_spot_quote", "cacp_apmc_benchmark"]
+    arrival_date: str
+    arrivals_tonnes: float | None = None
+
+
+class MandiPricesResponse(BaseModel):
+    crop: CropId
+    crop_label_en: str
+    crop_label_hi: str
+    cacp_msp_inr_per_q: float
+    cacp_msp_season: str
+    cluster_modal_price_inr_per_q: float
+    cluster_msp_spread_pct: float
+    live_feed_connected: bool
+    primary_source: str
+    fetched_at_iso: str
+    zones: list[MandiZoneQuote]
+
+
+class MandiQuoteCreateRequest(BaseModel):
+    crop: CropId
+    zone: ZoneId = "zone4"
+    market_hub: str = Field(..., min_length=2, max_length=80)
+    min_price_inr_per_q: float = Field(..., ge=100.0, le=50000.0)
+    modal_price_inr_per_q: float = Field(..., ge=100.0, le=50000.0)
+    max_price_inr_per_q: float = Field(..., ge=100.0, le=50000.0)
+    arrivals_tonnes: float | None = Field(default=None, ge=0.0, le=50000.0)
+
+
+class FPOFarmerRecord(BaseModel):
+    id: int
+    farmer_name: str
+    village: str
+    district: str
+    zone: ZoneId
+    crop: CropId
+    area_ha: float
+    expected_quintals: float
+    n_kg_ha: float
+    p_kg_ha: float
+    k_kg_ha: float
+    oc_pct: float
+    ph: float
+    zn_ppm: float
+    soil_source: SoilRecordSource
+    lot_status: LotStatus
+    live_modal_price_inr_per_q: float
+    estimated_value_inr: float
+    updated_at: str
+
+
+class FPOFarmerRecordCreate(BaseModel):
+    farmer_name: str = Field(..., min_length=2, max_length=80)
+    village: str = Field(default="Cluster Member", min_length=1, max_length=80)
+    district: str = Field(..., min_length=2, max_length=80)
+    zone: ZoneId = "zone4"
+    crop: CropId = "wheat"
+    area_ha: float = Field(..., ge=0.05, le=200.0)
+    expected_quintals: float | None = Field(default=None, ge=0.5, le=20000.0)
+    n_kg_ha: float = Field(default=220.0, ge=10.0, le=1000.0)
+    p_kg_ha: float = Field(default=14.0, ge=1.0, le=150.0)
+    k_kg_ha: float = Field(default=170.0, ge=10.0, le=1000.0)
+    oc_pct: float = Field(default=0.45, ge=0.05, le=3.0)
+    ph: float = Field(default=7.2, ge=3.5, le=10.0)
+    zn_ppm: float = Field(default=0.55, ge=0.05, le=10.0)
+    soil_source: SoilRecordSource = "verified_shc"
+    lot_status: LotStatus = "growing"
+
+
+class FPOFarmerRecordUpdate(BaseModel):
+    lot_status: LotStatus | None = None
+    area_ha: float | None = Field(default=None, ge=0.05, le=200.0)
+    expected_quintals: float | None = Field(default=None, ge=0.5, le=20000.0)
+    soil_source: SoilRecordSource | None = None
+
+
+class FPOLedgerSummary(BaseModel):
+    total_records: int
+    total_area_ha: float
+    verified_shc_count: int
+    ready_lots_count: int
+    ready_quintals: float
+    total_expected_quintals: float
+    estimated_cluster_revenue_inr: float
+    low_nitrogen_plots: int
+
+
+class FPOLedgerResponse(BaseModel):
+    summary: FPOLedgerSummary
+    records: list[FPOFarmerRecord]
+    synced_at_iso: str
+
+
+class FPOAssimilationEventCreate(BaseModel):
+    event_type: Literal["heavy_rain", "yellowing", "dry_spell"]
+    note: str = Field(default="", max_length=240)
+    district: str = Field(default="Cluster Plot", max_length=80)
+    crop: CropId = "wheat"
+
+
+class FPOAssimilationEvent(BaseModel):
+    id: int
+    event_type: Literal["heavy_rain", "yellowing", "dry_spell"]
+    note: str
+    district: str
+    crop: CropId
+    action_summary_en: str
+    action_summary_hi: str
+    created_at: str
+
+
 AdvisoryResponse.model_rebuild()
