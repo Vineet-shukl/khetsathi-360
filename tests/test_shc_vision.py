@@ -1,6 +1,8 @@
 import io
+import os
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
@@ -11,6 +13,9 @@ FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "shc_samples"
 
 class TestSHCVisionOCR(unittest.TestCase):
     def setUp(self):
+        env_patch = patch.dict(os.environ, {"GEMINI_API_KEY": ""}, clear=False)
+        env_patch.start()
+        self.addCleanup(env_patch.stop)
         self.client = TestClient(app)
 
     def test_shc_ocr_upload_endpoint(self):

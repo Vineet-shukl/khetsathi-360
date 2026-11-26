@@ -16,10 +16,12 @@ import re
 import httpx
 
 from app.contracts import SHCOCRResponse
+from app.env_loader import load_local_env
 
 logger = logging.getLogger(__name__)
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "").strip()
+load_local_env()
+DEFAULT_VISION_MODEL = "gemini-flash-lite-latest"
 
 # Guardrail Non-SHC Keywords
 NON_SHC_KEYWORDS = {
@@ -196,13 +198,14 @@ async def extract_shc_from_image(
     # 1. Run strict pre-validation guardrails
     validate_document_guardrail(image_bytes=image_bytes, mime_type=mime_type, filename=filename)
 
-    api_key = os.environ.get("GEMINI_API_KEY", "").strip() or GEMINI_API_KEY
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    model_name = os.environ.get("GEMINI_VISION_MODEL", DEFAULT_VISION_MODEL).strip() or DEFAULT_VISION_MODEL
 
     # 2. Use Gemini Multimodal Vision API if key available
     if api_key:
         try:
             b64_data = base64.b64encode(image_bytes).decode("utf-8")
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
 
             payload = {
                 "contents": [
@@ -220,7 +223,7 @@ async def extract_shc_from_image(
             }
 
             async with httpx.AsyncClient(timeout=25.0) as client:
-                res = await client.post(url, json=payload)
+                res = await client.post(url, headers={"x-goog-api-key": api_key}, json=payload)
                 if res.status_code == 200:
                     data = res.json()
                     candidates = data.get("candidates", [])
@@ -262,8 +265,8 @@ async def extract_shc_from_image(
                             district=parsed.get("district") or preferred_district,
                             state=parsed.get("state") or "Uttar Pradesh",
                             confidence_pct=float(parsed.get("confidence_pct", 95.0)),
-                            extracted_via="gemini_1.5_flash_vision",
-                            raw_summary="सत्यापित मृदा स्वास्थ्य कार्ड (Gemini 1.5 Flash Vision द्वारा विश्लेषित)",
+                            extracted_via="gemini_vision",
+                            raw_summary=f"सत्यापित मृदा स्वास्थ्य कार्ड ({model_name} द्वारा विश्लेषित)",
                         )
         except ValueError:
             raise

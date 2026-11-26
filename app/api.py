@@ -48,6 +48,7 @@ from app.crop_machinery_service import (
     get_plot_scaled_machinery_plan,
 )
 from app.district_soil_model import STATE_TO_ZONE, DistrictSoilModel
+from app.env_loader import load_local_env
 from app.ml_residual import ResidualMLModel
 from app.satellite_service import calculate_satellite_vegetation
 from app.seed_store_service import (
@@ -56,6 +57,8 @@ from app.seed_store_service import (
 )
 from app.weather_service import fetch_live_weather, search_pinpoint_locations
 from app.yield_model import YieldModel
+
+load_local_env()
 
 ARTIFACT_PATH = Path(__file__).resolve().parent.parent / "artifacts" / "model_bundle.json"
 DISTRICT_PATH = Path(__file__).resolve().parent.parent / "artifacts" / "district_soil_bundle.json"
