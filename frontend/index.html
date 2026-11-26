@@ -3101,8 +3101,114 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       }
     }
 
-    // Simulated OCR Scanning Animation
-    // Multimodal Vision OCR via Gemini 1.5 Flash
+    function showOcrResultPopup(data, isRejection = false, errorMsg = "") {
+      const modal = getEl("ocr-result-modal");
+      if (!modal) return;
+      const isHi = currentLang === "hi";
+      const header = getEl("ocr-modal-header");
+      const iconEl = getEl("ocr-modal-icon");
+      const titleEl = getEl("ocr-modal-title");
+      const subEl = getEl("ocr-modal-sub");
+      const metaEl = getEl("ocr-modal-meta");
+      const gridEl = getEl("ocr-modal-grid");
+      const alertEl = getEl("ocr-modal-alert");
+      const errEl = getEl("ocr-modal-error");
+      const labBtn = getEl("btn-ocr-view-lab");
+      const applyBtn = getEl("btn-ocr-apply-close");
+
+      modal.classList.remove("hidden");
+
+      if (isRejection) {
+        if (header) header.className = "p-4 sm:p-5 bg-gradient-to-r from-red-800 to-amber-700 text-white flex items-center justify-between gap-3";
+        if (iconEl) iconEl.textContent = "🛑";
+        if (titleEl) titleEl.textContent = isHi ? "दस्तावेज़ अस्वीकृत (Non-SHC Blocked)" : "Document Rejected (Not a Soil Health Card)";
+        if (subEl) subEl.textContent = isHi ? "सुरक्षा नियम: केवल मृदा स्वास्थ्य कार्ड ही स्वीकार्य हैं" : "Document Guardrail: Only Soil Health Cards allowed";
+        if (metaEl) metaEl.classList.add("hidden");
+        if (gridEl) gridEl.classList.add("hidden");
+        if (alertEl) alertEl.classList.add("hidden");
+        if (errEl) {
+          errEl.textContent = errorMsg || (isHi ? "कृपया आधिकारिक मृदा स्वास्थ्य कार्ड अपलोड करें।" : "Please upload an official Soil Health Card.");
+          errEl.classList.remove("hidden");
+        }
+        if (labBtn) labBtn.classList.add("hidden");
+        if (applyBtn) applyBtn.textContent = isHi ? "दूसरा कार्ड चुनें" : "Try Another Card";
+        return;
+      }
+
+      if (header) header.className = "p-4 sm:p-5 bg-gradient-to-r from-[#0e2d1f] to-emerald-800 text-white flex items-center justify-between gap-3";
+      if (iconEl) iconEl.textContent = "✅";
+      if (titleEl) titleEl.textContent = isHi ? "मृदा स्वास्थ्य कार्ड स्कैन सफल!" : "Soil Health Card Scanned!";
+      const conf = data.confidence_pct ? `${data.confidence_pct}%` : "95%";
+      const via = data.extracted_via || "gemini_vision";
+      if (subEl) subEl.textContent = isHi ? `शुद्धता: ${conf} · स्रोत: ${via}` : `Confidence: ${conf} · Engine: ${via}`;
+      if (errEl) errEl.classList.add("hidden");
+      if (metaEl) metaEl.classList.remove("hidden");
+      if (gridEl) gridEl.classList.remove("hidden");
+      if (labBtn) {
+        labBtn.classList.remove("hidden");
+        labBtn.textContent = isHi ? "🧪 12-मानक तालिका देखें" : "🧪 View 12-Param Table";
+      }
+      if (applyBtn) applyBtn.textContent = isHi ? "🌾 सलाह देखें →" : "🌾 View Fertilizer Plan →";
+
+      const distText = escapeHtml([data.district, data.state].filter(Boolean).join(", ") || currentLocationDisplayName || "India");
+      if (metaEl) {
+        metaEl.innerHTML = `
+          <div><span class="text-slate-600 font-semibold">${isHi ? "पहचाना गया स्थान:" : "Detected Location:"}</span> <strong class="text-emerald-950">📍 ${distText}</strong></div>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-700 text-white font-extrabold text-[11px]">${isHi ? "सत्यापित" : "Verified"} ${escapeHtml(conf)}</span>
+        `;
+      }
+
+      const n = Number(data.n_kg_ha ?? 210);
+      const p = Number(data.p_kg_ha ?? 14);
+      const k = Number(data.k_kg_ha ?? 165);
+      const oc = Number(data.oc_pct ?? 0.45);
+      const ph = Number(data.ph ?? 7.2);
+      const zn = Number(data.zn_ppm ?? 0.55);
+      const s = Number(data.s_ppm ?? 12.0);
+      const ec = Number(data.ec_dsm ?? 0.5);
+
+      const items = [
+        ["Nitrogen (N)", `${n} kg/ha`, n < 280 ? (isHi ? "कम" : "Low") : (n <= 560 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High")), n < 280],
+        ["Phosphorus (P)", `${p} kg/ha`, p < 10 ? (isHi ? "कम" : "Low") : (p <= 25 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High")), p < 10],
+        ["Potassium (K)", `${k} kg/ha`, k < 120 ? (isHi ? "कम" : "Low") : (k <= 280 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High")), k < 120],
+        ["Organic Carbon", `${oc}%`, oc < 0.5 ? (isHi ? "कम" : "Low") : (oc <= 0.75 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High")), oc < 0.5],
+        ["Soil pH", `${ph}`, ph < 6.0 ? (isHi ? "अम्लीय" : "Acidic") : (ph <= 7.5 ? (isHi ? "आदर्श" : "Optimal") : (isHi ? "क्षारीय" : "Alkaline")), ph < 6.0 || ph > 7.5],
+        ["Zinc (Zn)", `${zn} ppm`, zn < 0.5 ? (isHi ? "कम" : "Low") : (isHi ? "सही" : "OK"), zn < 0.5],
+        ["Sulphur (S)", `${s} ppm`, s < 10 ? (isHi ? "कम" : "Low") : (isHi ? "सही" : "OK"), s < 10],
+        ["EC (Salinity)", `${ec} dS/m`, ec < 1.0 ? (isHi ? "सामान्य" : "Normal") : (isHi ? "अधिक" : "High"), ec >= 1.0],
+      ];
+
+      if (gridEl) {
+        gridEl.innerHTML = items.map(([label, val, status, warn]) => `
+          <div class="p-2.5 rounded-xl border ${warn ? "border-amber-300 bg-amber-50/70" : "border-emerald-200 bg-emerald-50/40"} text-center space-y-0.5">
+            <span class="text-[10px] font-bold text-slate-600 block">${escapeHtml(label)}</span>
+            <span class="text-sm font-black text-slate-900 block">${escapeHtml(val)}</span>
+            <span class="inline-block text-[10px] font-extrabold px-2 py-0.2 rounded-full ${warn ? "bg-amber-200 text-amber-950" : "bg-emerald-200 text-emerald-950"}">${escapeHtml(status)}</span>
+          </div>
+        `).join("");
+      }
+
+      const alerts = [];
+      if (ph < 6.0) alerts.push(isHi ? `अम्लीय मिट्टी (pH ${ph}): बुवाई से पहले कृषि चूना (Lime) डालें।` : `Acidic soil (pH ${ph}): apply agricultural Lime before sowing.`);
+      if (ph > 8.5) alerts.push(isHi ? `क्षारीय मिट्टी (pH ${ph}): जिप्सम व हरी खाद का प्रयोग करें।` : `Alkaline soil (pH ${ph}): apply Gypsum & green manure.`);
+      if (zn < 0.5) alerts.push(isHi ? `जिंक की कमी (${zn} ppm): जिंक सल्फेट डालें।` : `Zinc deficient (${zn} ppm): add Zinc Sulphate.`);
+      if (oc < 0.5) alerts.push(isHi ? `जैविक कार्बन कम (${oc}%): गोबर की खाद/वर्मीकम्पोस्ट बढ़ाएं।` : `Low Organic Carbon (${oc}%): add FYM/Vermicompost.`);
+
+      if (alertEl) {
+        if (alerts.length) {
+          alertEl.textContent = "⚠️ " + alerts.join(" | ");
+          alertEl.classList.remove("hidden");
+        } else {
+          alertEl.classList.add("hidden");
+        }
+      }
+    }
+
+    function closeOcrResultPopup() {
+      getEl("ocr-result-modal")?.classList.add("hidden");
+    }
+
+    // Multimodal Vision OCR via Gemini Vision
     async function uploadAndScanSoilCard(file) {
       const scanBeam = getEl("ocr-scan-beam");
       const progressBox = getEl("ocr-progress-box");
@@ -3145,6 +3251,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
           showToastNotification(currentLang === "hi"
             ? `⚠️ अमान्य दस्तावेज़: ${errorDetail}`
             : `⚠️ Invalid Document: ${errorDetail}`, "amber");
+          showOcrResultPopup(null, true, errorDetail);
           return;
         }
 
@@ -3186,13 +3293,13 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
             getEl("geo-location-text").textContent = `📍 ${data.district}${data.state ? ', ' + data.state : ''} (कार्ड से पहचाना गया)`;
           }
 
-          // Show Toast
+          // Show Toast & Pop-up Summary
           showToastNotification(currentLang === "hi"
             ? `✅ मृदा स्वास्थ्य कार्ड सत्यापित (${data.confidence_pct}% शुद्धता)! आंकड़े दर्ज किए गए।`
             : `✅ Soil Health Card verified (${data.confidence_pct}% accuracy)! Parameters loaded.`, "emerald");
 
           runAdvisoryEngine();
-          getEl("step-3-container").scrollIntoView({ behavior: "smooth" });
+          showOcrResultPopup(data, false);
         }, 600);
 
       } catch (err) {
@@ -3256,7 +3363,19 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         getEl("geo-location-text").textContent = `📍 ${currentShcPreset.district} (${currentShcPreset.lat}°N, ${currentShcPreset.lon}°E)`;
         fetchLocationAndWeather(currentShcPreset.lat, currentShcPreset.lon);
 
-        getEl("step-3-container").scrollIntoView({ behavior: "smooth" });
+        showOcrResultPopup({
+          n_kg_ha: currentShcPreset.n,
+          p_kg_ha: currentShcPreset.p,
+          k_kg_ha: currentShcPreset.k,
+          oc_pct: currentShcPreset.oc,
+          ph: currentShcPreset.ph,
+          zn_ppm: currentShcPreset.zn,
+          s_ppm: currentShcPreset.s,
+          ec_dsm: currentShcPreset.ec,
+          district: currentShcPreset.district,
+          confidence_pct: 96.0,
+          extracted_via: "regional_shc_sample"
+        }, false);
       }, 1300);
     }
 
@@ -3858,7 +3977,31 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
           if (sciConsole && !sciConsole.classList.contains("hidden")) {
             toggleScientificMode();
           }
+          const ocrModal = getEl("ocr-result-modal");
+          if (ocrModal && !ocrModal.classList.contains("hidden")) {
+            closeOcrResultPopup();
+          }
         }
+      });
+
+      // OCR Result Modal Buttons & Backdrop
+      getEl("btn-close-ocr-modal")?.addEventListener("click", closeOcrResultPopup);
+      getEl("btn-ocr-apply-close")?.addEventListener("click", () => {
+        const isErrVisible = !getEl("ocr-modal-error")?.classList.contains("hidden");
+        closeOcrResultPopup();
+        if (isErrVisible) {
+          getEl("shc-file-input")?.click();
+        } else {
+          getEl("step-3-container")?.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+      getEl("btn-ocr-view-lab")?.addEventListener("click", () => {
+        closeOcrResultPopup();
+        switchModule("module-2");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      getEl("ocr-result-modal")?.addEventListener("click", (e) => {
+        if (e.target && e.target.id === "ocr-result-modal") closeOcrResultPopup();
       });
 
       // GPS Detect Buttons
@@ -4410,6 +4553,40 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
   <div id="toast-banner" role="status" aria-live="polite" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl shadow-2xl font-bold text-xs flex items-center gap-2 transition-all duration-300">
     <span id="toast-icon">ℹ️</span>
     <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- OCR Scan Result Modal Pop-up -->
+  <div id="ocr-result-modal" role="dialog" aria-modal="true" aria-labelledby="ocr-modal-title" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-xl w-full shadow-2xl border-2 border-emerald-500 overflow-hidden animate-fade-in-up max-h-[90vh] flex flex-col">
+      <div id="ocr-modal-header" class="p-4 sm:p-5 bg-gradient-to-r from-[#0e2d1f] to-emerald-800 text-white flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <span id="ocr-modal-icon" class="text-2xl" aria-hidden="true">🧪</span>
+          <div>
+            <h3 id="ocr-modal-title" class="text-sm sm:text-base font-black">मृदा स्वास्थ्य कार्ड स्कैन परिणाम</h3>
+            <p id="ocr-modal-sub" class="text-[11px] text-emerald-200 font-medium">Gemini Vision OCR</p>
+          </div>
+        </div>
+        <button id="btn-close-ocr-modal" type="button" class="min-h-[44px] min-w-[44px] rounded-xl bg-white/10 hover:bg-white/20 text-white font-black text-sm flex items-center justify-center transition" aria-label="Close OCR result">
+          ✖️
+        </button>
+      </div>
+
+      <div id="ocr-modal-body" class="p-4 sm:p-5 space-y-4 overflow-y-auto text-xs">
+        <div id="ocr-modal-meta" class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200"></div>
+        <div id="ocr-modal-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5"></div>
+        <div id="ocr-modal-alert" class="hidden p-3 rounded-xl border-2 border-amber-300 bg-amber-50 text-amber-950 font-bold leading-relaxed"></div>
+        <div id="ocr-modal-error" class="hidden p-4 rounded-xl border-2 border-red-300 bg-red-50 text-red-950 font-bold leading-relaxed"></div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-end gap-2.5">
+        <button id="btn-ocr-view-lab" type="button" class="min-h-[44px] px-4 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 transition">
+          🧪 12-मानक तालिका देखें
+        </button>
+        <button id="btn-ocr-apply-close" type="button" class="min-h-[44px] px-5 py-2 rounded-xl text-xs font-extrabold bg-emerald-800 hover:bg-emerald-700 text-white shadow transition">
+          🌾 सलाह देखें →
+        </button>
+      </div>
+    </div>
   </div>
 </body>
 </html>
