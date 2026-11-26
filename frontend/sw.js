@@ -1,7 +1,7 @@
 // KhetSathi 360 — Offline Field Service Worker (PWA)
 // Enables zero-connectivity field operations for Indian farmers
 
-const CACHE_NAME = 'khetsathi-v2.4';
+const CACHE_NAME = 'khetsathi-v2.5';
 const STATIC_ASSETS = [
   '/',
   '/ui',

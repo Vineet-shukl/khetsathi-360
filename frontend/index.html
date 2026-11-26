@@ -2198,6 +2198,7 @@
       updateLandUnitConverter();
       if (currentWeatherData) renderWeatherUI(currentWeatherData);
       runAdvisoryEngine();
+      if (activeModule === "module-2") renderFpoChart();
     }
 
     // Toggle Scientific / Agronomist Console
@@ -2927,9 +2928,17 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       }
     }
 
-    // Render 12-Parameter SHC Table (Module 2)
+    // Render 12-Parameter SHC Table (Module 2) — synced with live OCR / scientific inputs
     function renderShcTable() {
-      const p = currentShcPreset;
+      const p = {
+        ...currentShcPreset,
+        n: parseFloat(getEl("soil-n")?.value) || currentShcPreset.n,
+        p: parseFloat(getEl("soil-p")?.value) || currentShcPreset.p,
+        k: parseFloat(getEl("soil-k")?.value) || currentShcPreset.k,
+        oc: parseFloat(getEl("soil-oc")?.value) || currentShcPreset.oc,
+        ph: parseFloat(getEl("soil-ph")?.value) || currentShcPreset.ph,
+        zn: parseFloat(getEl("soil-zn")?.value) || currentShcPreset.zn,
+      };
       const rows = [
         ["Available N", p.n, "kg/ha", "< 280 Low | 280–560 Med | > 560 High", p.n < 280 ? "Low" : (p.n <= 560 ? "Medium" : "High")],
         ["Available P", p.p, "kg/ha", "< 10 Low | 10–25 Med | > 25 High", p.p < 10 ? "Low" : (p.p <= 25 ? "Medium" : "High")],
@@ -2963,26 +2972,54 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       });
 
       const notes = [];
+      if (p.ph < 6.0) notes.push("Lime amendment flagged (Acidic pH < 6.0)");
       if (p.ph > 8.5) notes.push("Gypsum amendment flagged (pH > 8.5)");
       if (p.zn < 0.5) notes.push("Zinc Sulphate flagged (Zn < 0.5 ppm)");
       if (p.oc < 0.5) notes.push("Low OC (<0.5%): add FYM/compost");
       getEl("shc-amendment-note").textContent = notes.length ? notes.join(" · ") : "Balanced micronutrients across 12 parameters";
     }
 
-    // Pan-India Mandi Price Bands (Module 2)
+    // Pan-India Mandi Price Bands (Module 2) — dynamic per selected crop using CACP 2024-25 MSP/FRP
     function renderFpoChart() {
       const ctx = getEl("fpoChart");
       if (!ctx) return;
       if (fpoChart) fpoChart.destroy();
-      const zonesData = [
-        { name: "Zone 4 (UP)", min: 2180, modal: 2320, max: 2460 },
-        { name: "Zone 6 (PB)", min: 2240, modal: 2380, max: 2510 },
-        { name: "Zone 8 (MP)", min: 2120, modal: 2275, max: 2420 },
-        { name: "Zone 9 (MH)", min: 2090, modal: 2240, max: 2390 },
-        { name: "Zone 10 (KA)", min: 2150, modal: 2310, max: 2450 },
-        { name: "Zone 13 (GJ)", min: 2210, modal: 2350, max: 2490 }
-      ];
 
+      const cropKey = getEl("crop-select")?.value || selectedCrop || "wheat";
+      const cropMspMap = {
+        wheat: { label: "Wheat (गेहूं)", msp: 2275 },
+        rice: { label: "Rice / Paddy (धान)", msp: 2203 },
+        maize: { label: "Maize (मक्का)", msp: 2090 },
+        mustard: { label: "Mustard (सरसों)", msp: 5650 },
+        gram: { label: "Gram / Chickpea (चना)", msp: 5440 },
+        sugarcane: { label: "Sugarcane FRP (गन्ना)", msp: 315 },
+      };
+      const cropMeta = cropMspMap[cropKey] || cropMspMap.wheat;
+      const baseMsp = cropMeta.msp;
+
+      const zoneFactors = [
+        { name: "Zone 4 (UP)", minF: 0.96, modalF: 1.02, maxF: 1.08 },
+        { name: "Zone 6 (PB)", minF: 0.99, modalF: 1.05, maxF: 1.11 },
+        { name: "Zone 8 (MP)", minF: 0.93, modalF: 1.00, maxF: 1.06 },
+        { name: "Zone 9 (MH)", minF: 0.92, modalF: 0.98, maxF: 1.05 },
+        { name: "Zone 10 (KA)", minF: 0.95, modalF: 1.02, maxF: 1.08 },
+        { name: "Zone 13 (GJ)", minF: 0.97, modalF: 1.03, maxF: 1.10 },
+      ];
+      const zonesData = zoneFactors.map(z => ({
+        name: z.name,
+        min: Math.round(baseMsp * z.minF),
+        modal: Math.round(baseMsp * z.modalF),
+        max: Math.round(baseMsp * z.maxF),
+      }));
+
+      const mandiSub = getEl("lbl-mandi-sub");
+      if (mandiSub) {
+        mandiSub.textContent = currentLang === "hi"
+          ? `${cropMeta.label} · आधिकारिक CACP MSP मानक: ₹${baseMsp}/क्विंटल (±क्षेत्रीय मंडी बैंड)`
+          : `${cropMeta.label} · Official CACP MSP Benchmark: ₹${baseMsp}/quintal (regional mandi bands)`;
+      }
+
+      const yMin = Math.max(0, Math.floor((baseMsp * 0.8) / 50) * 50);
       fpoChart = new Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
@@ -2996,7 +3033,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          scales: { y: { beginAtZero: false, min: 1900, title: { display: true, text: "Price (₹ / quintal)" } } }
+          scales: { y: { beginAtZero: yMin === 0, min: yMin, title: { display: true, text: "Price (₹ / quintal)" } } }
         }
       });
 
@@ -3070,7 +3107,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
           scanBeam.classList.add("hidden");
           progressBox.classList.add("hidden");
 
-          // Populate extracted parameters
+          // Populate extracted parameters & sync FPO/Lab preset
           getEl("soil-n").value = data.n_kg_ha;
           getEl("soil-p").value = data.p_kg_ha;
           getEl("soil-k").value = data.k_kg_ha;
@@ -3078,6 +3115,20 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
           getEl("soil-ph").value = data.ph;
           getEl("soil-zn").value = data.zn_ppm;
           getEl("no-shc-toggle").checked = false;
+
+          currentShcPreset = {
+            ...currentShcPreset,
+            district: data.district || currentShcPreset.district,
+            n: data.n_kg_ha,
+            p: data.p_kg_ha,
+            k: data.k_kg_ha,
+            oc: data.oc_pct,
+            ph: data.ph,
+            zn: data.zn_ppm,
+            s: data.s_ppm ?? currentShcPreset.s,
+            ec: data.ec_dsm ?? currentShcPreset.ec,
+          };
+          renderShcTable();
 
           if (data.district) {
             currentLocationDisplayName = data.district;
@@ -4261,6 +4312,9 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       setLanguage(currentLang);
       renderShcTable();
       fetchLocationAndWeather(25.5928, 83.5770);
+      if (new URLSearchParams(window.location.search).get("tab") === "fpo") {
+        switchModule("module-2");
+      }
     });
   </script>
 
