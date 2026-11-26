@@ -2344,7 +2344,7 @@
     }
 
     // Fetch Location & Hyper-Local Weather
-    async function fetchLocationAndWeather(lat, lon) {
+    async function fetchLocationAndWeather(lat, lon, preserveShcSoil = false) {
       renderWeatherSkeleton();
       // 1. Resolve nearest agro-zone and baseline soil from 695 spatial model
       try {
@@ -2354,12 +2354,14 @@
           if (distData.nearest_district) currentDistrictName = distData.nearest_district;
           if (distData.zone) getEl("zone-select").value = distData.zone;
           if (distData.expected_soil) {
-            getEl("soil-n").value = distData.expected_soil.n;
-            getEl("soil-p").value = distData.expected_soil.p;
-            getEl("soil-k").value = distData.expected_soil.k;
-            getEl("soil-oc").value = distData.expected_soil.oc;
-            getEl("soil-ph").value = distData.expected_soil.ph;
-            getEl("soil-zn").value = distData.expected_soil.zn;
+            if (!preserveShcSoil) {
+              getEl("soil-n").value = distData.expected_soil.n;
+              getEl("soil-p").value = distData.expected_soil.p;
+              getEl("soil-k").value = distData.expected_soil.k;
+              getEl("soil-oc").value = distData.expected_soil.oc;
+              getEl("soil-ph").value = distData.expected_soil.ph;
+              getEl("soil-zn").value = distData.expected_soil.zn;
+            }
 
             // Sync Phase D Regional Soil Record Card
             const regBadge = getEl("regional-soil-district-badge");
@@ -3361,7 +3363,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         renderShcTable();
         currentLocationDisplayName = currentShcPreset.district;
         getEl("geo-location-text").textContent = `📍 ${currentShcPreset.district} (${currentShcPreset.lat}°N, ${currentShcPreset.lon}°E)`;
-        fetchLocationAndWeather(currentShcPreset.lat, currentShcPreset.lon);
+        fetchLocationAndWeather(currentShcPreset.lat, currentShcPreset.lon, true);
 
         showOcrResultPopup({
           n_kg_ha: currentShcPreset.n,
@@ -4424,7 +4426,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         if (cropCard) cropCard.click();
 
         switchModule("module-1");
-        fetchLocationAndWeather(currentShcPreset.lat, currentShcPreset.lon);
+        fetchLocationAndWeather(currentShcPreset.lat, currentShcPreset.lon, true);
       });
 
       // Bilingual Language Toggle
