@@ -436,40 +436,40 @@
 
             <div id="regional-soil-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-center" aria-live="polite">
               <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-0.5">
-                <span class="text-[10px] font-bold text-slate-500 uppercase block">नाइट्रोजन (N)</span>
+                <span id="reg-lbl-n" class="text-[10px] font-bold text-slate-500 uppercase block">नाइट्रोजन (N)</span>
                 <span id="reg-soil-n" class="text-sm font-black text-slate-900">210 kg/हे</span>
                 <span id="reg-status-n" class="text-[11px] font-extrabold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded block">मध्यम</span>
               </div>
               <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-0.5">
-                <span class="text-[10px] font-bold text-slate-500 uppercase block">फास्फोरस (P)</span>
+                <span id="reg-lbl-p" class="text-[10px] font-bold text-slate-500 uppercase block">फास्फोरस (P)</span>
                 <span id="reg-soil-p" class="text-sm font-black text-slate-900">14 kg/हे</span>
                 <span id="reg-status-p" class="text-[11px] font-extrabold text-rose-800 bg-rose-50 px-1.5 py-0.2 rounded block">कम (DAP जरूरी)</span>
               </div>
               <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-0.5">
-                <span class="text-[10px] font-bold text-slate-500 uppercase block">पोटाश (K)</span>
+                <span id="reg-lbl-k" class="text-[10px] font-bold text-slate-500 uppercase block">पोटाश (K)</span>
                 <span id="reg-soil-k" class="text-sm font-black text-slate-900">165 kg/हे</span>
                 <span id="reg-status-k" class="text-[11px] font-extrabold text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded block">मध्यम</span>
               </div>
               <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-0.5">
-                <span class="text-[10px] font-bold text-slate-500 uppercase block">जैविक कार्बन</span>
+                <span id="reg-lbl-oc" class="text-[10px] font-bold text-slate-500 uppercase block">जैविक कार्बन</span>
                 <span id="reg-soil-oc" class="text-sm font-black text-slate-900">0.45%</span>
                 <span id="reg-status-oc" class="text-[11px] font-extrabold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded block">सुधार योग्य</span>
               </div>
               <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-0.5">
-                <span class="text-[10px] font-bold text-slate-500 uppercase block">पीएच (pH)</span>
+                <span id="reg-lbl-ph" class="text-[10px] font-bold text-slate-500 uppercase block">पीएच (pH)</span>
                 <span id="reg-soil-ph" class="text-sm font-black text-slate-900">7.2</span>
                 <span id="reg-status-ph" class="text-[11px] font-extrabold text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded block">तटस्थ (आदर्श)</span>
               </div>
               <div class="p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-0.5">
-                <span class="text-[10px] font-bold text-slate-500 uppercase block">जिंक (Zn)</span>
+                <span id="reg-lbl-zn" class="text-[10px] font-bold text-slate-500 uppercase block">जिंक (Zn)</span>
                 <span id="reg-soil-zn" class="text-sm font-black text-slate-900">0.45 ppm</span>
                 <span id="reg-status-zn" class="text-[11px] font-extrabold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded block">हल्की कमी</span>
               </div>
             </div>
 
             <div class="text-[10px] text-slate-500 flex items-center justify-between pt-1">
-              <span>📋 स्रोत: ICAR-AICRP STCR अखिल भारतीय समन्वित मृदा अनुसंधान परियोजना</span>
-              <span class="font-bold text-emerald-800">100% पारदर्शी वैज्ञानिक रिकॉर्ड</span>
+              <span id="reg-lbl-source">📋 स्रोत: ICAR-AICRP STCR अखिल भारतीय समन्वित मृदा अनुसंधान परियोजना</span>
+              <span id="reg-lbl-verified" class="font-bold text-emerald-800">100% पारदर्शी वैज्ञानिक रिकॉर्ड</span>
             </div>
           </div>
         </div>
@@ -1074,28 +1074,28 @@
                   <span id="lbl-route1-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🏛️ जैविक खेती राष्ट्रीय ई-मंच (Jaivik Kheti)</span>
                   <span id="lbl-route1-desc" class="text-[11px] text-slate-600 block">कृषि मंत्रालय का सीधा ई-बाजार (बिना बिचौलिए 0% कमीशन)</span>
                 </div>
-                <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
+                <span id="lbl-route1-open" class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
               <a href="https://pgsindia-ncof.gov.in" target="_blank" rel="noopener noreferrer" class="min-h-[44px] p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs">
                 <div>
                   <span id="lbl-route2-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">📜 PGS-India निःशुल्क जैविक प्रमाणीकरण</span>
                   <span id="lbl-route2-desc" class="text-[11px] text-slate-600 block">5 किसानों का समूह बनाकर फ्री में 'Green' व 'Organic' सील पाएं</span>
                 </div>
-                <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
+                <span id="lbl-route2-open" class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
               <a href="https://sfacindia.com" target="_blank" rel="noopener noreferrer" class="min-h-[44px] p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs">
                 <div>
                   <span id="lbl-route3-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🤝 FPO जैविक एकत्रीकरण हब (SFAC / NABARD)</span>
                   <span id="lbl-route3-desc" class="text-[11px] text-slate-600 block">24 Mantra, Organic Mandya व बिगबास्केट को अनुबंध आपूर्ति</span>
                 </div>
-                <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
+                <span id="lbl-route3-open" class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
               <a href="https://apeda.gov.in" target="_blank" rel="noopener noreferrer" class="min-h-[44px] p-3 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 transition flex items-center justify-between group shadow-2xs">
                 <div>
                   <span id="lbl-route4-title" class="font-bold text-emerald-950 group-hover:text-emerald-700 block">🌐 APEDA अंतरराष्ट्रीय जैविक निर्यात</span>
                   <span id="lbl-route4-desc" class="text-[11px] text-slate-600 block">बासमती, सरसों व दालों के लिए 40% तक निर्यात प्रीमियम</span>
                 </div>
-                <span class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
+                <span id="lbl-route4-open" class="text-emerald-700 font-extrabold text-sm ml-2">खोलें ↗</span>
               </a>
             </div>
 
@@ -1485,9 +1485,9 @@
         mapMeasureHint: "खेत के 3 या 4 कोनों को नक्शे पर छूएं। रकबा स्वतः निकल जाएगा।",
         mapResetMeasure: "रीसेट",
         mapOverlayTitle: "चयनित खेत स्थिति (Pinpoint)",
-        altPopupTitle: "वैकल्पिक फसल सुझाव",
+        altPopupTitle: "बेहतर फसल विकल्प",
         altViewMachinery: "औजार व खेती चक्र देखें",
-        altApplyCrop: "यह फसल अपनाएं",
+        altApplyCrop: "यह फसल चुनें",
         machineryBadge: "खेत रकबा आधारित औजार योजना",
         machineryTitle: "खेत आकार अनुसार औजार व बुवाई-से-कटाई संपूर्ण चक्र",
         toolsHeading: "🛠️ अनुशंसित कृषि यंत्र व मानक किराया दरें",
@@ -1710,9 +1710,9 @@
         mapMeasureHint: "Tap 3 or 4 corners of your field on the map to measure area.",
         mapResetMeasure: "Reset",
         mapOverlayTitle: "Selected Farm Position (Pinpoint)",
-        altPopupTitle: "Smart Alternate Crop Suggestion",
-        altViewMachinery: "View Machinery & Timeline",
-        altApplyCrop: "Switch to this Crop",
+        altPopupTitle: "Better Crop Option",
+        altViewMachinery: "Check Farm Tools & Steps",
+        altApplyCrop: "Try This Crop",
         machineryBadge: "Plot-Scaled Farm Tool Planning",
         machineryTitle: "Plot-Scaled Machinery & Sowing-to-Harvest Lifecycle",
         toolsHeading: "🛠️ Recommended Implements & Custom Hire Rates",
@@ -2204,6 +2204,20 @@
         "opt-ev-yellow": dict.optEvYellow,
         "opt-ev-dry": dict.optEvDry,
         "lbl-assim-note": dict.lblAssimNote,
+        "lbl-route1-open": lang === "hi" ? "खोलें ↗" : "Open ↗",
+        "lbl-route2-open": lang === "hi" ? "खोलें ↗" : "Open ↗",
+        "lbl-route3-open": lang === "hi" ? "खोलें ↗" : "Open ↗",
+        "lbl-route4-open": lang === "hi" ? "खोलें ↗" : "Open ↗",
+        "reg-lbl-n": lang === "hi" ? "नाइट्रोजन (N)" : "Nitrogen (N)",
+        "reg-lbl-p": lang === "hi" ? "फास्फोरस (P)" : "Phosphorus (P)",
+        "reg-lbl-k": lang === "hi" ? "पोटाश (K)" : "Potassium (K)",
+        "reg-lbl-oc": lang === "hi" ? "जैविक कार्बन" : "Organic Carbon",
+        "reg-lbl-ph": lang === "hi" ? "पीएच (pH)" : "Soil pH",
+        "reg-lbl-zn": lang === "hi" ? "जिंक (Zn)" : "Zinc (Zn)",
+        "reg-lbl-source": lang === "hi"
+          ? "📋 स्रोत: ICAR-AICRP STCR अखिल भारतीय समन्वित मृदा अनुसंधान परियोजना"
+          : "📋 Source: ICAR-AICRP STCR All-India Coordinated Soil Research",
+        "reg-lbl-verified": lang === "hi" ? "100% पारदर्शी वैज्ञानिक रिकॉर्ड" : "100% Verified Scientific Record",
       };
 
       for (const [id, val] of Object.entries(idMap)) {
@@ -2219,7 +2233,13 @@
 
       updateLandUnitConverter();
       if (currentWeatherData) renderWeatherUI(currentWeatherData);
-      runAdvisoryEngine();
+      const lat = parseFloat(getEl("coord-lat")?.value);
+      const lon = parseFloat(getEl("coord-lon")?.value);
+      if (isBackendOnline && !isNaN(lat) && !isNaN(lon)) {
+        fetchLocationAndWeather(lat, lon, true);
+      } else {
+        runAdvisoryEngine();
+      }
       if (activeModule === "module-2") renderFpoChart();
     }
 
@@ -2364,20 +2384,36 @@
             }
 
             // Sync Phase D Regional Soil Record Card
+            const isHi = currentLang === "hi";
+            const unitKgHa = isHi ? "kg/हे" : "kg/ha";
+            const s = distData.expected_soil;
             const regBadge = getEl("regional-soil-district-badge");
             if (regBadge) regBadge.textContent = `${distData.nearest_district} (${distData.region})`;
             const regN = getEl("reg-soil-n");
-            if (regN) regN.textContent = `${Math.round(distData.expected_soil.n)} kg/हे`;
+            if (regN) regN.textContent = `${Math.round(s.n)} ${unitKgHa}`;
             const regP = getEl("reg-soil-p");
-            if (regP) regP.textContent = `${Math.round(distData.expected_soil.p)} kg/हे`;
+            if (regP) regP.textContent = `${Math.round(s.p)} ${unitKgHa}`;
             const regK = getEl("reg-soil-k");
-            if (regK) regK.textContent = `${Math.round(distData.expected_soil.k)} kg/हे`;
+            if (regK) regK.textContent = `${Math.round(s.k)} ${unitKgHa}`;
             const regOc = getEl("reg-soil-oc");
-            if (regOc) regOc.textContent = `${distData.expected_soil.oc}%`;
+            if (regOc) regOc.textContent = `${s.oc}%`;
             const regPh = getEl("reg-soil-ph");
-            if (regPh) regPh.textContent = `${distData.expected_soil.ph}`;
+            if (regPh) regPh.textContent = `${s.ph}`;
             const regZn = getEl("reg-soil-zn");
-            if (regZn) regZn.textContent = `${distData.expected_soil.zn} ppm`;
+            if (regZn) regZn.textContent = `${s.zn} ppm`;
+
+            const stN = getEl("reg-status-n");
+            if (stN) stN.textContent = s.n < 280 ? (isHi ? "कम" : "Low") : (s.n <= 560 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High"));
+            const stP = getEl("reg-status-p");
+            if (stP) stP.textContent = s.p < 10 ? (isHi ? "कम (DAP जरूरी)" : "Low (DAP needed)") : (s.p <= 25 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High"));
+            const stK = getEl("reg-status-k");
+            if (stK) stK.textContent = s.k < 120 ? (isHi ? "कम" : "Low") : (s.k <= 280 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High"));
+            const stOc = getEl("reg-status-oc");
+            if (stOc) stOc.textContent = s.oc < 0.5 ? (isHi ? "सुधार योग्य" : "Low (Add FYM)") : (s.oc <= 0.75 ? (isHi ? "मध्यम" : "Medium") : (isHi ? "उत्तम" : "High"));
+            const stPh = getEl("reg-status-ph");
+            if (stPh) stPh.textContent = s.ph < 6.0 ? (isHi ? "अम्लीय" : "Acidic") : (s.ph <= 7.5 ? (isHi ? "तटस्थ (आदर्श)" : "Optimal") : (isHi ? "क्षारीय" : "Alkaline"));
+            const stZn = getEl("reg-status-zn");
+            if (stZn) stZn.textContent = s.zn < 0.5 ? (isHi ? "हल्की कमी" : "Low (Add Zn)") : (isHi ? "पर्याप्त" : "Sufficient");
           }
         }
       } catch (e) {
@@ -2842,6 +2878,42 @@
          4) MOP (60% K2O) = ${reqK.toFixed(1)} / 0.60 = ${mopKg.toFixed(1)} kg -> ${mopBags.toFixed(1)} bags (50kg)
 [SAFETY] Confidence: ${noShc ? "±15% Block Baseline" : "±5% SHC-Verified"} | Rain Guardrail: ${rainProb > 60 ? "HOLD_UREA" : "CLEAR"}
 [CITE]   ICAR Package of Practices · FCO Commercial Standards · FAO-56 Irrigation Model · Open-Meteo NWP`;
+
+      // Crop-specific 3-stage irrigation timeline
+      const irrSchedules = {
+        wheat: {
+          hi: [["20–25 दिन", "CRI ताज जड़ अवस्था"], ["40–45 दिन", "कल्ले फूटते समय"], ["65–70 दिन", "फूल/बाली बनते समय"], "पहली सिंचाई बुवाई के 21 दिन बाद (CRI अवस्था) करें। इसके बाद यूरिया की पहली किश्त दें। बारिश होने पर सिंचाई टालें।"],
+          en: [["20–25 Days", "Crown Root (CRI) Stage"], ["40–45 Days", "Active Tillering"], ["65–70 Days", "Flowering & Booting"], "Deliver first light irrigation 21 days after sowing (CRI stage), then apply first Urea split. Skip if rain is forecast."]
+        },
+        mustard: {
+          hi: [["25–30 दिन", "शाखा निकलने पर"], ["45–50 दिन", "फूल आने की अवस्था"], ["70–75 दिन", "फली में दाना भरते समय"], "सरसों को कम पानी चाहिए। पहली हल्की सिंचाई बुवाई के 25–30 दिन बाद और दूसरी फली बनते समय करें।"],
+          en: [["25–30 Days", "Branching Stage"], ["45–50 Days", "Pre-Flowering"], ["70–75 Days", "Pod Filling Stage"], "Mustard needs low water. Apply first light irrigation at 25–30 days (branching) and second at pod filling if dry."]
+        },
+        rice: {
+          hi: [["15–20 दिन", "कल्ले फूटने पर"], ["40–45 दिन", "बाली बनने की शुरुआत"], ["65–70 दिन", "दूधिया दाना अवस्था"], "रोपाई बाद 2–3 सेमी पतली पानी की परत बनाए रखें। कल्ले व बाली निकलते समय नमी कम न होने दें।"],
+          en: [["15–20 Days", "Active Tillering"], ["40–45 Days", "Panicle Initiation"], ["65–70 Days", "Milking & Grain Fill"], "Maintain 2–3 cm shallow standing water during vegetative growth and ensure steady moisture at panicle initiation."]
+        },
+        maize: {
+          hi: [["20–25 दिन", "घुटने तक ऊंचाई (Knee High)"], ["45–50 दिन", "नर मंजरी (Tasseling)"], ["65–70 दिन", "भुट्टा व दाना भरते समय"], "मक्का में जलभराव न होने दें। नर मंजरी और दाना भरते समय सिंचाई सबसे जरूरी है।"],
+          en: [["20–25 Days", "Knee-High Stage"], ["45–50 Days", "Tasseling & Silking"], ["65–70 Days", "Cob & Grain Fill"], "Avoid waterlogging in maize; ensure timely irrigation at tasseling and silking stages for full cob filling."]
+        },
+        gram: {
+          hi: [["30–35 दिन", "शाखाएं बनते समय"], ["60–65 दिन", "फली बनते समय"], ["अतिरिक्त", "केवल सूखे में हल्की"], "चना कम सिंचाई की फसल है। यदि मिट्टी सूखी हो तो बुवाई के 30–35 दिन बाद एक हल्की सिंचाई दें।"],
+          en: [["30–35 Days", "Pre-Flowering Branch"], ["60–65 Days", "Pod Development"], ["Optional", "Only if severe drought"], "Chickpea thrives on low water. Give one light irrigation at 30–35 days only if topsoil moisture is depleted."]
+        },
+        sugarcane: {
+          hi: [["30–35 दिन", "अंकुरण व कल्ले"], ["60–90 दिन", "बढ़वार (Formative)"], ["120–150 दिन", "गन्ना मोटाई (Grand Growth)"], "गर्मी में 10–12 दिन और सर्दी में 20 दिन के अंतर पर सिंचाई करें; खाद सिंचाई के बाद दें।"],
+          en: [["30–35 Days", "Germination & Shoot"], ["60–90 Days", "Formative Tillering"], ["120–150 Days", "Grand Growth Phase"], "Irrigate every 10–12 days in summer and 20 days in winter; align nitrogen top-dressing after light watering."]
+        }
+      };
+      const sched = (irrSchedules[cropKey] || irrSchedules.wheat)[isHi ? "hi" : "en"];
+      if (getEl("lbl-irr-s1-days")) getEl("lbl-irr-s1-days").textContent = sched[0][0];
+      if (getEl("lbl-irr-s1-stage")) getEl("lbl-irr-s1-stage").textContent = sched[0][1];
+      if (getEl("lbl-irr-s2-days")) getEl("lbl-irr-s2-days").textContent = sched[1][0];
+      if (getEl("lbl-irr-s2-stage")) getEl("lbl-irr-s2-stage").textContent = sched[1][1];
+      if (getEl("lbl-irr-s3-days")) getEl("lbl-irr-s3-days").textContent = sched[2][0];
+      if (getEl("lbl-irr-s3-stage")) getEl("lbl-irr-s3-stage").textContent = sched[2][1];
+      if (getEl("irrigation-card-desc")) getEl("irrigation-card-desc").textContent = sched[3];
 
       // Update Visual Charts
       updateCharts(reqN, reqP, reqK, dapKg, ureaKg, mopKg, crop, et0);
@@ -3404,8 +3476,8 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
         tab1.setAttribute("aria-selected", "false");
         tab2.className = "dark-focus min-h-[44px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-emerald-700 text-white shadow transition flex items-center gap-1.5";
         tab1.className = "dark-focus min-h-[44px] px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-emerald-200 hover:text-white transition flex items-center gap-1.5";
+        getEl("floating-crop-advisor")?.classList.add("hidden");
         renderFpoChart();
-      updateAlternativeAndMachineryPlan();
         renderShcTable();
       }
     }
@@ -3711,7 +3783,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       if (!popup) return;
 
       currentAlternativeData = alt;
-      if (!alt || !alt.has_alternative || isAltPopupDismissed) {
+      if (activeModule !== "module-1" || !alt || !alt.has_alternative || isAltPopupDismissed) {
         popup.classList.add("hidden");
         return;
       }
@@ -3731,7 +3803,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
       const lblApply = getEl("lbl-apply-alt-crop");
       if (lblApply) {
         const cropName = CROP_DB[alt.suggested_crop]?.[isHi ? "name_hi" : "name_en"] || alt.suggested_crop;
-        lblApply.textContent = isHi ? `${cropName} अपनाएं` : `Switch to ${cropName}`;
+        lblApply.textContent = isHi ? `${cropName} चुनें` : `Try ${cropName} Instead`;
       }
     }
 
@@ -3828,7 +3900,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
             </span>
             <div class="text-sm font-extrabold text-slate-900 flex flex-wrap items-center gap-2">
               <span>📦 ${req.total_seed_kg} kg (${req.bags_count} ${isHi ? "बैग" : "Bags"} · ${isHi ? "प्रति बैग" : "Per bag"} ${req.bag_size_kg} kg)</span>
-              <span class="text-xs text-slate-500 font-normal">(${isHi ? "मानक बीज दर:" : "Seed Rate:"} ${req.seed_rate_kg_ha} kg/हेक्टेयर)</span>
+              <span class="text-xs text-slate-500 font-normal">(${isHi ? "मानक बीज दर:" : "Seed Rate:"} ${req.seed_rate_kg_ha} ${isHi ? "kg/हेक्टेयर" : "kg/ha"})</span>
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-4 text-xs font-bold pt-2 md:pt-0 border-t md:border-t-0 md:border-l md:pl-4 border-emerald-200">
@@ -3869,7 +3941,7 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
               <div><strong>${isHi ? "अवधि:" : "Maturity:"}</strong> ${escapeHtml(v.maturity_days)} ${isHi ? "दिन" : "days"}</div>
               <div><strong>${isHi ? "उपज:" : "Yield:"}</strong> ${escapeHtml(v.yield_q_ha)} ${isHi ? "कुं./हे." : "q/ha"}</div>
               <div><strong>${isHi ? "अंकुरण:" : "Germination:"}</strong> ≥${Number(v.germination_pct)}%</div>
-              <div><strong>${isHi ? "बीज दर:" : "Seed Rate:"}</strong> ${Number(v.seed_rate_kg_ha)} kg/हे.</div>
+              <div><strong>${isHi ? "बीज दर:" : "Seed Rate:"}</strong> ${Number(v.seed_rate_kg_ha)} ${isHi ? "kg/हे." : "kg/ha"}</div>
             </div>
             <p class="text-[11px] text-slate-600 leading-snug">${escapeHtml(v.features)}</p>
           </div>
@@ -4516,8 +4588,8 @@ ${p.soilAlerts.length ? '⚠️ *Soil Amendments:* ' + p.soilAlerts.join('; ') +
 
   <!-- Toast Notification Bar (Non-blocking) -->
   
-  <!-- Phase B: Floating Top-Right Smart Alternative Crop Pop-up -->
-  <aside id="floating-crop-advisor" aria-label="वैकल्पिक फसल सुझाव" class="hidden fixed top-20 right-3 sm:right-6 z-40 w-[92vw] sm:w-[380px] rounded-2xl bg-white/95 backdrop-blur-md border-2 border-amber-400 shadow-2xl transition-all duration-300 transform">
+  <!-- Phase B: Floating Bottom-Right Smart Alternative Crop Pop-up -->
+  <aside id="floating-crop-advisor" aria-label="Better crop option" class="hidden fixed bottom-4 right-3 sm:bottom-5 sm:right-5 z-40 w-[92vw] sm:w-[355px] rounded-2xl bg-white/95 backdrop-blur-md border-2 border-amber-400 shadow-2xl transition-all duration-300 transform">
     <div class="p-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-t-2xl flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="text-xl" aria-hidden="true">💡</span>
